@@ -1,0 +1,19 @@
+{
+  "name": "malha",
+  "version": "1.0.0",
+  "description": "Aplicação de gestão de torneios de malha",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fernandovidigal/malha.git"
+  },
+  "author": "Fernando Vidigal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fernandovidigal/malha/issues"
+  },
+  "homepage": "https://github.com/fernandovidigal/malha#readme"
+}
