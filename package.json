@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Aplicação de gestão de torneios de malha",
   "main": "app.js",
+  "bin": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,7 +19,12 @@
   "homepage": "https://github.com/fernandovidigal/malha#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "express-handlebars": "^3.0.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "sqlite3": "^4.0.6"
-  }
+  },
+  "devDependencies": {}
 }
