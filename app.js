@@ -6,6 +6,7 @@ const UserDB = require('./models/User');
 const exphbs = require('express-handlebars');
 const passport = require('passport');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 // Carregas configurações
 const cfg = new Config();
@@ -15,8 +16,11 @@ const cfg = new Config();
 const users = new UserDB();
 
 // Registar View Engine
+app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({
     defaultLayout: 'home',
+    layoutsDir: path.join(__dirname, 'views/layouts'),
+    partialsDir: path.join(__dirname, 'views/partials')
 }));
 app.set('view engine', 'handlebars');
 
