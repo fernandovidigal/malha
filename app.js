@@ -4,6 +4,7 @@ const port = 3000;
 const Config = require('./config/Config');
 const UserDB = require('./models/User');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -27,6 +28,17 @@ app.set('view engine', 'handlebars');
 // Body Parser
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+// SESSIONS
+app.use(session({
+    secret: "malhanodejs",
+    resave: true,
+    saveUninitialized: true
+}));
+
+// PASSPORT
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Carregar Routes
 const home = require('./routes/home/index');

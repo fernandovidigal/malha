@@ -34,7 +34,7 @@ class User {
 
     addUser(nome, password, status = 0) {
         var stmt = this.db.prepare("INSERT INTO users (username, password, status) VALUES (?,?,?)");
-        stmt.run(this.encrypt(nome), this.encrypt(password), status);
+        stmt.run(nome, this.encrypt(password), status);
         stmt.finalize();
     }
 
@@ -44,12 +44,17 @@ class User {
         stmt.finalize();
     }
 
-    lookupUser(username, password) {
-        var stmt = this.db.prepare("SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1");
-        stmt.get(this.encrypt(username), this.encrypt(password), (err, row) => {
-            console.log(row);
+    getUser(username) {
+        var that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get("SELECT * FROM users WHERE username = ?", [username], (err,row) => {
+                if(err) 
+                    reject(err);
+                else {
+                    resolve(row);
+                }
+            });
         });
-        stmt.finalize();
     }
 
     encrypt(word){

@@ -80,3 +80,6 @@ typings/
 .dynamodb/
 
 # Executables
+malha-linux
+malha-macos
+malha-win.exe

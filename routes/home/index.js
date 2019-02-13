@@ -1,8 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const UserDB = require('../../models/User');
 const user = new UserDB();
+
+// APP LOGIN
+//passport.use(new LocalStrategy)
 
 router.all('/*', (req, res, next) => {
     req.app.locals.layout = 'home';
@@ -14,6 +19,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/registo', (req, res) => {
+    user.getUser('admin').then((user) => {
+        console.log(user);
+    }).catch((err) => {
+        console.log(err);
+    });
     res.render('home/registo');
 })
 
