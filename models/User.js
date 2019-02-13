@@ -47,7 +47,20 @@ class User {
     getUser(username) {
         var that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT * FROM users WHERE username = ?", [username], (err,row) => {
+            that.db.get("SELECT * FROM users WHERE username = ? LIMIT 1", [username], (err,row) => {
+                if(err) 
+                    reject(err);
+                else {
+                    resolve(row);
+                }
+            });
+        });
+    }
+
+    getUserById(id) {
+        var that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get("SELECT * FROM users WHERE user_id = ? LIMIT 1", [id], (err,row) => {
                 if(err) 
                     reject(err);
                 else {
