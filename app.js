@@ -16,6 +16,9 @@ const cfg = new Config();
 // TODO: Talvez não seja necessário iniciaar aqui a base de dados dos utilizadores
 const users = new UserDB();
 
+// MIDDLEWARE
+app.use(express.static(path.join(__dirname, 'assets')));
+
 // Registar View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({
