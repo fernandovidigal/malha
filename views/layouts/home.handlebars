@@ -8,18 +8,24 @@
     <title>Malha</title>
 </head>
 <body>
-    <h1>Jogo da Malha</h1>
+<div class="wrapper">
+    <div class="navigation__wrapper">
+        <!-- Navigation -->
+        {{> navigation}}
+    </div>
 
-    <!-- Navigation -->
-    {{> navigation}}
+    <div class="content__wrapper">
+        <!-- Header -->
+        {{> header}}
 
-    <!-- Page Content -->
-    {{{body}}}
-    <!-- ./Page Content -->
+        <!-- Page Content -->
+        {{{body}}}
+        <!-- ./Page Content -->
 
-    <!-- Footer -->
-    {{> footer}}
-
-    <script src="/js/main.js"></script>
+        <!-- Footer -->
+        {{> footer}}
+    </div>
+</div>
+<script src="/js/main.js"></script>
 </body>
 </html>

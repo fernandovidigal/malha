@@ -1,51 +1,67 @@
+// ERRO DA CONSTRAINT UNIQUE
+// { [Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.username] errno: 19, code: 'SQLITE_CONSTRAINT' }
+
+
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const fs =  require('fs');
 
 class User {
-    constructor(){
-
-        if(!fs.existsSync('./data/users.db')){
-            this.db = new sqlite3.Database('./data/users.db', (err) => {
-                if(err) throw err;
-                this.createUsersTable();
-            });
-        } else {
-            this.db = new sqlite3.Database('./data/users.db', (err) => {
-                if(err) throw err;
-            });
-        }
-
-        // Verifica Utilizadores padrão
-        this.verifyDefaultUsers();
-
+    constructor(){  
+        this.db = new sqlite3.Database('./data/users.db', (err) => {
+            if(err) throw err;
+            else {
+                this.createUsersTable().then(()=>{
+                    this.verifyDefaultUsers();
+                }).catch((err) => {
+                    console.log(err);
+                });
+            }
+        });
     }
 
     createUsersTable(){
-        this.db.serialize(() => {
-            // Cria a tabelas de utilizadores
-            this.db.run(`CREATE TABLE IF NOT EXISTS users (
+        const that = this
+        return new Promise(function(resolve, reject){
+            that.db.run(`CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 status INTEGER NOT NULL DEFAULT 0
-            )`);
+            )`, (err) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve();
+                }
+            });
         });
     }
 
     verifyDefaultUsers(){
         // Verifica se a conta de administrador existe
         this.getUser('admin').then((row) => {
-            console.log('TEste: ' + row.length);
+            if(!row){
+                // Adiciona um utilizador por default com privilegios de administrador
+                this.addUser('admin', '12345', 10);
+            }
         });
-        // Adiciona um utilizador por default com privilegios de administrador
-        //this.addUser('admin', '12345', 10);
     }
 
     addUser(nome, password, status = 0) {
-        var stmt = this.db.prepare("INSERT INTO users (username, password, status) VALUES (?,?,?)");
-        stmt.run(nome, this.encrypt(password), status);
-        stmt.finalize();
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run(
+                "INSERT INTO users (username, password, status) VALUES (?,?,?)",
+                [nome, that.encrypt(password), status],
+                (err) => {
+                    if(err)
+                        return reject(err);
+                    else
+                        return resolve();
+                }
+            );
+        });
     }
 
     deleteUser(user_id){
@@ -61,7 +77,7 @@ class User {
                 if(err) 
                     reject(err);
                 else {
-                    console.log('devolver row');
+                    //console.log('devolver row');
                     resolve(row);
                 }
             });

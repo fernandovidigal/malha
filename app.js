@@ -2,19 +2,19 @@ const express = require('./node_modules/express');
 const app = express();
 const port = 3000;
 const Config = require('./config/Config');
-const UserDB = require('./models/User');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const passport = require('passport');
+const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const path = require('path');
+const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
 
 // Carregas configurações
 const cfg = new Config();
 
-// Carrega a base de dados de Utilizadores
-// TODO: Talvez não seja necessário iniciaar aqui a base de dados dos utilizadores
-const users = new UserDB();
+// Verifica a estrutura de ficheiros
+dataDirectoryCheck();
 
 // MIDDLEWARE
 app.use(express.static(path.join(__dirname, 'assets')));
@@ -43,8 +43,14 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Flash Messages
+app.use(flash());
+
 app.use(function(req, res, next) {
     res.locals.user = req.user;
+    res.locals.success_message = req.flash('success_message');
+    res.locals.error_message = req.flash('error_message');
+    res.locals.error = req.flash('error');
     next();
 });
 

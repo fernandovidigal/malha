@@ -18,19 +18,18 @@ passport.use(new LocalStrategy({
 
     user.getUser(username).then(user => {
         if(!user)
-            return done(null, false, {message: errMsg});
+            return done(null, false);
         
             bcrypt.compare(password, user.password, (err, matched) => {
                 if(matched) {
-                    console.log("User Login");
                     return done(null, user);
                 } else {
-                    return done(null, false, {message: errMsg});
+                    return done(null, false);
                 }
             });
     }).catch(err => {
         console.log(err);
-        return done(null, false, {message: errMsg});
+        return done(null, false);
     });
 }))
 
@@ -60,7 +59,8 @@ router.post('/', (req,res,next) => {
 
     passport.authenticate('local', {
         successRedirect: '/',
-        failureRedirect: '/login'
+        failureRedirect: '/login',
+        failureFlash: "Username ou password inválidos"
     })(req, res, next);
 });
 
