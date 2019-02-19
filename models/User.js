@@ -15,21 +15,31 @@ class User {
                 if(err) throw err;
             });
         }
+
+        // Verifica Utilizadores padrão
+        this.verifyDefaultUsers();
+
     }
 
     createUsersTable(){
         this.db.serialize(() => {
             // Cria a tabelas de utilizadores
-            this.db.run(`CREATE TABLE users (
+            this.db.run(`CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
+                username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 status INTEGER NOT NULL DEFAULT 0
             )`);
-
-            // Adiciona um utilizador por default com privilegios de administrador
-            this.addUser('admin', '12345', 10);
         });
+    }
+
+    verifyDefaultUsers(){
+        // Verifica se a conta de administrador existe
+        this.getUser('admin').then((row) => {
+            console.log('TEste: ' + row.length);
+        });
+        // Adiciona um utilizador por default com privilegios de administrador
+        //this.addUser('admin', '12345', 10);
     }
 
     addUser(nome, password, status = 0) {
@@ -51,6 +61,7 @@ class User {
                 if(err) 
                     reject(err);
                 else {
+                    console.log('devolver row');
                     resolve(row);
                 }
             });

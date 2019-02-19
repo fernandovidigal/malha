@@ -9,8 +9,12 @@ const user = new UserDB();
 const {userAuthenticated} = require('../../helpers/authentication');
 
 // APP LOGIN
-/*const errMsg = "Utilizador ou Password incorrectos";
-passport.use(new LocalStrategy({usernameField: 'username'}, (username, password, done) => {
+const errMsg = "Utilizador ou Password incorrectos";
+passport.use(new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password'
+}, 
+(username, password, done) => {
 
     user.getUser(username).then(user => {
         if(!user)
@@ -41,63 +45,23 @@ passport.deserializeUser(function(id, done){
         console.log(err);
         done(null, false);
     });
-});*/
+});
 
-router.all('/*', userAuthenticated, (req, res, next) => {
-    req.app.locals.layout = 'home';
+router.all('/*', (req, res, next) => {
+    req.app.locals.layout = 'login';
     next();
 });
 
 router.get('/', (req, res) => {
-    res.render('home/index');
-});
-
-router.get('/query', (req, res) => {
-    user.getUser('admin').then((user) => {
-        console.log(user.user_id);
-        console.log(user.username);
-        console.log(user.password);
-        console.log(user.status);
-    }).catch((err) => {
-        console.log(err);
-    });
-    res.render('home/index');
-});
-
-router.get('/registo', (req, res) => {
-    res.render('home/registo');
-})
-
-router.post('/registo', (req, res) => {
-    //TODO: Fazer a verificação dos dados introduzidos pelo utilizador
-    user.addUser(
-        req.body.username,
-        req.body.password,
-        req.body.status
-    );
-    console.log("Novo Utilizador Registado");
-    res.render('home/index');
-});
-
-/*router.get('/login', (req, res) => {
     res.render('home/login');
 });
 
-router.post('/login', (req,res,next) => {
+router.post('/', (req,res,next) => {
 
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login'
     })(req, res, next);
-});*/
-
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/login');
-});
-
-router.get('/listaequipas', (req, res) => {
-    res.send('Lista de Equipas');
 });
 
 module.exports = router;

@@ -1,9 +1,10 @@
 <div class="navigation">
+    {{#if user}}{{user.username}}{{/if}}
     <ul>
         <li><a href="/login">Login</a></li>
-        {{#if user}}<li><a href="/logout">Logout</a></li>{{/if}}
+        <li><a href="/logout">Logout</a></li>
         <li><a href="/registo">Registar</a></li>
-        <li><a href="#">Nav Item 3</a></li>
+        <li><a href="/listaequipas">Lista Equipas</a></li>
         <li><a href="#">Nav Item 4</a></li>
         <li><a href="#">Nav Item 5</a></li>
     </ul>

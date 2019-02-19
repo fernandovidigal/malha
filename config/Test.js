@@ -1,3 +1,7 @@
+// https://stackoverflow.com/questions/35415469/sqlite3-unique-constraint-failed-error
+// https://github.com/mapbox/node-sqlite3/wiki/API
+
+
 class Test {
 
     constructor(){
