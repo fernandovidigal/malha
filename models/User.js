@@ -71,7 +71,7 @@ class User {
     }
 
     getUser(username) {
-        var that = this;
+        const that = this;
         return new Promise(function(resolve, reject){
             that.db.get("SELECT * FROM users WHERE username = ? LIMIT 1", [username], (err,row) => {
                 if(err) 
@@ -85,13 +85,27 @@ class User {
     }
 
     getUserById(id) {
-        var that = this;
+        const that = this;
         return new Promise(function(resolve, reject){
             that.db.get("SELECT * FROM users WHERE user_id = ? LIMIT 1", [id], (err,row) => {
                 if(err) 
                     reject(err);
                 else {
                     resolve(row);
+                }
+            });
+        });
+    }
+
+    getAllUsers(){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all("SELECT * FROM users", (err,rows) => {
+                if(err) {
+                    return reject(err);
+                }   
+                else {
+                    return resolve(rows);
                 }
             });
         });

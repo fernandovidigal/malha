@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'Lato';
+    src: url('/fonts/Lato-Regular.ttf');
+    font-weight: normal;
+}
+
+.success_msg,
+.error_msg,
+.info_msg,
+.warning_msg {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.success_msg {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+}
+
+.error_msg {
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+}
+
+.info_msg {
+    color: #31708f;
+    background-color: #d9edf7;
+    border: 1px solid #bce8f1;
+}
+
+.warning_msg {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border: 1px solid #faebcc;
+}

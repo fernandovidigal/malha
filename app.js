@@ -1,7 +1,7 @@
 const express = require('./node_modules/express');
 const app = express();
 const port = 3000;
-const Config = require('./config/Config');
+//const Config = require('./config/Config');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const passport = require('passport');
@@ -11,7 +11,7 @@ const path = require('path');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
 
 // Carregas configurações
-const cfg = new Config();
+//const cfg = new Config();
 
 // Verifica a estrutura de ficheiros
 dataDirectoryCheck();
@@ -48,18 +48,21 @@ app.use(flash());
 
 app.use(function(req, res, next) {
     res.locals.user = req.user;
-    res.locals.success_message = req.flash('success_message');
-    res.locals.error_message = req.flash('error_message');
+    res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
+    res.locals.info = req.flash('info');
+    res.locals.warning = req.flash('warning');
     next();
 });
 
 // Carregar Routes
 const login = require('./routes/home/login');
 const home = require('./routes/home/index');
+const admin = require('./routes/home/admin');
 
 app.use('/login', login);
 app.use('/', home);
+app.use('/admin', admin);
 
 // Activar Servidor
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

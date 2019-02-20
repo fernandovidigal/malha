@@ -13,24 +13,24 @@ const errMsg = "Utilizador ou Password incorrectos";
 passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password'
-}, 
-(username, password, done) => {
+    }, 
+    (username, password, done) => {
 
-    user.getUser(username).then(user => {
-        if(!user)
+        user.getUser(username).then(user => {
+            if(!user)
+                return done(null, false);
+            
+                bcrypt.compare(password, user.password, (err, matched) => {
+                    if(matched) {
+                        return done(null, user);
+                    } else {
+                        return done(null, false);
+                    }
+                });
+        }).catch(err => {
+            console.log(err);
             return done(null, false);
-        
-            bcrypt.compare(password, user.password, (err, matched) => {
-                if(matched) {
-                    return done(null, user);
-                } else {
-                    return done(null, false);
-                }
-            });
-    }).catch(err => {
-        console.log(err);
-        return done(null, false);
-    });
+        });
 }))
 
 passport.serializeUser(function(user, done){

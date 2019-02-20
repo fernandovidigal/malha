@@ -1,9 +1,9 @@
-<form action="/registo" method="post">
+{{> messages}}
+<form action="/admin/registo" method="post">
 <label for="username">Username</label>
 <input type="text" name="username"><br>
 <label for="password">Password</label>
 <input type="password" name="password"><br>
-<label for="status">Status</label>
-<input type="text" name="status"><br>
+<input type="checkbox" name="status">Administrador<br>
 <input type="submit" value="Registar">
 </form>

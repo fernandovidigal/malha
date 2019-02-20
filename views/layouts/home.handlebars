@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/styles.css">
     <title>Malha</title>
 </head>
@@ -17,13 +18,14 @@
     <div class="content__wrapper">
         <!-- Header -->
         {{> header}}
-
-        <!-- Page Content -->
-        {{{body}}}
-        <!-- ./Page Content -->
+        <div class="body__wrapper">
+            <!-- Page Content -->
+            {{{body}}}
+            <!-- ./Page Content -->
+        </div>
 
         <!-- Footer -->
-        {{> footer}}
+        <!--{{> footer}}-->
     </div>
 </div>
 <script src="/js/main.js"></script>

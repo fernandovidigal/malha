@@ -1,5 +1,6 @@
 body {
     background-color: cadetblue;
+    font-family: 'Lato', sans-serif;
 }
 
 h1 {
@@ -12,6 +13,7 @@ h1 {
 
 .login_form__wrapper {
     width: 40%;
+    max-width: 350px;
     margin: 0 auto;
     margin-top: 40px;
     display: flex;
@@ -39,13 +41,4 @@ h1 {
     align-self: center;
     border-radius: 8px;
     cursor: pointer
-}
-
-.error_msg {
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    color: #a94442;
-    background-color: #f2dede;
-    border: 1px solid #ebccd1;
-    border-radius: 4px;
 }
