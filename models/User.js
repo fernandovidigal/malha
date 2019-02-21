@@ -42,7 +42,7 @@ class User {
         this.getUser('admin').then((row) => {
             if(!row){
                 // Adiciona um utilizador por default com privilegios de administrador
-                this.addUser('admin', '12345', 10);
+                this.addUser('admin', '12345', 1);
             }
         });
     }
