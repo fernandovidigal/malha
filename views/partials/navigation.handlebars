@@ -3,11 +3,15 @@
         <li><a href="/login">Login</a></li>
         <li><a href="/logout">Logout</a></li>
         <li><a href="/listaequipas">Lista Equipas</a></li>
-        <li><a href="/admin">Administração</a>
-            <ul>
-                <li><a href="/admin/registo">Registo de Utilizadores</a></li>
-                <li><a href="/admin/lista">Lista de Utilizadores</a></li>
-            </ul>
-        </li>
+        {{#if user}}
+            {{#adminNav user.status}}
+                <li><a href="/admin">Administração</a>
+                    <ul>
+                        <li><a href="/admin/utilizadores">Utilizadores</a></li>
+                        <li><a href="/admin/escaloes">Escalões</a></li>
+                    </ul>
+                </li>
+            {{/adminNav}}
+        {{/if}}
     </ul>
 </div>

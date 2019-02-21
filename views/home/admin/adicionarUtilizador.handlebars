@@ -1,0 +1,18 @@
+{{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+        </div>
+    {{/each}}
+{{/if}}
+<form action="/admin/adicionarUtilizador" method="post">
+    <label for="username">Username</label>
+    <input type="text" name="username" required><br>
+    <label for="password">Password</label>
+    <input type="password" name="password" required><br>
+    <label for="password">Verificar Password</label>
+    <input type="password" name="verify_password" required><br>
+    <input type="checkbox" name="status">Administrador<br>
+    <input type="submit" value="Registar">
+</form>

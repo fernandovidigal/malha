@@ -8,7 +8,9 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const path = require('path');
+const methodOverride = require('method-override');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
+const {checkAdmin, adminNav} = require('./helpers/handlebars_helpers');
 
 // Carregas configurações
 //const cfg = new Config();
@@ -24,7 +26,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('handlebars', exphbs({
     defaultLayout: 'home',
     layoutsDir: path.join(__dirname, 'views/layouts'),
-    partialsDir: path.join(__dirname, 'views/partials')
+    partialsDir: path.join(__dirname, 'views/partials'),
+    helpers: {
+        checkAdmin: checkAdmin,
+        adminNav: adminNav
+    }
 }));
 app.set('view engine', 'handlebars');
 
@@ -54,6 +60,9 @@ app.use(function(req, res, next) {
     res.locals.warning = req.flash('warning');
     next();
 });
+
+// METHOD OVERRIDE
+app.use(methodOverride('_method'));
 
 // Carregar Routes
 const login = require('./routes/home/login');

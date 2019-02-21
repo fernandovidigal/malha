@@ -1,0 +1,20 @@
+{{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+        </div>
+    {{/each}}
+{{/if}}
+<form action="/admin/editarUtilizador/{{utilizador.user_id}}?_method=PUT" method="post">
+    <label for="username">Username</label>
+    <input type="text" name="username" value="{{utilizador.username}}"><br>
+    <label for="password">Password</label>
+    <input type="password" name="password"><br>
+    <label for="password">Verificar Password</label>
+    <input type="password" name="verify_password"><br>
+    {{#checkAdmin utilizador.status}}
+        <input type="checkbox" name="status">Administrador<br>
+    {{/checkAdmin}}
+    <input type="submit" value="Actualizar">
+</form>

@@ -1,0 +1,20 @@
+{{> messages}}
+<a href="/admin/adicionarEscalao" class="btn primary_btn">Adicionar Escalão</a>
+<table width="100%">
+<tr>
+    <th>ID</th>
+    <th>Status</th>
+</tr>
+{{#each utilizadores}}
+    <tr>
+        <td>{{username}}</td>
+        <td>{{status}}</td>
+        <td><a href="/admin/editarUtilizadores/{{user_id}}" class="btn edit_btn">Editar</a></td>
+        <td>
+            <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">
+                <button type="submit" class="btn delete_btn">Apagar</button>
+            </form>
+        </td>
+    </tr>
+{{/each}}
+</table>

@@ -1,7 +1,6 @@
 // ERRO DA CONSTRAINT UNIQUE
 // { [Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: users.username] errno: 19, code: 'SQLITE_CONSTRAINT' }
 
-
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const fs =  require('fs');
@@ -27,8 +26,8 @@ class User {
                 user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
-                status INTEGER NOT NULL DEFAULT 0
-            )`, (err) => {
+                status INTEGER NOT NULL DEFAULT 0)`,
+            (err) => {
                 if(err) {
                     return reject(err);
                 } else {
@@ -48,12 +47,12 @@ class User {
         });
     }
 
-    addUser(nome, password, status = 0) {
+    addUser(username, password, status = 0) {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(
                 "INSERT INTO users (username, password, status) VALUES (?,?,?)",
-                [nome, that.encrypt(password), status],
+                [username, that.encrypt(password), status],
                 (err) => {
                     if(err)
                         return reject(err);
@@ -106,6 +105,33 @@ class User {
                 }   
                 else {
                     return resolve(rows);
+                }
+            });
+        });
+    }
+
+    updateUser(id, username, password, status = 0) {
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run("UPDATE users SET username = ?, password = ?, status = ? WHERE user_id = ?",
+            [username, that.encrypt(password), status, id], (err) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve();
+                }
+            });
+        });
+    }
+
+    deleteUser(id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run("DELETE FROM users WHERE user_id = ?", [id], (err) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve();
                 }
             });
         });

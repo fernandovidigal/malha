@@ -36,3 +36,43 @@
     background-color: #fcf8e3;
     border: 1px solid #faebcc;
 }
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.primary_btn {
+    color: #fff;
+    background-color: #337ab7;
+    border: solid 1px #2e6da4;
+}
+
+.primary_btn:hover {
+    border: solid 1px #204d74;
+}
+
+.edit_btn {
+    color: #fff;
+    background-color: #5bc0de;
+    border: solid 1px #46b8da;
+}
+
+.edit_btn:hover {
+    background-color: #31b0d5;
+    border: solid 1px #269abc;
+}
+
+.delete_btn {
+    color: #fff;
+    background-color: #d9534f;
+    border: solid 1px #d43f3a;
+}
+
+.delete_btn:hover {
+    background-color: #c9302c;
+    border: solid 1px #ac2925;
+}

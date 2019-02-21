@@ -1,0 +1,15 @@
+{{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+        </div>
+    {{/each}}
+{{/if}}
+<form action="/admin/adicionarEscalao" method="post">
+    <label for="designacao">Designação</label>
+    <input type="text" name="designacao" required><br>
+    <input type="radio" name="sexo" value="1" required> Masculino<br>
+    <input type="radio" name="sexo" value="0"> Feminino<br>
+    <input type="submit" value="Adicionar">
+</form>
