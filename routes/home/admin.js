@@ -132,7 +132,31 @@ router.put('/editarUtilizador/:id', (req, res)=>{
 });
 
 router.get('/escaloes', (req, res) => {
-    res.render('home/admin/escaloes');
+    escalao.getAllEscaloes().then((rows) => {
+        res.render('home/admin/escaloes', {escaloes: rows});
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível obter dados dos escalões.');
+        res.redirect('/admin/escaloes');
+    });
+});
+ 
+router.get('/escaloes/:sexo', (req, res) => {
+
+    if(req.params.sexo == 'M' || req.params.sexo == 'F'){
+        let sexo = req.params.sexo == 'M' ? 1 : 0;
+
+        escalao.getAllEscaloesBySex(sexo).then((rows) => {
+            res.render('home/admin/escaloes', {escaloes: rows, sexo: sexo});
+        }).catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível obter dados dos escalões.');
+            res.redirect('/admin/escaloes');
+        });
+    } else {
+        req.flash('error', 'Escolha inválida.');
+        res.redirect('/admin/escaloes');
+    } 
 });
 
 router.get('/adicionarEscalao', (req, res) => {
@@ -140,13 +164,87 @@ router.get('/adicionarEscalao', (req, res) => {
 });
 
 router.post('/adicionarEscalao', (req, res) => {
-    // TODO: VALIDAÇÕES
-    console.log(req.body);
-    escalao.addEscalao(
-        req.body.designacao,
-        req.body.sexo
-    );
-    res.redirect('/admin/escaloes');
+    
+    let erros = [];
+
+    if(!req.body.designacao){
+        erros.push({err_msg: 'Indique a designação.'});
+    }
+
+    if(!req.body.sexo) {
+        erros.push({err_msg: 'Indique o sexo a que pertence o escalão.'});
+    }
+
+    if(erros.length > 0){
+        res.render('home/admin/adicionarEscalao', {erros: erros});
+    } else {
+        escalao.addEscalao(
+            req.body.designacao,
+            req.body.sexo
+        ).then(() => {
+            req.flash('success', 'Escalão adicionado com sucesso.');
+            res.redirect('/admin/escaloes');
+        }).catch((err) => {
+            console.log(err)
+            req.flash('error', 'Não foi possível adicionar o escalão.');
+            res.redirect('/admin/escaloes');
+        });
+        
+    }
+});
+
+router.get('/editarEscalao/:id', (req, res) => {
+    escalao.getEscalaoById(req.params.id).then((row) => {
+        res.render('home/admin/editarEscalao', {escalao: row});
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível aceder ao escalão.');
+        res.redirect('/admin/escaloes');
+    });
+});
+
+router.put('/editarEscalao/:id', (req, res) => {
+    let erros = [];
+
+    if(!req.body.designacao){
+        erros.push({err_msg: 'Indique a designação.'});
+    }
+
+    if(!req.body.sexo) {
+        erros.push({err_msg: 'Indique o sexo a que pertence o escalão.'});
+    }
+
+    if(erros.length > 0){
+        escalao.getEscalaoById(req.params.id).then((row) => {
+            res.render('home/admin/adicionarEscalao', {escalao: row, erros: erros});
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        escalao.updateEscalao(
+            req.params.id,
+            req.body.designacao,
+            req.body.sexo
+        ).then(()=>{
+            req.flash('success', 'Escalão actualizado com sucesso.');
+            res.redirect('/admin/escaloes');
+        }).catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível actualizar o escalão.');
+            res.redirect('/admin/escaloes');
+        });
+    }
+});
+
+router.delete('/escaloes/:id', (req, res) => {
+    escalao.deleteEscalao(req.params.id).then(()=>{
+        req.flash('success', 'Escalão eliminado com sucesso.');
+        res.redirect('/admin/escaloes');
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível elimnar o escalão.');  
+        res.redirect('/admin/escaloes'); 
+    });
 });
 
 module.exports = router;

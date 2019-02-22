@@ -4,6 +4,19 @@
     font-weight: normal;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #F8F9FF;
+    font-family: 'Lato', sans-serif;
+}
+
+a {
+    display: inline-block;
+}
+
 .success_msg,
 .error_msg,
 .info_msg,
@@ -43,6 +56,7 @@
     text-decoration: none;
     line-height: 1.4;
     font-size: 14px;
+    cursor: pointer;
 }
 
 .primary_btn {
@@ -53,6 +67,23 @@
 
 .primary_btn:hover {
     border: solid 1px #204d74;
+}
+
+.option_btn {
+    padding: 6px 12px;
+    color: #858ca8;
+    background-color: #f4f5f9;
+    text-decoration: none;
+    border: solid 1px #eaebf1;
+    border-radius: 8px;
+}
+
+.option_btn__selected,
+.option_btn:hover {
+    color: #2c3641;
+    background-color: #ffffff;
+    border: solid 1px #dddfe8;
+    box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
 }
 
 .edit_btn {
@@ -75,4 +106,10 @@
 .delete_btn:hover {
     background-color: #c9302c;
     border: solid 1px #ac2925;
+}
+
+.buttons_bar {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
 }

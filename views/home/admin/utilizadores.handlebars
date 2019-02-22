@@ -1,22 +1,30 @@
 {{> messages}}
-<a href="/admin/adicionarUtilizador" class="btn primary_btn">Adicionar Utilizador</a>
-<table width="100%">
-<tr>
-    <th>ID</th>
-    <th>Username</th>
-    <th>Status</th>
-</tr>
-{{#each utilizadores}}
-    <tr>
-        <td>{{user_id}}</td>
-        <td>{{username}}</td>
-        <td>{{status}}</td>
-        <td><a href="/admin/editarUtilizador/{{user_id}}" class="btn edit_btn">Editar</a></td>
-        <td>
-            <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">
-                <button type="submit" class="btn delete_btn">Apagar</button>
-            </form>
-        </td>
-    </tr>
-{{/each}}
+<div class="buttons_bar">
+    <div class="action_btns a-right">
+        <a href="/admin/adicionarUtilizador" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Utilizador</a>
+    </div>
+</div>
+<table  class="listTable">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each utilizadores}}
+        <tr>
+            <td>{{username}}</td>
+            <td class="w30 table_cell_center">{{status}}</td>
+            <td class="w10"><a href="/admin/editarUtilizador/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+            <td class="w10">
+                <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">
+                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                </form>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
 </table>

@@ -1,0 +1,17 @@
+{{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+        </div>
+    {{/each}}
+{{/if}}
+<form action="/admin/editarEscalao/{{escalao.escalao_id}}?_method=PUT" method="post">
+    <label for="designacao">Designação</label>
+    <input type="text" name="designacao" value="{{escalao.designacao}}" required><br>
+    {{#sexoChecked escalao.sexo}}
+        <input type="radio" name="sexo" value="1" required> Masculino<br>
+        <input type="radio" name="sexo" value="0"> Feminino<br>
+    {{/sexoChecked}}
+    <input type="submit" value="Adicionar">
+</form>

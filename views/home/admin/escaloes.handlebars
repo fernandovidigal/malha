@@ -1,20 +1,37 @@
 {{> messages}}
-<a href="/admin/adicionarEscalao" class="btn primary_btn">Adicionar Escalão</a>
-<table width="100%">
-<tr>
-    <th>ID</th>
-    <th>Status</th>
-</tr>
-{{#each utilizadores}}
-    <tr>
-        <td>{{username}}</td>
-        <td>{{status}}</td>
-        <td><a href="/admin/editarUtilizadores/{{user_id}}" class="btn edit_btn">Editar</a></td>
-        <td>
-            <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">
-                <button type="submit" class="btn delete_btn">Apagar</button>
-            </form>
-        </td>
-    </tr>
-{{/each}}
+<div class="buttons_bar">
+    <div class="select_escalao">
+    {{#sexoSelect sexo}}
+        <a href="/admin/escaloes" class="option_btn"><i class="fa fa-users"></i>Todos</a>
+        <a href="/admin/escaloes/M" class="option_btn"><i class="fa fa-male"></i>Masculino</a>
+        <a href="/admin/escaloes/F" class="option_btn"><i class="fa fa-female"></i>Feminino</a>
+    {{/sexoSelect }}
+    </div>
+    <div class="action_btns">
+        <a href="/admin/adicionarEscalao" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Escalão</a>
+    </div>
+</div>
+<table class="listTable">
+    <thead>
+        <tr>
+            <th>Escalão</th>
+            <th>Sexo</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each escaloes}}
+        <tr>
+            <td>{{designacao}}</td>
+            <td class="w30 table_cell_center">{{#sexo sexo}}{{/sexo}}</td>
+            <td class="w10"><a href="/admin/editarEscalao/{{escalao_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+            <td class="w10">
+                <form action="/admin/escaloes/{{escalao_id}}?_method=DELETE" method="POST">
+                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                </form>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
 </table>

@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const methodOverride = require('method-override');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
-const {checkAdmin, adminNav} = require('./helpers/handlebars_helpers');
+const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect} = require('./helpers/handlebars_helpers');
 
 // Carregas configurações
 //const cfg = new Config();
@@ -29,7 +29,10 @@ app.engine('handlebars', exphbs({
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
         checkAdmin: checkAdmin,
-        adminNav: adminNav
+        adminNav: adminNav,
+        sexo: sexo,
+        sexoChecked: sexoChecked,
+        sexoSelect: sexoSelect
     }
 }));
 app.set('view engine', 'handlebars');
