@@ -3,7 +3,6 @@
 
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
-const fs =  require('fs');
 
 class User {
     constructor(){  
@@ -42,7 +41,11 @@ class User {
         this.getUser('admin').then((row) => {
             if(!row){
                 // Adiciona um utilizador por default com privilegios de administrador
-                this.addUser('admin', '12345', 1);
+                this.addUser('admin', '12345', 1).then(() => {
+                    console.log("Default Administration account created!");
+                }).catch((err) => {
+                    console.log(err);
+                });
             }
         });
     }
@@ -61,12 +64,6 @@ class User {
                 }
             );
         });
-    }
-
-    deleteUser(user_id){
-        var stmt = this.db.prepare("DELETE FROM users WHERE user_id = ? LIMIT 1");
-        stmt.run(user_id);
-        stmt.finalize();
     }
 
     getUser(username) {
@@ -135,6 +132,10 @@ class User {
                 }
             });
         });
+    }
+
+    closeDB() {
+        this.db.close();
     }
 
     encrypt(word){

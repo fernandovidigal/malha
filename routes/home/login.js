@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const UserDB = require('../../models/User');
 const user = new UserDB();
-const {userAuthenticated} = require('../../helpers/authentication');
 
 // APP LOGIN
-const errMsg = "Utilizador ou Password incorrectos";
 passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password'
@@ -46,6 +43,7 @@ passport.deserializeUser(function(id, done){
     });
 });
 
+// ROUTES
 router.all('/*', (req, res, next) => {
     req.app.locals.layout = 'login';
     next();
@@ -56,7 +54,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req,res,next) => {
-
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login',

@@ -4,6 +4,8 @@ const UserDB = require('../../models/User');
 const user = new UserDB();
 const EscalaoDB = require('../../models/Escalao');
 const escalao = new EscalaoDB();
+const TorneioDB = require('../../models/Torneio');
+const torneio = new TorneioDB();
 const {userAuthenticated} = require('../../helpers/authentication');
 
 router.all('/*', userAuthenticated, (req, res, next) => {
@@ -216,7 +218,7 @@ router.put('/editarEscalao/:id', (req, res) => {
 
     if(erros.length > 0){
         escalao.getEscalaoById(req.params.id).then((row) => {
-            res.render('home/admin/adicionarEscalao', {escalao: row, erros: erros});
+            res.render('home/admin/editarEscalao', {escalao: row, erros: erros});
         }).catch((err) => {
             console.log(err);
         });
@@ -242,8 +244,115 @@ router.delete('/escaloes/:id', (req, res) => {
         res.redirect('/admin/escaloes');
     }).catch((err) => {
         console.log(err);
-        req.flash('error', 'Não foi possível elimnar o escalão.');  
+        req.flash('error', 'Não foi possível eliminar o escalão.');  
         res.redirect('/admin/escaloes'); 
+    });
+});
+
+router.get('/torneios', (req, res) => {
+    torneio.getAllTorneios().then((rows) => {
+        res.render('home/admin/torneios', {torneios: rows});
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível obter os torneios.');
+        res.redirect('/admin/torneios');
+    });
+    
+});
+
+router.get('/adicionarTorneio', (req, res) => {
+    res.render('home/admin/adicionarTorneio');
+});
+
+router.post('/adicionarTorneio', (req, res) => {
+    let erros = [];
+
+    if(!req.body.designacao){
+        erros.push({err_msg: 'Indique a designação do torneio.'});
+    }
+
+    if(!req.body.localidade) {
+        erros.push({err_msg: 'Indique a localidade onde irá decorrer o torneio.'});
+    }
+
+    if(!req.body.ano) {
+        erros.push({err_msg: 'Indique o ano do torneio.'});
+    }
+
+    if(erros.length > 0){
+        res.render('home/admin/adicionarTorneio', {erros: erros});
+    } else {
+        torneio.addTorneio(
+            req.body.designacao,
+            req.body.localidade,
+            parseInt(req.body.ano)
+        ).then(() => {
+            req.flash('success', 'Torneio adicionado com sucesso!')
+            res.redirect('/admin/torneios');
+        }).catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível adicionar o torneio!');
+            res.redirect('/admin/torneios');
+        });
+    }  
+});
+
+router.get('/editarTorneio/:id', (req, res) => {
+    torneio.getTorneioById(req.params.id).then((row) => {
+        res.render('home/admin/editarTorneio', {torneio: row});
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível aceder ao torneio.');
+        res.redirect('/admin/torneios');
+    });
+});
+
+router.put('/editarTorneio/:id', (req, res) => {
+    let erros = [];
+
+    if(!req.body.designacao){
+        erros.push({err_msg: 'Indique a designação do torneio.'});
+    }
+
+    if(!req.body.localidade) {
+        erros.push({err_msg: 'Indique a localidade onde irá decorrer o torneio.'});
+    }
+
+    if(!req.body.ano) {
+        erros.push({err_msg: 'Indique o ano do torneio.'});
+    }
+
+    if(erros.length > 0){
+        torneio.getTorneioById(req.params.id).then((row) => {
+            res.render('home/admin/editarTorneio', {torneio: row, erros: erros});
+        }).catch((err) => {
+            console.log(err);
+        });
+    } else {
+        torneio.updateTorneio(
+            req.params.id,
+            req.body.designacao,
+            req.body.localidade,
+            req.body.ano
+        ).then(()=>{
+            req.flash('success', 'Torneio actualizado com sucesso.');
+            res.redirect('/admin/torneios');
+        }).catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível actualizar o torneio.');
+            res.redirect('/admin/torneios');
+        });
+    }
+});
+
+router.delete('/torneios/:id', (req, res) => {
+    torneio.deleteTorneio(req.params.id).then(()=>{
+        req.flash('success', 'Torneio eliminado com sucesso.');
+        res.redirect('/admin/torneios');
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível eliminar o torneio.');  
+        res.redirect('/admin/torneios'); 
     });
 });
 

@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-class Malha {
+class Torneio {
 
     constructor(){
         this.db = new sqlite3.Database('./data/malha.db', (err) => {
@@ -16,10 +16,11 @@ class Malha {
     createTable(){
         const that = this
         return new Promise(function(resolve, reject){
-            that.db.run(`CREATE TABLE IF NOT EXISTS escalao (
-                escalao_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            that.db.run(`CREATE TABLE IF NOT EXISTS torneio (
+                torneio_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 designacao TEXT NOT NULL,
-                sexo INTEGER NOT NULL)`, 
+                localidade TEXT NOT NULL,
+                ano INTEGER NOT NULL)`, 
             (err) => {
                 if(err) {
                     return reject(err);
@@ -30,10 +31,10 @@ class Malha {
         });
     }
 
-    getAllEscaloes(){
+    getAllTorneios(){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.all("SELECT * FROM escalao", (err, rows) => {
+            that.db.all("SELECT * FROM torneio", (err, rows) => {
                 if(err) {
                     return reject(err);
                 } else {
@@ -43,10 +44,10 @@ class Malha {
         });
     }
 
-    getEscalaoById(id){
+    getTorneioById(id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT * FROM escalao WHERE escalao_id = ? LIMIT 1",
+            that.db.get("SELECT * FROM torneio WHERE torneio_id = ? LIMIT 1",
             [id],
             (err, row) => {
                 if(err) {
@@ -58,25 +59,12 @@ class Malha {
         });
     }
 
-    getAllEscaloesBySex(sexo){
-        const that = this;
-        return new Promise(function(resolve, reject){
-            that.db.all("SELECT * FROM escalao WHERE sexo = ?", [sexo], (err, rows) => {
-                if(err) {
-                    return reject(err);
-                } else {
-                    return resolve(rows);
-                }
-            })
-        });
-    }
-
-    addEscalao(designacao, sexo) {
+    addTorneio(designacao, localidade, ano) {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(
-                "INSERT INTO escalao (designacao, sexo) VALUES (?,?)",
-                [designacao, sexo],
+                "INSERT INTO torneio (designacao, localidade, ano) VALUES (?,?,?)",
+                [designacao, localidade, ano],
                 (err) => {
                     if(err)
                         return reject(err);
@@ -87,11 +75,11 @@ class Malha {
         });
     }
 
-    updateEscalao(id, designacao, sexo) {
+    updateTorneio(id, designacao, localidade, ano) {
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("UPDATE escalao SET designacao = ?, sexo = ? WHERE escalao_id = ?",
-                [designacao, sexo, id],
+            that.db.run("UPDATE torneio SET designacao = ?, localidade = ?, ano = ? WHERE torneio_id = ?",
+                [designacao, localidade, ano, id],
                 (err) => {
                     if(err){
                         return reject(err);
@@ -103,10 +91,10 @@ class Malha {
         });
     }
 
-    deleteEscalao(id){
+    deleteTorneio(id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("DELETE FROM escalao WHERE escalao_id = ?", [id], (err) => {
+            that.db.run("DELETE FROM torneio WHERE torneio_id = ?", [id], (err) => {
                 if(err){
                     return reject(err);
                 } else {
@@ -117,4 +105,4 @@ class Malha {
     }
 }
 
-module.exports = Malha;
+module.exports = Torneio;

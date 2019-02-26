@@ -1,0 +1,32 @@
+{{> messages}}
+<div class="buttons_bar">
+    <div class="action_btns a-right">
+        <a href="/admin/adicionarTorneio" class="btn primary_btn"><i class="fa fa-plus"></i>Novo Torneio</a>
+    </div>
+</div>
+<table  class="listTable">
+    <thead>
+        <tr>
+            <th>Designação</th>
+            <th>Localidade</th>
+            <th>Ano</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each torneios}}
+        <tr>
+            <td>{{designacao}}</td>
+            <td class="w30 table_cell_center">{{localidade}}</td>
+            <td class="w30 table_cell_center">{{ano}}</td>
+            <td class="w10"><a href="/admin/editarTorneio/{{torneio_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+            <td class="w10">
+                <form action="/admin/torneios/{{torneio_id}}?_method=DELETE" method="POST">
+                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                </form>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
