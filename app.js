@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const methodOverride = require('method-override');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
-const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect} = require('./helpers/handlebars_helpers');
+const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect, escaloes} = require('./helpers/handlebars_helpers');
 
 // Carregas configurações
 //const cfg = new Config();
@@ -32,7 +32,8 @@ app.engine('handlebars', exphbs({
         adminNav: adminNav,
         sexo: sexo,
         sexoChecked: sexoChecked,
-        sexoSelect: sexoSelect
+        sexoSelect: sexoSelect,
+        escaloes: escaloes
     }
 }));
 app.set('view engine', 'handlebars');
@@ -71,10 +72,12 @@ app.use(methodOverride('_method'));
 const login = require('./routes/home/login');
 const home = require('./routes/home/index');
 const admin = require('./routes/home/admin');
+const equipas = require('./routes/home/equipas');
 
 app.use('/login', login);
 app.use('/', home);
 app.use('/admin', admin);
+app.use('/equipas', equipas);
 
 // Activar Servidor
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

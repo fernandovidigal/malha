@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const UserDB = require('../../models/User');
 const user = new UserDB();
-const EscalaoDB = require('../../models/Escalao');
-const escalao = new EscalaoDB();
-const TorneioDB = require('../../models/Torneio');
-const torneio = new TorneioDB();
+const MalhaDB = require('../../models/Malha');
+const malha = new MalhaDB();
 const {userAuthenticated} = require('../../helpers/authentication');
 
 router.all('/*', userAuthenticated, (req, res, next) => {
@@ -134,7 +132,7 @@ router.put('/editarUtilizador/:id', (req, res)=>{
 });
 
 router.get('/escaloes', (req, res) => {
-    escalao.getAllEscaloes().then((rows) => {
+    malha.escalao.getAllEscaloes().then((rows) => {
         res.render('home/admin/escaloes', {escaloes: rows});
     }).catch((err) => {
         console.log(err);
@@ -148,7 +146,7 @@ router.get('/escaloes/:sexo', (req, res) => {
     if(req.params.sexo == 'M' || req.params.sexo == 'F'){
         let sexo = req.params.sexo == 'M' ? 1 : 0;
 
-        escalao.getAllEscaloesBySex(sexo).then((rows) => {
+        malha.escalao.getAllEscaloesBySex(sexo).then((rows) => {
             res.render('home/admin/escaloes', {escaloes: rows, sexo: sexo});
         }).catch((err) => {
             console.log(err);
@@ -180,7 +178,7 @@ router.post('/adicionarEscalao', (req, res) => {
     if(erros.length > 0){
         res.render('home/admin/adicionarEscalao', {erros: erros});
     } else {
-        escalao.addEscalao(
+        malha.escalao.addEscalao(
             req.body.designacao,
             req.body.sexo
         ).then(() => {
@@ -196,7 +194,7 @@ router.post('/adicionarEscalao', (req, res) => {
 });
 
 router.get('/editarEscalao/:id', (req, res) => {
-    escalao.getEscalaoById(req.params.id).then((row) => {
+    malha.escalao.getEscalaoById(req.params.id).then((row) => {
         res.render('home/admin/editarEscalao', {escalao: row});
     }).catch((err) => {
         console.log(err);
@@ -217,13 +215,13 @@ router.put('/editarEscalao/:id', (req, res) => {
     }
 
     if(erros.length > 0){
-        escalao.getEscalaoById(req.params.id).then((row) => {
+        malha.escalao.getEscalaoById(req.params.id).then((row) => {
             res.render('home/admin/editarEscalao', {escalao: row, erros: erros});
         }).catch((err) => {
             console.log(err);
         });
     } else {
-        escalao.updateEscalao(
+        malha.escalao.updateEscalao(
             req.params.id,
             req.body.designacao,
             req.body.sexo
@@ -239,7 +237,7 @@ router.put('/editarEscalao/:id', (req, res) => {
 });
 
 router.delete('/escaloes/:id', (req, res) => {
-    escalao.deleteEscalao(req.params.id).then(()=>{
+    malha.escalao.deleteEscalao(req.params.id).then(()=>{
         req.flash('success', 'Escalão eliminado com sucesso.');
         res.redirect('/admin/escaloes');
     }).catch((err) => {
@@ -250,7 +248,7 @@ router.delete('/escaloes/:id', (req, res) => {
 });
 
 router.get('/torneios', (req, res) => {
-    torneio.getAllTorneios().then((rows) => {
+    malha.torneio.getAllTorneios().then((rows) => {
         res.render('home/admin/torneios', {torneios: rows});
     }).catch((err) => {
         console.log(err);
@@ -282,7 +280,7 @@ router.post('/adicionarTorneio', (req, res) => {
     if(erros.length > 0){
         res.render('home/admin/adicionarTorneio', {erros: erros});
     } else {
-        torneio.addTorneio(
+        malha.torneio.addTorneio(
             req.body.designacao,
             req.body.localidade,
             parseInt(req.body.ano)
@@ -298,7 +296,7 @@ router.post('/adicionarTorneio', (req, res) => {
 });
 
 router.get('/editarTorneio/:id', (req, res) => {
-    torneio.getTorneioById(req.params.id).then((row) => {
+    malha.torneio.getTorneioById(req.params.id).then((row) => {
         res.render('home/admin/editarTorneio', {torneio: row});
     }).catch((err) => {
         console.log(err);
@@ -323,13 +321,13 @@ router.put('/editarTorneio/:id', (req, res) => {
     }
 
     if(erros.length > 0){
-        torneio.getTorneioById(req.params.id).then((row) => {
+        malha.torneio.getTorneioById(req.params.id).then((row) => {
             res.render('home/admin/editarTorneio', {torneio: row, erros: erros});
         }).catch((err) => {
             console.log(err);
         });
     } else {
-        torneio.updateTorneio(
+        malha.torneio.updateTorneio(
             req.params.id,
             req.body.designacao,
             req.body.localidade,
@@ -346,7 +344,7 @@ router.put('/editarTorneio/:id', (req, res) => {
 });
 
 router.delete('/torneios/:id', (req, res) => {
-    torneio.deleteTorneio(req.params.id).then(()=>{
+    malha.torneio.deleteTorneio(req.params.id).then(()=>{
         req.flash('success', 'Torneio eliminado com sucesso.');
         res.redirect('/admin/torneios');
     }).catch((err) => {

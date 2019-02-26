@@ -1,0 +1,27 @@
+{{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+        </div>
+    {{/each}}
+{{/if}}
+<form action="/equipas/adicionarEquipa" method="post">
+    <label for="primeiro_elemento">Nome do Primeiro Elemento</label>
+    <input type="text" name="primeiro_elemento" required><br>
+    <label for="segundo_elemento">Nome do Segundo Elemento</label>
+    <input type="text" name="segundo_elemento" required><br>
+    <label for="Localidade">Localidade</label>
+    <input type="text" name="localidade" required><br>
+    <p>Escalões</p>
+    <p>Masculino</p>
+    {{#each escaloes}}
+        {{#escaloes escalao_id designacao sexo 1}}{{/escaloes}}
+    {{/each}}
+    <p>Feminino</p>
+    {{#each escaloes}}
+        {{#escaloes escalao_id designacao sexo 0}}{{/escaloes}}
+    {{/each}}
+    <br>
+    <input type="submit" value="Registar">
+</form>

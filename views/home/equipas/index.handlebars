@@ -1,0 +1,32 @@
+{{> messages}}
+<div class="buttons_bar">
+    <div class="action_btns a-right">
+        <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
+    </div>
+</div>
+<table  class="listTable">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Elementos</th>
+            <th>Localidade</th>
+            <th>Escalão</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#each utilizadores}}
+        <tr>
+            <td>{{username}}</td>
+            <td class="w30 table_cell_center">{{status}}</td>
+            <td class="w10"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+            <td class="w10">
+                <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
+                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                </form>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

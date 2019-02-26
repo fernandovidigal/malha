@@ -34,5 +34,11 @@ module.exports = {
         } else { // TODOS
             return options.fn(this).replace(new RegExp(' class="option_btn"><i class="fa fa-users"></i>Todos'),  'class="option_btn option_btn__selected"><i class="fa fa-users"></i>Todos');
         }
+    },
+
+    escaloes: function(escalao_id, designacao, sexo, escalao) {
+        if(escalao == sexo) {
+            return '<input type="radio" name="escalao" value="'+escalao_id+'">'+designacao;
+        }
     }
 }

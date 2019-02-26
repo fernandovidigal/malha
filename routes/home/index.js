@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const UserDB = require('../../models/User');
-const user = new UserDB();
 const {userAuthenticated} = require('../../helpers/authentication');
 
 router.all('/*', userAuthenticated, (req, res, next) => {
@@ -18,8 +17,8 @@ router.get('/logout', (req, res) => {
     res.redirect('/login');
 });
 
-router.get('/listaequipas', (req, res) => {
-    res.send('Lista de Equipas');
+router.get('/equipas', (req, res) => {
+    res.render('home/equipas');
 });
 
 module.exports = router;

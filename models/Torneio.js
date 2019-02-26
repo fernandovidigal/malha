@@ -2,15 +2,22 @@ const sqlite3 = require('sqlite3').verbose();
 
 class Torneio {
 
-    constructor(){
-        this.db = new sqlite3.Database('./data/malha.db', (err) => {
-            if(err) throw err;
-            else {
-                this.createTable().catch((err) => {
-                    console.log(err);
-                });
-            }
-        });
+    constructor(db = null){
+        if(db == null) {
+            this.db = new sqlite3.Database('./data/malha.db', (err) => {
+                if(err) throw err;
+                else {
+                    this.createTable().catch((err) => {
+                        console.log(err);
+                    });
+                }
+            });
+        } else {
+            this.db = db;
+            this.createTable().catch((err) => {
+                console.log(err);
+            });
+        }
     }
 
     createTable(){
