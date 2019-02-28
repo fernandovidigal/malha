@@ -41,7 +41,9 @@ class User {
         this.getUser('admin').then((row) => {
             if(!row){
                 // Adiciona um utilizador por default com privilegios de administrador
-                this.addUser('admin', '12345', 1).catch((err) => {
+                this.addUser('admin', '12345', 1).then(() => {
+                    console.log("Default admin user created!");
+                }).catch((err) => {
                     console.log(err);
                 });
             }

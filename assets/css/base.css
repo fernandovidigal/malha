@@ -11,6 +11,7 @@ body {
     height: 100vh;
     background-color: #F8F9FF;
     font-family: 'Lato', sans-serif;
+    box-sizing: border-box;
 }
 
 a {
@@ -48,6 +49,17 @@ a {
     color: #8a6d3b;
     background-color: #fcf8e3;
     border: 1px solid #faebcc;
+}
+
+.msg_close {
+    float: right;
+    position: relative;
+    top: -2px;
+    color: inherit;
+    opacity: .2;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1.2;
 }
 
 .btn {

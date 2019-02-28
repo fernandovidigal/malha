@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const methodOverride = require('method-override');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
-const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect, escaloes} = require('./helpers/handlebars_helpers');
+const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect, escaloes, torneioActivo} = require('./helpers/handlebars_helpers');
 
 // Carregas configurações
 //const cfg = new Config();
@@ -33,7 +33,8 @@ app.engine('handlebars', exphbs({
         sexo: sexo,
         sexoChecked: sexoChecked,
         sexoSelect: sexoSelect,
-        escaloes: escaloes
+        escaloes: escaloes,
+        torneioActivo: torneioActivo
     }
 }));
 app.set('view engine', 'handlebars');

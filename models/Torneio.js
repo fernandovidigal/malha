@@ -27,7 +27,8 @@ class Torneio {
                 torneio_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 designacao TEXT NOT NULL,
                 localidade TEXT NOT NULL,
-                ano INTEGER NOT NULL)`, 
+                ano INTEGER NOT NULL,
+                activo INTEGER NOT NULL DEFAULT 0)`, 
             (err) => {
                 if(err) {
                     return reject(err);
@@ -72,11 +73,12 @@ class Torneio {
             that.db.run(
                 "INSERT INTO torneio (designacao, localidade, ano) VALUES (?,?,?)",
                 [designacao, localidade, ano],
-                (err) => {
+                function(err){
                     if(err)
                         return reject(err);
-                    else
-                        return resolve();
+                    else{
+                        return resolve(this.lastID);
+                    }
                 }
             );
         });
@@ -108,6 +110,36 @@ class Torneio {
                     return resolve();
                 }
             })
+        });
+    }
+
+    resetActiveTorneios(){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run("UPDATE torneio SET activo = 0", (err) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve();
+                }
+            });
+        });
+    }
+
+    activeTorneio(id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.resetActiveTorneios().then(()=>{
+                that.db.run("UPDATE torneio SET activo = 1 WHERE torneio_id = ?", [id], (err) => {
+                    if(err){
+                        return reject(err);
+                    } else {
+                        return resolve();
+                    }
+                });
+            }).catch((err) => {
+                return reject(err);
+            });
         });
     }
 }

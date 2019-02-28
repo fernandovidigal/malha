@@ -263,6 +263,7 @@ router.get('/adicionarTorneio', (req, res) => {
 });
 
 router.post('/adicionarTorneio', (req, res) => {
+    // VALIDAÇÕES DE DADOS. P/ex: ano tem de ter 4 números
     let erros = [];
 
     if(!req.body.designacao){
@@ -280,13 +281,25 @@ router.post('/adicionarTorneio', (req, res) => {
     if(erros.length > 0){
         res.render('home/admin/adicionarTorneio', {erros: erros});
     } else {
+        //Adiciona o Torneio
         malha.torneio.addTorneio(
             req.body.designacao,
             req.body.localidade,
             parseInt(req.body.ano)
-        ).then(() => {
-            req.flash('success', 'Torneio adicionado com sucesso!')
-            res.redirect('/admin/torneios');
+        ).then((id) => {
+            // Activa o torneio
+            if(req.body.adicionar_activar){
+                malha.torneio.activeTorneio(id).then(()=>{
+                    req.flash('success', 'Torneio adicionado e activado com sucesso!')
+                    res.redirect('/admin/torneios');
+                }).catch((err) => {
+                    req.flash('error', 'Não foi possível activar o torneio!');
+                    res.redirect('/admin/torneios');
+                });
+            } else { // Não escolher activar o torneio
+                req.flash('success', 'Torneio adicionado com sucesso!')
+                res.redirect('/admin/torneios');
+            }
         }).catch((err) => {
             console.log(err);
             req.flash('error', 'Não foi possível adicionar o torneio!');
@@ -351,6 +364,17 @@ router.delete('/torneios/:id', (req, res) => {
         console.log(err);
         req.flash('error', 'Não foi possível eliminar o torneio.');  
         res.redirect('/admin/torneios'); 
+    });
+});
+
+router.get('/activaTorneio/:id', (req, res) => {
+    malha.torneio.activeTorneio(req.params.id).then(() => {
+        req.flash('success', 'Torneio activado com sucesso');
+        res.redirect('/admin/torneios');
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível activar o torneio');
+        res.redirect('/admin/torneios');
     });
 });
 

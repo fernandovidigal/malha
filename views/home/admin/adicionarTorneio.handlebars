@@ -3,6 +3,7 @@
     {{#each erros}}
         <div class="warning_msg">
             {{err_msg}}
+            <a href="#" class="msg_close">x</a>
         </div>
     {{/each}}
 {{/if}}
@@ -13,5 +14,6 @@
     <input type="text" name="localidade" required><br>
     <label for="ano">Ano</label>
     <input type="text" name="ano" required><br>
-    <input type="submit" value="Adicionar">
+    <input type="submit" name="adicionar" value="Adicionar">
+    <input type="submit" name="adicionar_activar" value="Adicionar e Activar">
 </form>

@@ -40,5 +40,13 @@ module.exports = {
         if(escalao == sexo) {
             return '<input type="radio" name="escalao" value="'+escalao_id+'">'+designacao;
         }
+    },
+
+    torneioActivo: function(id, activo, options){
+        if(activo == 1) {
+            return options.fn(this).replace('torneio-not-active', 'torneio-active');
+        } else {
+            return options.fn(this);
+        }
     }
 }
