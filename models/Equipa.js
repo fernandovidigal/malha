@@ -22,10 +22,10 @@ class Equipa {
     }
 
     createTable(){
-        const that = this
+        const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(`CREATE TABLE IF NOT EXISTS equipa (
-                equipa_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                equipa_id INTEGER NOT NULL PRIMARY KEY,
                 torneio_id INTEGER NOT NULL,
                 primeiro_elemento TEXT NOT NULL,
                 segundo_elemento TEXT NOT NULL,
@@ -36,6 +36,65 @@ class Equipa {
                     return reject(err);
                 } else {
                     return resolve();
+                }
+            });
+        });
+    }
+
+    addEquipa(torneio_id, primeiroElemento, segundoElemento, localidade, escalao){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.getLastTeamIDFromTorneio(torneio_id).then((row) => {
+                let lastID = 0;
+                if(row != null) {
+                    lastID = row.lastID;
+                }
+                that.db.run(
+                    "INSERT INTO equipa (equipa_id, torneio_id, primeiro_elemento, segundo_elemento, localidade, escalao) VALUES (?,?,?,?,?,?)",
+                    [lastID+1, torneio_id, primeiroElemento, segundoElemento, localidade, escalao],
+                    (err) => {
+                        if(err)
+                            return reject(err);
+                        else{
+                            return resolve();
+                        }
+                    }
+                );
+            }).catch((err) => {
+                return reject(err);
+            });
+        });
+    }
+
+    getAllEquipasByTorneio(torneio_id) {
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`
+                SELECT equipa.*, escalao.designacao, escalao.sexo 
+                FROM equipa 
+                INNER JOIN escalao 
+                ON equipa.escalao = escalao.escalao_id 
+                WHERE equipa.torneio_id = ? 
+                ORDER BY equipa.equipa_id ASC`,
+            [torneio_id],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
+
+    getLastTeamIDFromTorneio(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get("SELECT MAX(equipa_id) as lastID FROM equipa WHERE torneio_id = ?", [torneio_id], (err,row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row);
                 }
             });
         });

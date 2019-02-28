@@ -1,7 +1,6 @@
 const express = require('./node_modules/express');
 const app = express();
 const port = 3000;
-//const Config = require('./config/Config');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const passport = require('passport');
@@ -11,9 +10,6 @@ const path = require('path');
 const methodOverride = require('method-override');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
 const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect, escaloes, torneioActivo} = require('./helpers/handlebars_helpers');
-
-// Carregas configurações
-//const cfg = new Config();
 
 // Verifica a estrutura de ficheiros
 dataDirectoryCheck();
@@ -47,7 +43,7 @@ app.use(bodyParser.json());
 app.use(session({
     secret: "malhanodejs",
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
 }));
 
 // PASSPORT

@@ -126,7 +126,20 @@ class Torneio {
         });
     }
 
-    activeTorneio(id){
+    getActiveTorneio(){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get("SELECT * FROM torneio WHERE activo = 1", (err, row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
+    setActiveTorneio(id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.resetActiveTorneios().then(()=>{

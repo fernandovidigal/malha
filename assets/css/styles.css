@@ -18,6 +18,10 @@ i {
 }
 
 .navigation__wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
     width: 275px;
     background-color: #455cc7;
 }
@@ -34,8 +38,8 @@ i {
 }
 
 .body__wrapper {
-    margin: 50px 100px;
-    padding: 60px 40px;
+    margin: 50px 100px 50px 375px;;
+    padding: 50px 40px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
@@ -145,6 +149,10 @@ i {
     padding-right: 20px;
 }
 
+.title__bar {
+    margin-bottom: 30px;
+}
+
 .w5 { width: 5%; }
 
 .w10 { width: 10%; }
@@ -170,4 +178,33 @@ i {
     color: #f4f5f9;
     font-size: 140%;
     opacity: .8;
+}
+
+.table_sidebar__wrapper {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.table__content {
+    padding-right: 20px;
+    flex: 1;
+    border-right: solid 1px #edeef4;
+}
+
+.sidebar__content {
+    min-width: 160px;
+    padding: 40px 20px 0;
+}
+
+.sidebar__title {
+    font-weight: bold;
+    font-size: 150%;
+}
+
+.sidebar__subtitle {
+    padding-top: 20px;
+    padding-bottom: 5px;
+    border-bottom: solid 2px #455cc7;
 }

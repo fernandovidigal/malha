@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const UserDB = require('../../models/User');
 const user = new UserDB();
-const MalhaDB = require('../../models/Malha');
-const malha = new MalhaDB();
+/*const MalhaDB = require('../../models/Malha');
+const malha = new MalhaDB();*/
+const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
 router.all('/*', userAuthenticated, (req, res, next) => {
@@ -368,9 +369,16 @@ router.delete('/torneios/:id', (req, res) => {
 });
 
 router.get('/activaTorneio/:id', (req, res) => {
-    malha.torneio.activeTorneio(req.params.id).then(() => {
-        req.flash('success', 'Torneio activado com sucesso');
-        res.redirect('/admin/torneios');
+    malha.torneio.setActiveTorneio(req.params.id).then(() => {
+        malha.torneio.getActiveTorneio().then((row) => {
+            req.session.torneio = row;
+            req.flash('success', 'Torneio activado com sucesso');
+            res.redirect('/admin/torneios');
+        }).catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível obter o torneio activo');
+            res.redirect('/admin/torneios');
+        });
     }).catch((err) => {
         console.log(err);
         req.flash('error', 'Não foi possível activar o torneio');

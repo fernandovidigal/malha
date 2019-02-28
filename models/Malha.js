@@ -5,7 +5,7 @@ const EquipaDB = require('./Equipa');
 
 class Malha {
 
-    constructor(){
+    constructor(){   
         this.db = new sqlite3.Database('./data/malha.db', (err) => {
             if(err) throw err;
             else {
@@ -25,7 +25,7 @@ class Malha {
     }
 
     initEquipasTable(){
-        this.equipa = new TorneioDB(this.db);
+        this.equipa = new EquipaDB(this.db);
     }
 }
 

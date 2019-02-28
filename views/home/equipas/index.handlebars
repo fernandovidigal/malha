@@ -1,32 +1,53 @@
+<div class="title__bar">
+    <h1>Nome do Torneio - Évora</h1>
+    <h3>(2019)</h3>
+</div>
 {{> messages}}
-<div class="buttons_bar">
-    <div class="action_btns a-right">
-        <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
+<div class="table_sidebar__wrapper">
+    <div class="table__content">
+        <div class="buttons_bar">
+            <div class="action_btns a-right">
+                <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
+            </div>
+        </div>
+        <table class="listTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Elementos</th>
+                    <th>Localidade</th>
+                    <th>Escalão</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#each equipas}}
+                <tr>
+                    <td>{{equipa_id}}</td>
+                    <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
+                    <td class="w30 table_cell_center">{{localidade}}</td>
+                    <td class="w30 table_cell_center">{{designacao}}<br>({{#sexo sexo}}{{/sexo}})</td>
+                    <td class="w10"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                    <td class="w10">
+                        <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
+                            <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                        </form>
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <div class="sidebar__content">
+        <p class="sidebar__title">Escalões</p>
+        <a href="/admin/escaloes" class="escalao_btn escalao_btn__selected">Todos</a>
+        <p class="sidebar__subtitle">Masculino</p>
+        <a href="/admin/escaloes" class="escalao_btn">Jovem</a>
+        <a href="/admin/escaloes/M" class="escalao_btn">Sénior</a>
+        <a href="/admin/escaloes/F" class="escalao_btn">65</a>
+        <p class="sidebar__subtitle">Feminino</p>
+        <a href="/admin/escaloes" class="escalao_btn">Absoluto</a>
+        <a href="/admin/escaloes/M" class="escalao_btn">65</a>
     </div>
 </div>
-<table  class="listTable">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Elementos</th>
-            <th>Localidade</th>
-            <th>Escalão</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    {{#each utilizadores}}
-        <tr>
-            <td>{{username}}</td>
-            <td class="w30 table_cell_center">{{status}}</td>
-            <td class="w10"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
-            <td class="w10">
-                <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
-                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
-                </form>
-            </td>
-        </tr>
-    {{/each}}
-    </tbody>
-</table>
