@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const UserDB = require('../../models/User');
+/*const UserDB = require('../../models/User');
 const user = new UserDB();
-/*const MalhaDB = require('../../models/Malha');
+const MalhaDB = require('../../models/Malha');
 const malha = new MalhaDB();*/
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
