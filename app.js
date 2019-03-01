@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const methodOverride = require('method-override');
 const {dataDirectoryCheck} = require('./helpers/fileStructCheck');
-const {checkAdmin, adminNav, sexo, sexoChecked, sexoSelect, escaloes, torneioActivo} = require('./helpers/handlebars_helpers');
+const {helpers} = require('./helpers/handlebars_helpers');
 
 // Verifica a estrutura de ficheiros
 dataDirectoryCheck();
@@ -24,13 +24,14 @@ app.engine('handlebars', exphbs({
     layoutsDir: path.join(__dirname, 'views/layouts'),
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
-        checkAdmin: checkAdmin,
-        adminNav: adminNav,
-        sexo: sexo,
-        sexoChecked: sexoChecked,
-        sexoSelect: sexoSelect,
-        escaloes: escaloes,
-        torneioActivo: torneioActivo
+        checkAdmin: helpers.checkAdmin,
+        adminNav: helpers.adminNav,
+        sexo: helpers.sexo,
+        sexoChecked: helpers.sexoChecked,
+        sexoSelect: helpers.sexoSelect,
+        escaloes: helpers.escaloes,
+        torneioActivo: helpers.torneioActivo,
+        listaEscaloes: helpers.listaEscaloes
     }
 }));
 app.set('view engine', 'handlebars');

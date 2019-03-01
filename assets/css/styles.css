@@ -136,6 +136,10 @@ i {
     line-height: 3.2;
 }
 
+.equipasTable tbody tr {
+    line-height: 2.2;
+}
+
 .listTable tbody tr:hover {
     background-color: #f4f5f9;
 }
@@ -183,24 +187,28 @@ i {
 .table_sidebar__wrapper {
     width: 100%;
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
 }
 
 .table__content {
     padding-right: 20px;
     flex: 1;
-    border-right: solid 1px #edeef4;
 }
 
 .sidebar__content {
     min-width: 160px;
-    padding: 40px 20px 0;
+    margin-top: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-left: solid 1px #edeef4;
 }
 
 .sidebar__title {
     font-weight: bold;
     font-size: 150%;
+    padding: 0;
+    margin-top: 0;
 }
 
 .sidebar__subtitle {
@@ -208,3 +216,95 @@ i {
     padding-bottom: 5px;
     border-bottom: solid 2px #455cc7;
 }
+
+.search_bar {
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.searchBox{
+    position: relative;
+}
+
+.searchBox__input {
+    width: 100px;
+    background-color: #f8f9ff;
+    border: solid 1px #eaebf1;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.searchBox__btn {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    border: none;
+    color: #a7acc0;
+    background-color: #f8f9ff;
+    font-size: 18px;
+}
+
+.searchSelectBox {
+    width: 160px;
+    background-color: #f8f9ff;
+    border: solid 1px #eaebf1;
+    color: #797979;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    position: relative;
+    cursor: pointer;
+}
+
+.searchSelectBox::after{
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #a7acc0 transparent transparent transparent;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.searchSelectBox p {
+    margin: 0;
+    padding: 0;
+}
+
+.searchSelectBox__list {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    padding-left: 0;
+    margin: 0;
+    border: solid 1px #eaebf1;
+    border-top: none;
+}
+
+.searchSelectBox__list li {
+    list-style: none;
+    border-top: solid 1px #eaebf1;
+    background-color: #f8f9ff;
+}
+
+.searchSelectBox__list li a{
+    color: #797979;
+    font-size: 14px;
+    padding: 12px 12px;
+    display: block;
+}
+
+.searchSelectBox__list li:hover{
+    background-color: #ffffff;
+}
+

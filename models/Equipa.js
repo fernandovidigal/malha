@@ -87,6 +87,27 @@ class Equipa {
         });
     }
 
+    getAllEquipasByTorneioAndEscalao(torneio_id, escalao) {
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`
+                SELECT equipa.*, escalao.designacao, escalao.sexo 
+                FROM equipa 
+                INNER JOIN escalao 
+                ON equipa.escalao = escalao.escalao_id 
+                WHERE equipa.torneio_id = ? AND equipa.escalao = ? 
+                ORDER BY equipa.equipa_id ASC`,
+            [torneio_id, escalao],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
+
     getLastTeamIDFromTorneio(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
@@ -95,6 +116,21 @@ class Equipa {
                     return reject(err);
                 } else {
                     return resolve(row);
+                }
+            });
+        });
+    }
+
+    getAllLocalidades(torneio_id) {
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all("SELECT localidade FROM equipa WHERE torneio_id = ? GROUP BY localidade ORDER BY localidade ASC",
+            [torneio_id],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
                 }
             });
         });

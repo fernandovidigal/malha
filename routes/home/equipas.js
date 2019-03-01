@@ -22,8 +22,33 @@ router.all('/*', userAuthenticated, (req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-    malha.equipa.getAllEquipasByTorneio(req.session.torneio.torneio_id).then((rows) => {
-        res.render('home/equipas/index', {equipas: rows, torneio: req.session.torneio});
+    malha.equipa.getAllEquipasByTorneio(req.session.torneio.torneio_id).then((equipas) => {
+        malha.escalao.getAllEscaloes().then((escaloes) => {
+            malha.equipa.getAllLocalidades(req.session.torneio.torneio_id).then((localidades) => {
+                res.render('home/equipas/index', {equipas: equipas, torneio: req.session.torneio, escaloes: escaloes, localidades: localidades});
+            }).catch((err) => {
+                console.log(err);
+                res.render('home/equipas/index', {equipas: equipas, torneio: req.session.torneio, escaloes: escaloes});
+            });
+        }).catch((err) => {
+            console.log(err);
+            res.render('home/equipas/index', {equipas: rows, torneio: req.session.torneio});
+        });   
+    }).catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível obter as equipas');
+        req.redirect('/equipas');
+    });
+});
+
+router.get('/escalao/:id', (req, res) => {
+    malha.equipa.getAllEquipasByTorneioAndEscalao(req.session.torneio.torneio_id, req.params.id).then((equipas) => {
+        malha.escalao.getAllEscaloes().then((escaloes) => {
+            res.render('home/equipas/index', {id: req.params.id, equipas: equipas, torneio: req.session.torneio, escaloes: escaloes});
+        }).catch((err) => {
+            console.log(err);
+            res.render('home/equipas/index', {id: req.params.id, equipas: rows, torneio: req.session.torneio});
+        });   
     }).catch((err) => {
         console.log(err);
         req.flash('error', 'Não foi possível obter as equipas');
@@ -32,6 +57,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/adicionarEquipa', (req, res) => {
+    console.log("Adicionar Equipas");
     malha.escalao.getAllEscaloes().then((rows) => {
         res.render('home/equipas/adicionarEquipa', {escaloes: rows});
     }).catch((err) => {

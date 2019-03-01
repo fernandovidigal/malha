@@ -118,6 +118,7 @@ h3 {
 }
 
 .edit_btn {
+    min-width: 65px;
     color: #fff;
     background-color: #5bc0de;
     border: solid 1px #46b8da;
@@ -129,6 +130,7 @@ h3 {
 }
 
 .delete_btn {
+    min-width: 95px;
     color: #fff;
     background-color: #d9534f;
     border: solid 1px #d43f3a;

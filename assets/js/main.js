@@ -7,3 +7,11 @@ if(msgCloseBtn){
         msgBlock.remove();
     });
 }
+
+var searchSelectBox = document.querySelector('.searchSelectBox');
+var searchSelectBox_list = document.querySelector('.searchSelectBox .searchSelectBox__list');
+
+
+searchSelectBox.addEventListener('click', function(){
+    searchSelectBox_list.style.display = 'block';
+});

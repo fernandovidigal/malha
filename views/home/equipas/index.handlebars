@@ -6,11 +6,27 @@
 <div class="table_sidebar__wrapper">
     <div class="table__content">
         <div class="buttons_bar">
+            <div class="search_bar">
+                <form action="/equipa/s" method="post" class="searchBox">
+                    <input type="text" name="s_TeamID" class="searchBox__input" placeholder="Equipa"/>
+                    <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
+                </form>
+                {{#if localidades}}
+                    <div class="searchSelectBox">
+                        <p>Equipa</p>
+                        <ul class="searchSelectBox__list">
+                            {{#each localidades}}
+                                <li><a href="/equipas/localidade/{{localidade}}">{{localidade}}</a></li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                {{/if}}
+            </div>
             <div class="action_btns a-right">
                 <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
             </div>
         </div>
-        <table class="listTable">
+        <table class="listTable equipasTable">
             <thead>
                 <tr>
                     <th></th>
@@ -24,12 +40,12 @@
             <tbody>
             {{#each equipas}}
                 <tr>
-                    <td>{{equipa_id}}</td>
+                    <td class="w5">{{equipa_id}}</td>
                     <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
-                    <td class="w30 table_cell_center">{{localidade}}</td>
-                    <td class="w30 table_cell_center">{{designacao}}<br>({{#sexo sexo}}{{/sexo}})</td>
-                    <td class="w10"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
-                    <td class="w10">
+                    <td class="w20 table_cell_center">{{localidade}}</td>
+                    <td class="w20 table_cell_center">{{designacao}}<br>({{#sexo sexo}}{{/sexo}})</td>
+                    <td class="w5"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                    <td class="w5">
                         <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
                             <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
                         </form>
@@ -39,15 +55,29 @@
             </tbody>
         </table>
     </div>
-    <div class="sidebar__content">
-        <p class="sidebar__title">Escalões</p>
-        <a href="/admin/escaloes" class="escalao_btn escalao_btn__selected">Todos</a>
-        <p class="sidebar__subtitle">Masculino</p>
-        <a href="/admin/escaloes" class="escalao_btn">Jovem</a>
-        <a href="/admin/escaloes/M" class="escalao_btn">Sénior</a>
-        <a href="/admin/escaloes/F" class="escalao_btn">65</a>
-        <p class="sidebar__subtitle">Feminino</p>
-        <a href="/admin/escaloes" class="escalao_btn">Absoluto</a>
-        <a href="/admin/escaloes/M" class="escalao_btn">65</a>
-    </div>
+    {{#if escaloes}}
+        <div class="sidebar__content">
+            <p class="sidebar__title">Escalões</p>
+                {{#if id}}
+                    <a href="/equipas" class="escalao_btn">Todos</a>
+                {{else}}
+                    <a href="/equipas" class="escalao_btn escalao_btn__selected">Todos</a>
+                {{/if}}
+            <p class="sidebar__subtitle">Masculino</p>
+            {{#each escaloes}}
+                {{#listaEscaloes escalao_id designacao sexo 1 ../id}}{{/listaEscaloes}}
+            {{/each}}
+            <p class="sidebar__subtitle">Feminino</p>
+            {{#each escaloes}}
+                {{#listaEscaloes escalao_id designacao sexo 0 ../id}}{{/listaEscaloes}}
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="sidebar__content">
+            <p class="sidebar__title">Escalões</p>
+            <div class="error_msg">
+                Não foi possível obter os escalões
+            </div>
+        </div>
+    {{/if}}
 </div>
