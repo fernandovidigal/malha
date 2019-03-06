@@ -155,6 +155,19 @@ class Torneio {
             });
         });
     }
+
+    getNumTorneios(){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get("SELECT COUNT(torneio_id) AS numTorneios FROM torneio", (err, row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row.numTorneios);
+                }
+            });
+        });
+    }
 }
 
 module.exports = Torneio;

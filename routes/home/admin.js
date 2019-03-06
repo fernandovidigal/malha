@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-/*const UserDB = require('../../models/User');
-const user = new UserDB();
+const UserDB = require('../../models/User');
+/*const user = new UserDB();
 const MalhaDB = require('../../models/Malha');
 const malha = new MalhaDB();*/
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
+
+const lettersRegExp = new RegExp('[^0-9]{4,}');
+const numbersRegExp = new RegExp('[0-9]{4}');
 
 router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
@@ -35,8 +38,11 @@ router.post('/adicionarUtilizador', (req, res) => {
         erros.push({err_msg: 'As passwords não são identicas.'});
     }
 
+    const user = new UserDB();
+
     // Existem erros
     if(erros.length > 0) {
+        user.closeDB();
         res.render('home/admin/adicionarUtilizador', {erros: erros});
     } else {
         user.addUser(
@@ -44,9 +50,11 @@ router.post('/adicionarUtilizador', (req, res) => {
             req.body.password,
             req.body.status ? 1 : 0
         ).then(()=>{
+            user.closeDB();
             req.flash('success', 'Utilizador Adicionado com sucesso');
             res.redirect('/admin/utilizadores');
         }).catch((err) => {
+            user.closeDB();
             // Erro que aparece quando o username já existe na base de dados (UNIQUE)
             if(err.code = 'SQLITE_CONSTRAINT'){
                 req.flash('error', 'Utilizador já registado!');
@@ -62,7 +70,9 @@ router.post('/adicionarUtilizador', (req, res) => {
 });
 
 router.get('/utilizadores', (req, res) => {
+    const user = new UserDB();
     user.getAllUsers().then((rows) => {
+        user.closeDB();
         res.render('home/admin/utilizadores', {utilizadores: rows});
     }).catch((err) => {
         req.flash('error', 'Ocurreu um erro ao registar o utilizador!');
@@ -70,21 +80,27 @@ router.get('/utilizadores', (req, res) => {
 });
 
 router.delete('/utilizadores/:id', (req, res) => {
+    const user = new UserDB();
     user.deleteUser(req.params.id).then(() => {
+        user.closeDB();
         req.flash('success', `Utilizador eliminado com sucesso`)
         res.redirect('/admin/utilizadores');
     }).catch((err) => { 
         console.log(err);
+        user.closeDB();
         req.flash('error', 'Não foi possível eliminar o utilizador.');
         res.redirect('/admin/utilizadores');
     });
 });
 
 router.get('/editarUtilizador/:id', (req, res) => {
+    const user = new UserDB();
     user.getUserById(req.params.id).then((row) => {
+        user.closeDB();
         res.render('home/admin/editarUtilizador', {utilizador: row});
     }).catch((err) => {
         console.log(err);
+        user.closeDB();
         req.flash('error', 'Não foi possível aceder aos dados do utilizador.');
         res.redirect('/admin/utilizadores');
     });
@@ -107,12 +123,15 @@ router.put('/editarUtilizador/:id', (req, res)=>{
         erros.push({err_msg: 'As passwords não são identicas.'});
     }
 
+    const user = new UserDB();
     // Existem erros
     if(erros.length > 0) {
         user.getUserById(req.params.id).then((row) => {
+            user.closeDB();
             res.render('home/admin/editarUtilizador', {utilizador: row, erros: erros});
         }).catch((err) => {
             console.log(err);
+            user.closeDB();
             res.render('home/admin/editarUtilizador', {erros: erros});
         });
     } else {
@@ -122,10 +141,12 @@ router.put('/editarUtilizador/:id', (req, res)=>{
             req.body.password,
             req.body.status ? 1 : 0
         ).then(() => {
+            user.closeDB();
             req.flash('success', 'Utilizador actualizado com sucesso');
             res.redirect('/admin/utilizadores');
         }).catch((err)=>{
             console.log(err);
+            user.closeDB();
             req.flash('error', 'Não foi possível actualizar o utilizador!');
             res.redirect('/admin/utilizadores');
         });
@@ -248,6 +269,10 @@ router.delete('/escaloes/:id', (req, res) => {
     });
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//  TORNEIOS
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 router.get('/torneios', (req, res) => {
     malha.torneio.getAllTorneios().then((rows) => {
         res.render('home/admin/torneios', {torneios: rows});
@@ -264,7 +289,6 @@ router.get('/adicionarTorneio', (req, res) => {
 });
 
 router.post('/adicionarTorneio', (req, res) => {
-    // VALIDAÇÕES DE DADOS. P/ex: ano tem de ter 4 números
     let erros = [];
 
     if(!req.body.designacao){
@@ -273,10 +297,14 @@ router.post('/adicionarTorneio', (req, res) => {
 
     if(!req.body.localidade) {
         erros.push({err_msg: 'Indique a localidade onde irá decorrer o torneio.'});
+    } else if(!lettersRegExp.test(req.body.localidade)){
+        erros.push({err_msg: 'Localidade inválida'});
     }
 
     if(!req.body.ano) {
         erros.push({err_msg: 'Indique o ano do torneio.'});
+    } else if(!numbersRegExp.test(req.body.ano)){
+        erros.push({err_msg: 'Ano do torneio inválido'});
     }
 
     if(erros.length > 0){
@@ -290,16 +318,33 @@ router.post('/adicionarTorneio', (req, res) => {
         ).then((id) => {
             // Activa o torneio
             if(req.body.adicionar_activar){
-                malha.torneio.activeTorneio(id).then(()=>{
+                malha.torneio.setActiveTorneio(id).then(()=>{
                     req.flash('success', 'Torneio adicionado e activado com sucesso!')
                     res.redirect('/admin/torneios');
                 }).catch((err) => {
                     req.flash('error', 'Não foi possível activar o torneio!');
                     res.redirect('/admin/torneios');
                 });
-            } else { // Não escolher activar o torneio
-                req.flash('success', 'Torneio adicionado com sucesso!')
-                res.redirect('/admin/torneios');
+            } else { // Não escolheu activar o torneio
+                malha.torneio.getNumTorneios().then((numTorneios) => {
+                    if(numTorneios == 1) {
+                        malha.torneio.setActiveTorneio(id).then(()=>{
+                            req.flash('success', 'Torneio adicionado com sucesso!')
+                            res.redirect('/admin/torneios');
+                        }).catch((err) => {
+                            console.log(err);
+                            req.flash('error', 'Não foi possível activar o torneio');
+                            res.redirect('/admin/torneios');
+                        });
+                    } else {
+                        req.flash('success', 'Torneio adicionado com sucesso!')
+                        res.redirect('/admin/torneios');
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    req.flash('error', 'Não foi possível activar o torneio');
+                    res.redirect('/admin/torneios');
+                });
             }
         }).catch((err) => {
             console.log(err);
@@ -328,10 +373,14 @@ router.put('/editarTorneio/:id', (req, res) => {
 
     if(!req.body.localidade) {
         erros.push({err_msg: 'Indique a localidade onde irá decorrer o torneio.'});
+    } else if(!lettersRegExp.test(req.body.localidade)){
+        erros.push({err_msg: 'Localidade inválida'});
     }
 
     if(!req.body.ano) {
         erros.push({err_msg: 'Indique o ano do torneio.'});
+    } else if(!numbersRegExp.test(req.body.ano)){
+        erros.push({err_msg: 'Ano do torneio inválido'});
     }
 
     if(erros.length > 0){

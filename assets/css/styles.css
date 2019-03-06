@@ -6,6 +6,12 @@ i {
     margin-right: 10px;
 }
 
+small {
+    font-size: 60%;
+    color: #dddddd;
+    letter-spacing: 1px;
+}
+
 .no-margin {
     margin: 0;
 }

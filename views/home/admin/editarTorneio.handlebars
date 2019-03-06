@@ -11,8 +11,8 @@
     <label for="designacao">Designação</label>
     <input type="text" name="designacao" value="{{torneio.designacao}}" required><br>
     <label for="localidade">Localidade</label>
-    <input type="text" name="localidade" value="{{torneio.localidade}}" required><br>
+    <input type="text" name="localidade" pattern="[^0-9]{4,}" value="{{torneio.localidade}}" required><br>
     <label for="ano">Ano</label>
-    <input type="text" name="ano" value="{{torneio.ano}}" required><br>
+    <input type="text" name="ano" pattern="[0-9]{4}" value="{{torneio.ano}}" required><br>
     <input type="submit" value="Adicionar">
 </form>

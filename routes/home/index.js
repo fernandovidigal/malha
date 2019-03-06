@@ -9,13 +9,17 @@ router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
     if(!req.session.torneio){
         malha.torneio.getActiveTorneio().then((row) => {
-            req.session.torneio = row;
+            if(!row) {
+                req.session.torneio = null;
+            } else {
+                req.session.torneio = row;
+            }
             next();
         }).catch((err) => {
             console.log(err);
             req.flash('error', 'Ocurreu um erro');
-            req.redirect('/');
-        });;
+            res.redirect('/equipas');
+        });
     } else {
         next();
     }

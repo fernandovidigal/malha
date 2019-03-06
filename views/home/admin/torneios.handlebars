@@ -19,9 +19,11 @@
     {{#each torneios}}
         <tr>
             <td>
-                {{#torneioActivo torneio_id activo}}
-                    <a href="/admin/activaTorneio/{{torneio_id}}"><i class="fas fa-check-square torneio-not-active"></i></a>
-                {{/torneioActivo}}
+            {{#ifCond activo '==' 1}}
+                <a href="/admin/activaTorneio/{{torneio_id}}"><i class="fas fa-check-square torneio-active"></i></a>
+            {{else}}
+                <a href="/admin/activaTorneio/{{torneio_id}}"><i class="fas fa-check-square torneio-not-active"></i></a>
+            {{/ifCond}}
             </td>
             <td>{{designacao}}</td>
             <td class="w30 table_cell_center">{{localidade}}</td>

@@ -9,36 +9,46 @@ router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
     if(!req.session.torneio){
         malha.torneio.getActiveTorneio().then((row) => {
-            req.session.torneio = row;
+            if(!row) {
+                req.session.torneio = null;
+            } else {
+                req.session.torneio = row;
+            }
             next();
         }).catch((err) => {
             console.log(err);
             req.flash('error', 'Ocurreu um erro');
-            req.redirect('/equipas');
-        });;
+            res.redirect('/equipas');
+        });
     } else {
         next();
     }
 });
 
 router.get('/', (req, res) => {
-    malha.equipa.getAllEquipasByTorneio(req.session.torneio.torneio_id).then((equipas) => {
-        malha.escalao.getAllEscaloes().then((escaloes) => {
-            malha.equipa.getAllLocalidades(req.session.torneio.torneio_id).then((localidades) => {
-                res.render('home/equipas/index', {equipas: equipas, torneio: req.session.torneio, escaloes: escaloes, localidades: localidades});
+    if(req.session.torneio != null) {
+        malha.equipa.getAllEquipasByTorneio(req.session.torneio.torneio_id).then((equipas) => {
+            malha.escalao.getAllEscaloes().then((escaloes) => {
+                malha.equipa.getAllLocalidades(req.session.torneio.torneio_id).then((localidades) => {
+                    res.render('home/equipas/index', {equipas: equipas, torneio: req.session.torneio, escaloes: escaloes, localidades: localidades});
+                }).catch((err) => {
+                    console.log(err);
+                    res.render('home/equipas/index', {equipas: equipas, torneio: req.session.torneio, escaloes: escaloes});
+                });
             }).catch((err) => {
                 console.log(err);
-                res.render('home/equipas/index', {equipas: equipas, torneio: req.session.torneio, escaloes: escaloes});
-            });
+                res.render('home/equipas/index', {equipas: rows, torneio: req.session.torneio});
+            });   
         }).catch((err) => {
             console.log(err);
-            res.render('home/equipas/index', {equipas: rows, torneio: req.session.torneio});
-        });   
-    }).catch((err) => {
-        console.log(err);
-        req.flash('error', 'Não foi possível obter as equipas');
-        req.redirect('/equipas');
-    });
+            req.flash('error', 'Não foi possível obter as equipas');
+            res.redirect('/equipas');
+        });
+    } else {
+        console.log("Não existe torneio");
+        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        res.redirect('../');
+    }
 });
 
 router.get('/escalao/:id', (req, res) => {
@@ -52,18 +62,17 @@ router.get('/escalao/:id', (req, res) => {
     }).catch((err) => {
         console.log(err);
         req.flash('error', 'Não foi possível obter as equipas');
-        req.redirect('/equipas');
+        res.redirect('/equipas');
     });
 });
 
 router.get('/adicionarEquipa', (req, res) => {
-    console.log("Adicionar Equipas");
     malha.escalao.getAllEscaloes().then((rows) => {
         res.render('home/equipas/adicionarEquipa', {escaloes: rows});
     }).catch((err) => {
         console.log(err);
         req.flash('error', 'Não foi possível obter os escalões');
-        req.redirect('/equipas');
+        res.redirect('/equipas');
     });
 });
 
@@ -81,6 +90,12 @@ router.post('/adicionarEquipa', (req, res) => {
         console.log(err);
         req.flash('error', 'Não foi possível adicionar a equipa');
         res.redirect('/equipas');
+    });
+});
+
+router.post('/searchTeamID', (req, res) => {
+    malha.equipa.getEquipaByID(req.params.searchTeamID).then((equipa) => {
+        console.log(equipa);
     });
 });
 

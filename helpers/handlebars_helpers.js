@@ -1,30 +1,40 @@
 
 module.exports.helpers = {
 
-    checkAdmin: function(status, options){
-        if(status == 1){
-            return options.fn(this).replace(new RegExp(' name="status"'), '$&checked');
-        } else {
-            return options.fn(this);
-        }
-    },
+    ifCond: function (v1, operator, v2, options) {
 
-    adminNav: function(status, options) {
-        if(status == 1){
-            return options.fn(this).replace(new RegExp(' name="status"'), '$&checked');
+        if(v1.constructor === Array && v1.length == 0){
+            v1 = false;
         }
-    },
 
-    sexo: function(sexo){
-        if(sexo == 0){
-            return 'Feminino';
-        } else {
-            return 'Masculino';
+        if(v2.constructor === Array && v2.length == 0){
+            v2 = false;
         }
-    },
 
-    sexoChecked: function(sexo, options) {
-        return options.fn(this).replace(new RegExp(' value=\"' + sexo + '\"'), '$&checked');
+        switch (operator) {
+            case '==':
+                return (v1 == v2) ? options.fn(this) : options.inverse(this);
+            case '===':
+                return (v1 === v2) ? options.fn(this) : options.inverse(this);
+            case '!=':
+                return (v1 != v2) ? options.fn(this) : options.inverse(this);
+            case '!==':
+                return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+            case '<':
+                return (v1 < v2) ? options.fn(this) : options.inverse(this);
+            case '<=':
+                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+            case '>':
+                return (v1 > v2) ? options.fn(this) : options.inverse(this);
+            case '>=':
+                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+            case '&&':
+                return (v1 && v2) ? options.fn(this) : options.inverse(this);
+            case '||':
+                return (v1 || v2) ? options.fn(this) : options.inverse(this);
+            default:
+                return options.inverse(this);
+        }
     },
 
     sexoSelect: function(sexo, options) {
@@ -54,12 +64,4 @@ module.exports.helpers = {
             }
         }
     },
-
-    torneioActivo: function(id, activo, options){
-        if(activo == 1) {
-            return options.fn(this).replace('torneio-not-active', 'torneio-active');
-        } else {
-            return options.fn(this);
-        }
-    }
 }

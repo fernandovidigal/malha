@@ -110,7 +110,8 @@ h3 {
 
 .option_btn__selected,
 .escalao_btn__selected,
-.option_btn:hover {
+.option_btn:hover,
+.escalao_btn:hover {
     color: #2c3641;
     background-color: #ffffff;
     border: solid 1px #dddfe8;

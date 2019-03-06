@@ -10,9 +10,15 @@
 <form action="/admin/editarEscalao/{{escalao.escalao_id}}?_method=PUT" method="post">
     <label for="designacao">Designação</label>
     <input type="text" name="designacao" value="{{escalao.designacao}}" required><br>
-    {{#sexoChecked escalao.sexo}}
+    {{#ifCond escalao.sexo '==' 1}}
+        <input type="radio" name="sexo" value="1" checked required> Masculino<br>
+    {{else}}
         <input type="radio" name="sexo" value="1" required> Masculino<br>
-        <input type="radio" name="sexo" value="0"> Feminino<br>
-    {{/sexoChecked}}
+    {{/ifCond}}
+    {{#ifCond escalao.sexo '==' 0}}
+        <input type="radio" name="sexo" value="0" checked required> Feminino<br>
+    {{else}}
+        <input type="radio" name="sexo" value="0" required> Feminino<br>
+    {{/ifCond}}
     <input type="submit" value="Adicionar">
 </form>

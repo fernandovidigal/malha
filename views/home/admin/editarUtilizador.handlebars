@@ -14,8 +14,10 @@
     <input type="password" name="password"><br>
     <label for="password">Verificar Password</label>
     <input type="password" name="verify_password"><br>
-    {{#checkAdmin utilizador.status}}
+    {{#ifCond utilizador.status '==' 1}}
+        <input type="checkbox" name="status" checked>Administrador<br>
+    {{else}}
         <input type="checkbox" name="status">Administrador<br>
-    {{/checkAdmin}}
+    {{/ifCond}}
     <input type="submit" value="Actualizar">
 </form>

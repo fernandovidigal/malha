@@ -4,16 +4,14 @@
         <li><a href="/logout">Logout</a></li>
         <li><a href="/equipas">Equipas</a></li>
         <li><a href="/listagens">Listagens</a></li>
-        {{#if user}}
-            {{#adminNav user.status}}
-                <li><a href="/admin">Administração</a>
-                    <ul>
-                        <li><a href="/admin/utilizadores">Utilizadores</a></li>
-                        <li><a href="/admin/escaloes">Escalões</a></li>
-                        <li><a href="/admin/torneios">Torneios</a></li>
-                    </ul>
-                </li>
-            {{/adminNav}}
-        {{/if}}
+        {{#ifCond user.status '==' 1}}
+            <li><a href="/admin">Administração</a>
+                <ul>
+                    <li><a href="/admin/utilizadores">Utilizadores</a></li>
+                    <li><a href="/admin/escaloes">Escalões</a></li>
+                    <li><a href="/admin/torneios">Torneios</a></li>
+                </ul>
+            </li>
+        {{/ifCond}}
     </ul>
 </div>

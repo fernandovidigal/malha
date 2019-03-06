@@ -24,13 +24,9 @@ app.engine('handlebars', exphbs({
     layoutsDir: path.join(__dirname, 'views/layouts'),
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
-        checkAdmin: helpers.checkAdmin,
-        adminNav: helpers.adminNav,
-        sexo: helpers.sexo,
-        sexoChecked: helpers.sexoChecked,
+        ifCond: helpers.ifCond,
         sexoSelect: helpers.sexoSelect,
         escaloes: helpers.escaloes,
-        torneioActivo: helpers.torneioActivo,
         listaEscaloes: helpers.listaEscaloes
     }
 }));
@@ -55,7 +51,7 @@ app.use(passport.session());
 app.use(flash());
 
 app.use(function(req, res, next) {
-    res.locals.user = req.user;
+    res.locals.user = req.user || null;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.info = req.flash('info');
@@ -78,4 +74,4 @@ app.use('/admin', admin);
 app.use('/equipas', equipas);
 
 // Activar Servidor
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));

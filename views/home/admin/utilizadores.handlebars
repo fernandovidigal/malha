@@ -17,7 +17,7 @@
     {{#each utilizadores}}
         <tr>
             <td>{{username}}</td>
-            <td class="w30 table_cell_center">{{status}}</td>
+            <td class="w30 table_cell_center">{{#ifCond status '==' 1}}<img src="/imagens/icons/key.png" alt="Administrador">{{/ifCond}}</td>
             <td class="w10"><a href="/admin/editarUtilizador/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
             <td class="w10">
                 <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">

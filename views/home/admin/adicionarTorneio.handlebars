@@ -11,9 +11,9 @@
     <label for="designacao">Designação</label>
     <input type="text" name="designacao" required><br>
     <label for="localidade">Localidade</label>
-    <input type="text" name="localidade" required><br>
+    <input type="text" name="localidade" pattern="[^0-9]{4,}" required><br>
     <label for="ano">Ano</label>
-    <input type="text" name="ano" required><br>
+    <input type="text" name="ano" pattern="[0-9]{4}" required> <small>(AAAA)</small><br>
     <input type="submit" name="adicionar" value="Adicionar">
     <input type="submit" name="adicionar_activar" value="Adicionar e Activar">
 </form>
