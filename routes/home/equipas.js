@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-/*const MalhaDB = require('../../models/Malha');
-const malha = new MalhaDB();*/
+const faker = require('faker');
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
@@ -24,6 +23,34 @@ router.all('/*', userAuthenticated, (req, res, next) => {
         next();
     }
 });
+
+router.get('/faker/:num', (req, res) => {
+    var escaloes = [];
+    var localidades = ['Arraiolos', 'Mora', 'Évora', 'Montemor-o-novo', 'Lavre', 'Estremoz', 'Borba', 'Viana do Alentejo', 'Redondo'];
+
+    faker.locale = "pt_BR";
+    malha.escalao.getAllEscaloes().then((rows) => {
+        rows.forEach(element => {
+            escaloes.push(element.escalao_id);
+        });
+        addTeams(req.params.num, req.session.torneio.torneio_id, localidades, escaloes);
+        res.redirect('/equipas');
+    });
+});
+
+async function addTeams(num, torneio, localidades, escaloes){
+    var i;
+    for(i = 0; i < num; i++){
+        await malha.equipa.addEquipa(
+            torneio,
+            faker.name.firstName() + " " + faker.name.lastName(),
+            faker.name.firstName() + " " + faker.name.lastName(),
+            localidades[Math.floor(Math.random() * localidades.length)],
+            escaloes[Math.floor(Math.random() * escaloes.length)]
+        );
+        console.log(i+": Equipa Adicionada");
+    } 
+}
 
 router.get('/', (req, res) => {
     if(req.session.torneio != null) {

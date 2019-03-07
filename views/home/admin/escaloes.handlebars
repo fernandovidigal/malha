@@ -24,7 +24,7 @@
     {{#each escaloes}}
         <tr>
             <td>{{designacao}}</td>
-            <td class="w30 table_cell_center">{{#ifCond sexo '==' 1}}Masculino{{else}}Feminio{{/ifCond}}</td>
+            <td class="w30 table_cell_center">{{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}}</td>
             <td class="w10"><a href="/admin/editarEscalao/{{escalao_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
             <td class="w10">
                 <form action="/admin/escaloes/{{escalao_id}}?_method=DELETE" method="POST">

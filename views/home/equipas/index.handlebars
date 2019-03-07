@@ -43,7 +43,7 @@
                     <td class="w5">{{equipa_id}}</td>
                     <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
                     <td class="w20 table_cell_center">{{localidade}}</td>
-                    <td class="w20 table_cell_center">{{designacao}}<br>({{#sexo sexo}}{{/sexo}})</td>
+                    <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>
                     <td class="w5"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
                     <td class="w5">
                         <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
