@@ -124,18 +124,18 @@ class Equipa {
     getEquipaByID(id, torneio_id) {
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.all(`
+            that.db.get(`
                 SELECT equipa.*, escalao.designacao, escalao.sexo 
                 FROM equipa 
                 INNER JOIN escalao 
-                ON escalao.escalao = equipa.escalao_id
+                ON escalao.escalao_id = equipa.escalao_id
                 WHERE equipa.equipa_id = ? AND equipa.torneio_id = ? `,
             [id, torneio_id],
-            (err, rows) => {
+            (err, row) => {
                 if(err) {
                     return reject(err);
                 } else {
-                    return resolve(rows);
+                    return resolve([row]);
                 }
             });
         });

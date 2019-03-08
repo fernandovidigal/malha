@@ -1,13 +1,10 @@
-{{#if data}}
-    {{#if data.torneio}}
-        <div class="title__bar">
-            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
-            <h3>{{data.torneio.ano}}</h3>
-        </div>
-    {{/if}}
-
+<!--{{#if data}}
+<div class="title__bar">
+    <h1>Nome do Torneio - Évora</h1>
+    <h3>(2019)</h3>
+</div>
+{{/if}}
 {{> messages}}
-
 <div class="table_sidebar__wrapper">
     <div class="table__content">
         <div class="buttons_bar">
@@ -16,17 +13,17 @@
                     <input type="text" name="searchTeamID" class="searchBox__input" placeholder="Equipa"/>
                     <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
                 </form>
-                <!--{{#if data.localidades}}
+                {{#if localidades}}
                     <div class="searchSelectBox">
                         <p>Equipa</p>
                         <ul class="searchSelectBox__list">
-                            {{#each data.localidades}}
+                            {{#each localidades}}
                                 <li><a href="/equipas/localidade/{{localidade}}">{{localidade}}</a></li>
                             {{/each}}
                         </ul>
                     </div>
                 {{/if}}-->
-            </div>
+            <!--</div>
             <div class="action_btns a-right">
                 <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
             </div>
@@ -43,57 +40,49 @@
                 </tr>
             </thead>
             <tbody>
-            {{#if data.equipas}}
-                {{#each data.equipas}}
-                    <tr>
-                        <td class="w5">{{equipa_id}}</td>
-                        <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
-                        <td class="w20 table_cell_center">{{localidade}}</td>
-                        <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>
-                        <td class="w5"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
-                        <td class="w5">
-                            <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
-                                <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
-                            </form>
-                        </td>
-                    </tr>
-                {{/each}}
-            {{else}}
+            {{#each equipas}}
                 <tr>
-                    <td colspan="6">Não existem equipas</td>
+                    <td class="w5">{{equipa_id}}</td>
+                    <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
+                    <td class="w20 table_cell_center">{{localidade}}</td>
+                    <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>
+                    <td class="w5"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                    <td class="w5">
+                        <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
+                            <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                        </form>
+                    </td>
                 </tr>
-            {{/if}}
+            {{/each}}
             </tbody>
         </table>
     </div>
-
-    {{#ifCond data.escaloes '||' data.localidades}}
+    {{#ifCond escaloes '||' localidades}}
         <div class="sidebar__content">
             <p class="sidebar__title">Filtros</p>
-            {{#if data.escaloes}}
+            {{#if escaloes}}
                 <p class="sidebar__title">Escalões</p>
-                    {{#if data.filtro_escalao_id}}
+                    {{#if id}}
                         <a href="/equipas" class="escalao_btn">Todos</a>
                     {{else}}
                         <a href="/equipas" class="escalao_btn escalao_btn__selected">Todos</a>
                     {{/if}}
                 <p class="sidebar__subtitle">Masculino</p>
-                    {{#each data.escaloes}}
-                        {{#listaEscaloes escalao_id designacao sexo 1 ../data.filtro_escalao_id}}{{/listaEscaloes}}
+                    {{#each escaloes}}
+                        {{#listaEscaloes escalao_id designacao sexo 1 ../id}}{{/listaEscaloes}}
                     {{/each}}
                 <p class="sidebar__subtitle">Feminino</p>
-                    {{#each data.escaloes}}
-                        {{#listaEscaloes escalao_id designacao sexo 0 ../data.filtro_escalao_id}}{{/listaEscaloes}}
+                    {{#each escaloes}}
+                        {{#listaEscaloes escalao_id designacao sexo 0 ../id}}{{/listaEscaloes}}
                     {{/each}}
             {{/if}}
-            {{#if data.localidades}}
+            {{#if localidades}}
                 <p class="sidebar__title">Localidades</p>
-                    {{#each data.localidades}}
+                    {{#each localidades}}
                         <a href="/equipas" class="escalao_btn">{{localidade}}</a>
                     {{/each}}
             {{/if}}
         </div>
     {{/ifCond}}
     
-</div>
-{{/if}}
+</div>-->
