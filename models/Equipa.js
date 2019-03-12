@@ -44,25 +44,27 @@ class Equipa {
     addEquipa(torneio_id, primeiroElemento, segundoElemento, localidade, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.getLastTeamIDFromTorneio(torneio_id).then((row) => {
-                let lastID = 0;
-                if(row != null) {
-                    lastID = row.lastID;
-                }
-                that.db.run(
-                    "INSERT INTO equipa (equipa_id, torneio_id, primeiro_elemento, segundo_elemento, localidade, escalao_id) VALUES (?,?,?,?,?,?)",
-                    [lastID+1, torneio_id, primeiroElemento, segundoElemento, localidade, escalao_id],
-                    (err) => {
-                        if(err)
-                            return reject(err);
-                        else{
-                            return resolve();
-                        }
+            that.db.run(
+                `INSERT INTO equipa (equipa_id, torneio_id, primeiro_elemento, segundo_elemento, localidade, escalao_id) 
+                VALUES (
+                    (SELECT
+                        CASE 
+		                    WHEN MAX(equipa_id) IS NULL
+		                    THEN 1
+		                    ELSE (MAX(equipa_id) + 1)
+	                    END lastID
+                    FROM equipa WHERE torneio_id = ? 
+                    )
+                    ,?,?,?,?,?)`,
+                [torneio_id, torneio_id, primeiroElemento, segundoElemento, localidade, escalao_id],
+                (err) => {
+                    if(err)
+                        return reject(err);
+                    else{
+                        return resolve();
                     }
-                );
-            }).catch((err) => {
-                return reject(err);
-            });
+                }
+            );
         });
     }
 
@@ -129,13 +131,14 @@ class Equipa {
                 FROM equipa 
                 INNER JOIN escalao 
                 ON escalao.escalao_id = equipa.escalao_id
-                WHERE equipa.equipa_id = ? AND equipa.torneio_id = ? `,
+                WHERE equipa.equipa_id = ? AND equipa.torneio_id = ?`,
             [id, torneio_id],
             (err, row) => {
                 if(err) {
                     return reject(err);
                 } else {
-                    return resolve([row]);
+                    // Se a equipa não existem (undefined) retorna um array vazio
+                    return resolve((row != undefined ? [row] : []));
                 }
             });
         });
@@ -147,6 +150,23 @@ class Equipa {
             that.db.all("SELECT localidade FROM equipa WHERE torneio_id = ? GROUP BY localidade ORDER BY localidade ASC",
             [torneio_id],
             (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
+
+    getTeamsByLocalidade(localidade){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`SELECT equipa.*, escalao.designacao, escalao.sexo 
+            FROM equipa 
+            INNER JOIN escalao 
+            ON escalao.escalao_id = equipa.escalao_id
+            WHERE equipa.localidade = ?`, [localidade], (err, rows) => {
                 if(err) {
                     return reject(err);
                 } else {

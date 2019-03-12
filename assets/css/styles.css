@@ -224,10 +224,28 @@ small {
 }
 
 .search_bar {
-    width: 40%;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+}
+
+.search_equipaID {
+    min-width: 40px;
+    padding: 5px 8px 5px 12px;
+    color: #2c3641;
+    background-color: #ffffff;
+    border: solid 1px #dddfe8;
+    box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 10px;
+}
+
+.search_equipaID i {
+    margin: 0;
+    color: #455cc7;
+    margin-left: 14px;
 }
 
 .searchBox{
@@ -241,6 +259,7 @@ small {
     border-radius: 8px;
     padding: 6px 12px;
     font-size: 14px;
+    outline: none;
 }
 
 .searchBox__btn {

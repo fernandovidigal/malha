@@ -154,15 +154,23 @@ router.post('/adicionarEquipa', (req, res) => {
     });
 });
 
-router.post('/searchTeamID', (req, res) => {
+router.post('/pesquisa', (req, res) => {
     if(req.session.torneio != null) {
         let data = {
             'equipa_id': req.body.searchTeamID,
             'torneio': req.session.torneio
         };
-        malha.equipa.getEquipaByID(req.body.searchTeamID, req.session.torneio.torneio_id)
+
+        // Verifica se o input é númerico e com pelo menos 1 digito
+        const numbersRegExp = new RegExp('[0-9]{1,}');
+        let teamID = -1;
+        if(numbersRegExp.test(req.body.searchTeamID)){
+            teamID = req.body.searchTeamID;
+        }
+
+        malha.equipa.getEquipaByID(teamID, req.session.torneio.torneio_id)
         .then((equipa) => {
-            if(typeof image_array !== 'undefined' && equipa.length > 0){
+            if(equipa.length > 0){
                 data.equipas = equipa;
             }
             return getEscaloesAndLocalidades(req.session.torneio.torneio_id);
@@ -170,6 +178,38 @@ router.post('/searchTeamID', (req, res) => {
         .then((rows) => {
             data.escaloes = rows.escaloes;
             data.localidades = rows.localidades;
+            res.render('home/equipas/index', {data: data});
+        })
+        .catch((err) => {
+            console.log(err);
+            req.flash('error', 'Ocurreu um erro');
+            res.redirect('/equipas');
+        });
+    } else {
+        console.log("Não existe torneio registado ou activo");
+        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        res.redirect('../');
+    }
+});
+
+router.get('/pesquisa/localidade/:localidade', (req, res) => {
+    if(req.session.torneio != null) {
+        let data = {
+            'torneio': req.session.torneio
+        };
+        malha.equipa.getTeamsByLocalidade(req.params.localidade)
+        .then((equipas) => {
+            if(equipas.length > 0) {
+                data.equipas = equipas;
+            } else {
+                console.log("Equipas Vazias");
+            }
+            return getEscaloesAndLocalidades(req.session.torneio.torneio_id);
+        })
+        .then((rows) => {
+            data.escaloes = rows.escaloes;
+            data.localidades = rows.localidades;
+            console.log(data);
             res.render('home/equipas/index', {data: data});
         })
         .catch((err) => {

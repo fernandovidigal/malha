@@ -12,20 +12,16 @@
     <div class="table__content">
         <div class="buttons_bar">
             <div class="search_bar">
-                <form action="/equipas/searchTeamID" method="post" class="searchBox">
+                {{#if data.equipa_id}}
+                    <div class="search_equipaID">
+                        {{data.equipa_id}}
+                        <a href="/equipas"><i class="fas fa-times-circle"></i></a>
+                    </div>
+                {{/if}}
+                <form action="/equipas/pesquisa" method="post" class="searchBox">
                     <input type="text" name="searchTeamID" class="searchBox__input" placeholder="Equipa"/>
                     <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
                 </form>
-                <!--{{#if data.localidades}}
-                    <div class="searchSelectBox">
-                        <p>Equipa</p>
-                        <ul class="searchSelectBox__list">
-                            {{#each data.localidades}}
-                                <li><a href="/equipas/localidade/{{localidade}}">{{localidade}}</a></li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                {{/if}}-->
             </div>
             <div class="action_btns a-right">
                 <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
@@ -66,7 +62,7 @@
             </tbody>
         </table>
     </div>
-
+    
     {{#ifCond data.escaloes '||' data.localidades}}
         <div class="sidebar__content">
             <p class="sidebar__title">Filtros</p>
@@ -89,7 +85,7 @@
             {{#if data.localidades}}
                 <p class="sidebar__title">Localidades</p>
                     {{#each data.localidades}}
-                        <a href="/equipas" class="escalao_btn">{{localidade}}</a>
+                        <a href="/equipas/pesquisa/localidade/{{localidade}}" class="escalao_btn">{{localidade}}</a>
                     {{/each}}
             {{/if}}
         </div>

@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const UserDB = require('../../models/User');
-/*const user = new UserDB();
-const MalhaDB = require('../../models/Malha');
-const malha = new MalhaDB();*/
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
@@ -318,7 +315,11 @@ router.post('/adicionarTorneio', (req, res) => {
         ).then((id) => {
             // Activa o torneio
             if(req.body.adicionar_activar){
-                malha.torneio.setActiveTorneio(id).then(()=>{
+                malha.torneio.setActiveTorneio(id)
+                .then(()=>{
+                    return malha.torneio.getActiveTorneio();
+                }).then((row)=>{
+                    req.session.torneio = row;
                     req.flash('success', 'Torneio adicionado e activado com sucesso!')
                     res.redirect('/admin/torneios');
                 }).catch((err) => {
