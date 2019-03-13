@@ -3,11 +3,11 @@ module.exports.helpers = {
 
     ifCond: function (v1, operator, v2, options) {
 
-        if(v1.constructor === Array && v1.length == 0){
+        if(v1 == undefined || v1.constructor === Array && v1.length == 0){
             v1 = false;
         }
 
-        if(v2.constructor === Array && v2.length == 0){
+        if(v2 == undefined || v2.constructor === Array && v2.length == 0){
             v2 = false;
         }
 
@@ -56,11 +56,11 @@ module.exports.helpers = {
     listaEscaloes: function(escalao_id, designacao, sexo, genero, id){
         if(id == escalao_id){
             if(sexo === genero){
-                return "<a href=\"/equipas/escalao/"+escalao_id+"\" class=\"escalao_btn escalao_btn__selected\">"+designacao+"</a>";
+                return "<a href=\"/equipas/filtro/escalao/"+escalao_id+"\" class=\"filtro_btn filtro_btn__selected\">"+designacao+"</a>";
             }
         } else {
             if(sexo === genero){
-                return "<a href=\"/equipas/escalao/"+escalao_id+"\" class=\"escalao_btn\">"+designacao+"</a>";
+                return "<a href=\"/equipas/filtro/escalao/"+escalao_id+"\" class=\"filtro_btn\">"+designacao+"</a>";
             }
         }
     },

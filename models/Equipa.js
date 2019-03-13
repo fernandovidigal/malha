@@ -159,14 +159,37 @@ class Equipa {
         });
     }
 
-    getTeamsByLocalidade(localidade){
+    getTeamsByTorneioAndLocalidade(torneio_id, localidade){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`SELECT equipa.*, escalao.designacao, escalao.sexo 
             FROM equipa 
             INNER JOIN escalao 
             ON escalao.escalao_id = equipa.escalao_id
-            WHERE equipa.localidade = ?`, [localidade], (err, rows) => {
+            WHERE equipa.localidade = ? AND equipa.torneio_id = ?
+            ORDER BY equipa.equipa_id ASC`,
+            [localidade, torneio_id],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
+
+    getTeamsByTorneioAndLocalidadeAndEscalao(torneio_id, localidade, escalao_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`SELECT equipa.*, escalao.designacao, escalao.sexo 
+            FROM equipa 
+            INNER JOIN escalao 
+            ON escalao.escalao_id = equipa.escalao_id
+            WHERE equipa.localidade = ? AND equipa.torneio_id = ? AND equipa.escalao_id = ?
+            ORDER BY equipa.equipa_id ASC`,
+            [localidade, torneio_id, escalao_id],
+            (err, rows) => {
                 if(err) {
                     return reject(err);
                 } else {

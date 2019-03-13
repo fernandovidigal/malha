@@ -203,7 +203,7 @@ small {
 }
 
 .sidebar__content {
-    min-width: 160px;
+    min-width: 180px;
     margin-top: 60px;
     padding-left: 20px;
     padding-right: 20px;
@@ -331,5 +331,39 @@ small {
 
 .searchSelectBox__list li:hover{
     background-color: #ffffff;
+}
+
+.filtro-box {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.filtro_btn {
+    padding: 6px 12px;
+    color: #858ca8;
+    background-color: #f4f5f9;
+    text-decoration: none;
+    border: solid 1px #eaebf1;
+    border-radius: 8px;
+    display: block;
+    transition: all .25s;
+}
+
+.filtro_btn__selected,
+.filtro_btn:hover {
+    color: #2c3641;
+    background-color: #ffffff;
+    border: solid 1px #dddfe8;
+    box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
+}
+
+.filtro__close {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    color: #455cc7;
+    transform: translateY(-50%);
+    display: flex;
 }
 
