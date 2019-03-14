@@ -4,8 +4,8 @@ const UserDB = require('../../models/User');
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
-const lettersRegExp = new RegExp('[^0-9]{4,}');
-const numbersRegExp = new RegExp('[0-9]{4}');
+const lettersRegExp = new RegExp('^[^0-9]+$');
+const numbersRegExp = new RegExp('^[0-9]+$');
 
 router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
@@ -54,7 +54,7 @@ router.post('/adicionarUtilizador', (req, res) => {
             user.closeDB();
             // Erro que aparece quando o username já existe na base de dados (UNIQUE)
             if(err.code = 'SQLITE_CONSTRAINT'){
-                req.flash('error', 'Utilizador já registado!');
+                req.flash('error', 'Username já está foi utilizado.');
                 res.redirect('/admin/adicionarUtilizador');
             } else {
                 req.flash('error', 'Ocurreu um erro ao registar o utilizador!');
@@ -108,8 +108,6 @@ router.put('/editarUtilizador/:id', (req, res)=>{
 
     if(!req.body.username){
         erros.push({err_msg: 'Indique o username.'});
-    } else {
-        const username = req.body.username;
     }
 
     if(!req.body.password){
@@ -125,6 +123,7 @@ router.put('/editarUtilizador/:id', (req, res)=>{
     if(erros.length > 0) {
         user.getUserById(req.params.id).then((row) => {
             user.closeDB();
+            row.username = req.body.username;
             res.render('home/admin/editarUtilizador', {utilizador: row, erros: erros});
         }).catch((err) => {
             console.log(err);
@@ -235,6 +234,7 @@ router.put('/editarEscalao/:id', (req, res) => {
 
     if(erros.length > 0){
         malha.escalao.getEscalaoById(req.params.id).then((row) => {
+            row.designacao = req.body.designacao;
             res.render('home/admin/editarEscalao', {escalao: row, erros: erros});
         }).catch((err) => {
             console.log(err);
@@ -386,6 +386,9 @@ router.put('/editarTorneio/:id', (req, res) => {
 
     if(erros.length > 0){
         malha.torneio.getTorneioById(req.params.id).then((row) => {
+            row.designacao = req.body.designacao;
+            row.localidade = req.body.localidade;
+            row.ano = req.body.ano;
             res.render('home/admin/editarTorneio', {torneio: row, erros: erros});
         }).catch((err) => {
             console.log(err);

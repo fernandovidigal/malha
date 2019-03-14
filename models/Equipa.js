@@ -198,6 +198,36 @@ class Equipa {
             });
         });
     }
+
+    deleteEquipa(equipa_id, torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run('DELETE FROM equipa WHERE equipa_id = ? AND torneio_id = ?', [equipa_id, torneio_id], (err) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve();
+                }
+            });
+        });
+    }
+
+    updateEquipa(equipa_id, torneio_id, primeiro_elemento, segundo_elemento, localidade, escalao_id) {
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run(`
+                UPDATE equipa SET primeiro_elemento = ?, segundo_elemento = ?, localidade = ?, escalao_id = ?
+                WHERE equipa_id = ? AND torneio_id = ?`,
+            [primeiro_elemento, segundo_elemento, localidade, escalao_id, equipa_id, torneio_id],
+            (err) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve();
+                }
+            })
+        });
+    }
 }
 
 module.exports = Equipa;

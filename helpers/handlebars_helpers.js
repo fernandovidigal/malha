@@ -45,23 +45,5 @@ module.exports.helpers = {
         } else { // TODOS
             return options.fn(this).replace(' class="option_btn"><i class="fa fa-users"></i>Todos',  'class="option_btn option_btn__selected"><i class="fa fa-users"></i>Todos');
         }
-    },
-
-    escaloes: function(escalao_id, designacao, sexo, escalao) {
-        if(escalao == sexo) {
-            return '<input type="radio" name="escalao" value="'+escalao_id+'">'+designacao;
-        }
-    },
-
-    listaEscaloes: function(escalao_id, designacao, sexo, genero, id){
-        if(id == escalao_id){
-            if(sexo === genero){
-                return "<a href=\"/equipas/filtro/escalao/"+escalao_id+"\" class=\"filtro_btn filtro_btn__selected\">"+designacao+"</a>";
-            }
-        } else {
-            if(sexo === genero){
-                return "<a href=\"/equipas/filtro/escalao/"+escalao_id+"\" class=\"filtro_btn\">"+designacao+"</a>";
-            }
-        }
-    },
+    }
 }

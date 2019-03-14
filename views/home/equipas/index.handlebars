@@ -17,9 +17,9 @@
                         {{data.equipa_id}}
                         <a href="/equipas"><i class="fas fa-times-circle"></i></a>
                     </div>
-                {{/if}}
+                {{/if}} 
                 <form action="/equipas/pesquisa" method="post" class="searchBox">
-                    <input type="text" name="searchTeamID" class="searchBox__input" placeholder="Equipa"/>
+                    <input type="text" name="searchTeamID" class="searchBox__input" pattern="^[0-9]+$" placeholder="Equipa"/>
                     <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
                 </form>
             </div>
@@ -47,9 +47,9 @@
                         <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
                         <td class="w20 table_cell_center">{{localidade}}</td>
                         <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>
-                        <td class="w5"><a href="/equipas/editarEquipa/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                        <td class="w5"><a href="/equipas/editarEquipa/{{equipa_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
                         <td class="w5">
-                            <form action="/equipas/{{user_id}}?_method=DELETE" method="POST">
+                            <form action="/equipas/{{equipa_id}}?_method=DELETE" method="POST">
                                 <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
                             </form>
                         </td>
@@ -57,7 +57,7 @@
                 {{/each}}
             {{else}}
                 <tr>
-                    <td colspan="6">Não existem equipas</td>
+                    <td colspan="6">Não foram encontradas equipas</td>
                 </tr>
             {{/if}}
             </tbody>
@@ -69,18 +69,13 @@
             <p class="sidebar__title">Filtros</p>
             {{#if data.escaloes}}
                 <p class="sidebar__title">Escalões</p>
-                    <!--{{#if data.filtros}}
-                        <a href="/equipas" class="escalao_btn">Todos</a>
-                    {{else}}
-                        <a href="/equipas" class="escalao_btn escalao_btn__selected">Todos</a>
-                    {{/if}}-->
                 <p class="sidebar__subtitle">Masculino</p>
                     {{#each data.escaloes}}
                         <div class="filtro-box">
                             {{#ifCond sexo '==' 1}}
                                 {{#ifCond ../data.filtros.escalao '==' escalao_id}}
                                     <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn filtro_btn__selected">{{designacao}}</a>
-                                    <a href="/equipas" class="filtro__close"><i class="fas fa-times-circle"></i></a>
+                                    <a href="/equipas{{#if ../data.filtros.localidade}}/filtro/localidade/{{../data.filtros.localidade}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
                                 {{else}}
                                     <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn">{{designacao}}</a>
                                 {{/ifCond}}
@@ -93,7 +88,7 @@
                             {{#ifCond sexo '==' 0}}
                                 {{#ifCond ../data.filtros.escalao '==' escalao_id}}
                                     <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn filtro_btn__selected">{{designacao}}</a>
-                                    <a href="/equipas" class="filtro__close"><i class="fas fa-times-circle"></i></a>
+                                    <a href="/equipas{{#if ../data.filtros.localidade}}/filtro/localidade/{{../data.filtros.localidade}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
                                 {{else}}
                                     <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn">{{designacao}}</a>
                                 {{/ifCond}}
@@ -107,7 +102,7 @@
                         <div class="filtro-box">
                             {{#ifCond ../data.filtros.localidade '==' localidade}}
                                 <a href="/equipas/filtro/localidade/{{localidade}}{{#if ../data.filtros.escalao}}/escalao/{{../data.filtros.escalao}}{{/if}}" class="filtro_btn filtro_btn__selected">{{localidade}}</a>
-                                <a href="/equipas" class="filtro__close"><i class="fas fa-times-circle"></i></a>
+                                <a href="/equipas{{#if ../data.filtros.escalao}}/filtro/escalao/{{../data.filtros.escalao}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
                             {{else}}
                                 <a href="/equipas/filtro/localidade/{{localidade}}{{#if ../data.filtros.escalao}}/escalao/{{../data.filtros.escalao}}{{/if}}" class="filtro_btn">{{localidade}}</a>
                             {{/ifCond}}

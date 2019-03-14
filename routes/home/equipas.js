@@ -4,6 +4,8 @@ const faker = require('faker');
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
+const textRegExp = new RegExp('^[^0-9]+$');
+
 async function getEscaloesAndLocalidades(torneio_id){
     const escaloes = await malha.escalao.getAllEscaloes();
     const localidades = await malha.equipa.getAllLocalidades(torneio_id);
@@ -71,7 +73,6 @@ router.get('/', (req, res) => {
         };
         malha.equipa.getAllEquipasByTorneio(req.session.torneio.torneio_id)
         .then((row) => {
-            console.log();
             if(row.length > 0){
                 data.equipas = row;
             }
@@ -80,7 +81,6 @@ router.get('/', (req, res) => {
         .then((rows) => {
             data.escaloes = rows.escaloes;
             data.localidades = rows.localidades;
-            console.log(data);
             res.render('home/equipas/index', {data: data});
         })
         .catch((err) => {
@@ -97,7 +97,7 @@ router.get('/', (req, res) => {
 
 router.get('/adicionarEquipa', (req, res) => {
     malha.escalao.getAllEscaloes().then((rows) => {
-        res.render('home/equipas/adicionarEquipa', {escaloes: rows});
+        res.render('home/equipas/adicionarEquipa', {escaloes: rows, torneio: req.session.torneio});
     }).catch((err) => {
         console.log(err);
         req.flash('error', 'Não foi possível obter os escalões');
@@ -106,23 +106,189 @@ router.get('/adicionarEquipa', (req, res) => {
 });
 
 router.post('/adicionarEquipa', (req, res) => {
-    // TODOS: Fazer validações de dados
+    if(req.session.torneio != null) {
+        let erros = [];
 
-    malha.equipa.addEquipa(
-        req.session.torneio.torneio_id,
-        req.body.primeiro_elemento,
-        req.body.segundo_elemento,
-        req.body.localidade,
-        req.body.escalao
-    ).then(() => {
-        req.flash('success', 'Equipa adicionada com sucesso');
-        res.redirect('/equipas');
-    }).catch((err) => {
-        console.log(err);
-        req.flash('error', 'Não foi possível adicionar a equipa');
-        res.redirect('/equipas');
-    });
+        if(!req.body.primeiro_elemento){
+            erros.push({err_msg: 'Indique o nome do primeiro elemento.'});
+        } else if(!textRegExp.test(req.body.primeiro_elemento)){
+            erros.push({err_msg: 'Nome do primeiro elemento inválido.'});
+        }
+
+        if(!req.body.segundo_elemento){
+            erros.push({err_msg: 'Indique o nome do segundo elemento.'});
+        } else if(!textRegExp.test(req.body.segundo_elemento)){
+            erros.push({err_msg: 'Nome do segundo elemento inválido.'});
+        }
+
+        if(!req.body.localidade){
+            erros.push({err_msg: 'Indique a localidade.'});
+        } else if(!textRegExp.test(req.body.localidade)){
+            erros.push({err_msg: 'Nome da localidade inválido.'});
+        }
+
+        if(!req.body.escalao){
+            erros.push({err_msg: 'Indique o escalão.'});
+        }
+
+        if(erros.length > 0){
+            malha.escalao.getAllEscaloes().then((rows) => {
+                res.render('home/equipas/adicionarEquipa', {erros: erros, escaloes: rows, torneio: req.session.torneio});
+            }).catch((err) => {
+                console.log(err);
+                req.flash('error', 'Não foi possível obter os escalões');
+                res.redirect('/equipas');
+            });
+        } else {
+            malha.equipa.addEquipa(
+                req.session.torneio.torneio_id,
+                req.body.primeiro_elemento,
+                req.body.segundo_elemento,
+                req.body.localidade,
+                req.body.escalao
+            ).then(() => {
+                req.flash('success', 'Equipa adicionada com sucesso');
+                res.redirect('/equipas');
+            }).catch((err) => {
+                console.log(err);
+                req.flash('error', 'Não foi possível adicionar a equipa');
+                res.redirect('/equipas');
+            });
+        }
+    } else {
+        console.log("Não existe torneio registado ou activo");
+        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        res.redirect('../');
+    }
 });
+
+router.get('/editarEquipa/:id', (req, res) => {
+    if(req.session.torneio != null) {
+        let data = {
+            'torneio': req.session.torneio
+        };
+
+        malha.equipa.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
+        .then((equipa) => {
+            if(equipa.length > 0){
+                data.equipa = equipa;
+            }
+            return malha.escalao.getAllEscaloes();
+        })
+        .then((escaloes) => {
+            data.escaloes = escaloes;
+            res.render('home/equipas/editarEquipa', {data: data});
+        })
+        .catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível aceder à equipa.');
+            res.redirect('/equipas');
+        });
+    } else {
+        console.log("Não existe torneio registado ou activo");
+        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        res.redirect('../');
+    }
+});
+
+router.put('/editarEquipa/:id', (req, res) => {
+    if(req.session.torneio != null) {
+        let data = {
+            'torneio': req.session.torneio
+        };
+
+        let erros = [];
+
+        if(!req.body.primeiro_elemento){
+            erros.push({err_msg: 'Indique o nome do primeiro elemento.'});
+        } else if(!textRegExp.test(req.body.primeiro_elemento)){
+            erros.push({err_msg: 'Nome do primeiro elemento inválido.'});
+        }
+
+        if(!req.body.segundo_elemento){
+            erros.push({err_msg: 'Indique o nome do segundo elemento.'});
+        } else if(!textRegExp.test(req.body.segundo_elemento)){
+            erros.push({err_msg: 'Nome do segundo elemento inválido.'});
+        }
+
+        if(!req.body.localidade){
+            erros.push({err_msg: 'Indique a localidade.'});
+        } else if(!textRegExp.test(req.body.localidade)){
+            erros.push({err_msg: 'Nome da localidade inválido.'});
+        }
+
+        if(!req.body.escalao){
+            erros.push({err_msg: 'Indique o escalão.'});
+        }
+
+        if(erros.length > 0){
+            data.erros = erros;
+            malha.equipa.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
+            .then((equipa) => {
+                if(equipa.length > 0){
+                    data.equipa = equipa;
+                    data.equipa[0].primeiro_elemento = req.body.primeiro_elemento;
+                    data.equipa[0].segundo_elemento = req.body.segundo_elemento;
+                    data.equipa[0].localidade = req.body.localidade;
+                }
+                return malha.escalao.getAllEscaloes();
+            })
+            .then((escaloes) => {
+                data.escaloes = escaloes;
+                res.render('home/equipas/editarEquipa', {data: data});
+            }).catch((err) => {
+                console.log(err);
+                req.flash('error', 'Não foi possível obter os escalões');
+                res.redirect('/equipas');
+            });
+        } else {
+            malha.equipa.updateEquipa(
+                req.params.id,
+                req.session.torneio.torneio_id,
+                req.body.primeiro_elemento,
+                req.body.segundo_elemento,
+                req.body.localidade,
+                req.body.escalao
+            ).then(()=>{
+                req.flash('success', 'Equipa actualizada com sucesso');
+                res.redirect('/equipas');
+            })
+            .catch((err) => {
+                console.log(err);
+                req.flash('error', 'Não foi possível actualizar a equipa');
+                res.redirect('/equipas');
+            });
+        }
+        
+    } else {
+        console.log("Não existe torneio registado ou activo");
+        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        res.redirect('../');
+    }
+});
+
+router.delete('/:id', (req, res) => {
+    if(req.session.torneio != null) {
+        malha.equipa.deleteEquipa(req.params.id, req.session.torneio.torneio_id)
+        .then(() => {
+            req.flash('success', 'Equipa eliminada com sucesso');
+            res.redirect('/equipas');
+        })
+        .catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível adicionar a equipa');
+            res.redirect('/equipas');
+        });
+    } else {
+        console.log("Não existe torneio registado ou activo");
+        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        res.redirect('../');
+    }
+});
+
+/////////////////////////////////////////////////////
+//      PESQUISA EQUIPA POR ID
+/////////////////////////////////////////////////////
 
 router.post('/pesquisa', (req, res) => {
     if(req.session.torneio != null) {
@@ -132,7 +298,7 @@ router.post('/pesquisa', (req, res) => {
         };
 
         // Verifica se o input é númerico e com pelo menos 1 digito
-        const numbersRegExp = new RegExp('[0-9]{1,}');
+        const numbersRegExp = new RegExp('^[0-9]+$');
         let teamID = -1;
         if(numbersRegExp.test(req.body.searchTeamID)){
             teamID = req.body.searchTeamID;
@@ -170,21 +336,21 @@ async function filtraLocalidadeEscalao(torneio, localidade = null, escalao = nul
     if(localidade != null && escalao != null){
         // Retorna equipas filtradas por localidade e escalao
         // URL: /equipas/filtro/localidade/:localidade/escalao/:escalao
-        console.log("Localidade: "+localidade+", Escalao: " + escalao);
+        //console.log("Localidade: "+localidade+", Escalao: " + escalao);
         return await malha.equipa.getTeamsByTorneioAndLocalidadeAndEscalao(torneio, localidade, escalao);
     } else if(localidade != null && escalao == null){
         // Retorna equipas filtradas por localidade
         // URL: /equipas/filtro/localidade/:localidade
-        console.log("Localidade: " + localidade);
+        //console.log("Localidade: " + localidade);
         return await malha.equipa.getTeamsByTorneioAndLocalidade(torneio, localidade);
     } else if(localidade == null && escalao != null) {
         // Retorna equipas filtradas por escalao
         // URL: /equipas/filtro/escalao/:escalao
-        console.log("Escalao: " + escalao);
+        //console.log("Escalao: " + escalao);
         return await malha.equipa.getAllEquipasByTorneioAndEscalao(torneio, escalao);
     } else {
         // Retornar erro
-        console.log("Erro");
+        console.log("Erro: Não foi possível fazer filtragem");
     }
 }
 
@@ -275,7 +441,6 @@ router.get('/filtro/localidade/:localidade/escalao/:escalao', (req, res) => {
         .then((rows) => {
             data.escaloes = rows.escaloes;
             data.localidades = rows.localidades;
-            console.log(data);
             res.render('home/equipas/index', {data: data});
         })
         .catch((err) => {

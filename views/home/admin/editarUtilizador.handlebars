@@ -9,11 +9,11 @@
 {{/if}}
 <form action="/admin/editarUtilizador/{{utilizador.user_id}}?_method=PUT" method="post">
     <label for="username">Username</label>
-    <input type="text" name="username" value="{{utilizador.username}}"><br>
+    <input type="text" name="username" value="{{utilizador.username}}" required><br>
     <label for="password">Password</label>
-    <input type="password" name="password"><br>
+    <input type="password" name="password" required><br>
     <label for="password">Verificar Password</label>
-    <input type="password" name="verify_password"><br>
+    <input type="password" name="verify_password" required><br>
     {{#ifCond utilizador.status '==' 1}}
         <input type="checkbox" name="status" checked>Administrador<br>
     {{else}}

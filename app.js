@@ -25,9 +25,7 @@ app.engine('handlebars', exphbs({
     partialsDir: path.join(__dirname, 'views/partials'),
     helpers: {
         ifCond: helpers.ifCond,
-        sexoSelect: helpers.sexoSelect,
-        escaloes: helpers.escaloes,
-        listaEscaloes: helpers.listaEscaloes
+        sexoSelect: helpers.sexoSelect
     }
 }));
 app.set('view engine', 'handlebars');

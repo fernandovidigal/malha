@@ -1,0 +1,44 @@
+{{#if data}}
+    {{#if data.torneio}}
+        <div class="title__bar">
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
+            <h3>{{data.torneio.ano}}</h3>
+        </div>
+    {{/if}}
+    {{> messages}}
+    {{#if data.erros}}
+        {{#each data.erros}}
+            <div class="warning_msg">
+                {{err_msg}}
+                <a href="#" class="msg_close">x</a>
+            </div>
+        {{/each}}
+    {{/if}}
+    {{#if data.equipa}}
+        <form action="/equipas/editarEquipa/{{data.equipa.0.equipa_id}}?_method=PUT" method="post">
+            <label for="primeiro_elemento">Nome do Primeiro Elemento</label>
+            <input type="text" name="primeiro_elemento" pattern="^[^0-9]+$" value="{{data.equipa.0.primeiro_elemento}}" required><br>
+            <label for="segundo_elemento">Nome do Segundo Elemento</label>
+            <input type="text" name="segundo_elemento" pattern="^[^0-9]+$" value="{{data.equipa.0.segundo_elemento}}" required><br>
+            <label for="Localidade">Localidade</label>
+            <input type="text" name="localidade" pattern="^[^0-9]+$" value="{{data.equipa.0.localidade}}" required><br>
+            <p>Escalões</p>
+            <p>Masculino</p>
+            {{#each data.escaloes}}
+                {{#ifCond sexo '==' 1}}
+                    <input type="radio" name="escalao" value="{{escalao_id}}" {{#ifCond ../data.equipa.0.escalao_id '==' escalao_id}}checked{{/ifCond}} required>{{designacao}}
+                {{/ifCond}}
+            {{/each}}
+            <p>Feminino</p>
+            {{#each data.escaloes}}
+                {{#ifCond sexo '==' 0}}
+                    <input type="radio" name="escalao" value="{{escalao_id}}" {{#ifCond ../data.equipa.0.escalao_id '==' escalao_id}}checked{{/ifCond}} required>{{designacao}}
+                {{/ifCond}}
+            {{/each}}
+            <br>
+            <input type="submit" value="Actualizar">
+        </form>
+    {{else}}
+        <p>Nã foi possível obter dados da equipa</p>
+    {{/if}}
+{{/if}}
