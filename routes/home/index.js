@@ -8,7 +8,7 @@ const {userAuthenticated} = require('../../helpers/authentication');
 router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
     if(!req.session.torneio){
-        malha.torneio.getActiveTorneio().then((row) => {
+        malha.torneios.getActiveTorneio().then((row) => {
             if(!row) {
                 req.session.torneio = null;
             } else {

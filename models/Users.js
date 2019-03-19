@@ -4,7 +4,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 
-class User {
+class Users {
     constructor(){  
         this.db = new sqlite3.Database('./data/users.db', (err) => {
             if(err) throw err;
@@ -22,7 +22,7 @@ class User {
         const that = this
         return new Promise(function(resolve, reject){
             that.db.run(`CREATE TABLE IF NOT EXISTS users (
-                user_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL PRIMARY KEY,
                 username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
                 status INTEGER NOT NULL DEFAULT 0)`,
@@ -42,7 +42,7 @@ class User {
             if(!row){
                 // Adiciona um utilizador por default com privilegios de administrador
                 this.addUser('admin', '12345', 1).then(() => {
-                    console.log("Default admin user created!");
+                    console.log("Conta de administrador por defeito criada!");
                 }).catch((err) => {
                     console.log(err);
                 });
@@ -148,4 +148,4 @@ class User {
     }
 }
 
-module.exports = User;
+module.exports = Users;

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const UserDB = require('../../models/User');
+const UsersDB = require('../../models/Users');
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
@@ -35,23 +35,23 @@ router.post('/adicionarUtilizador', (req, res) => {
         erros.push({err_msg: 'As passwords não são identicas.'});
     }
 
-    const user = new UserDB();
+    const users = new UsersDB();
 
     // Existem erros
     if(erros.length > 0) {
-        user.closeDB();
+        users.closeDB();
         res.render('home/admin/adicionarUtilizador', {erros: erros});
     } else {
-        user.addUser(
+        users.addUser(
             req.body.username,
             req.body.password,
             req.body.status ? 1 : 0
         ).then(()=>{
-            user.closeDB();
+            users.closeDB();
             req.flash('success', 'Utilizador Adicionado com sucesso');
             res.redirect('/admin/utilizadores');
         }).catch((err) => {
-            user.closeDB();
+            users.closeDB();
             // Erro que aparece quando o username já existe na base de dados (UNIQUE)
             if(err.code = 'SQLITE_CONSTRAINT'){
                 req.flash('error', 'Username já está foi utilizado.');
@@ -67,9 +67,9 @@ router.post('/adicionarUtilizador', (req, res) => {
 });
 
 router.get('/utilizadores', (req, res) => {
-    const user = new UserDB();
-    user.getAllUsers().then((rows) => {
-        user.closeDB();
+    const users = new UsersDB();
+    users.getAllUsers().then((rows) => {
+        users.closeDB();
         res.render('home/admin/utilizadores', {utilizadores: rows});
     }).catch((err) => {
         req.flash('error', 'Ocurreu um erro ao registar o utilizador!');
@@ -77,27 +77,27 @@ router.get('/utilizadores', (req, res) => {
 });
 
 router.delete('/utilizadores/:id', (req, res) => {
-    const user = new UserDB();
-    user.deleteUser(req.params.id).then(() => {
-        user.closeDB();
+    const users = new UsersDB();
+    users.deleteUser(req.params.id).then(() => {
+        users.closeDB();
         req.flash('success', `Utilizador eliminado com sucesso`)
         res.redirect('/admin/utilizadores');
     }).catch((err) => { 
         console.log(err);
-        user.closeDB();
+        users.closeDB();
         req.flash('error', 'Não foi possível eliminar o utilizador.');
         res.redirect('/admin/utilizadores');
     });
 });
 
 router.get('/editarUtilizador/:id', (req, res) => {
-    const user = new UserDB();
-    user.getUserById(req.params.id).then((row) => {
-        user.closeDB();
+    const users = new UsersDB();
+    users.getUserById(req.params.id).then((row) => {
+        users.closeDB();
         res.render('home/admin/editarUtilizador', {utilizador: row});
     }).catch((err) => {
         console.log(err);
-        user.closeDB();
+        users.closeDB();
         req.flash('error', 'Não foi possível aceder aos dados do utilizador.');
         res.redirect('/admin/utilizadores');
     });
@@ -118,31 +118,31 @@ router.put('/editarUtilizador/:id', (req, res)=>{
         erros.push({err_msg: 'As passwords não são identicas.'});
     }
 
-    const user = new UserDB();
-    // Existem erros
+    const users = new UsersDB();
+    // Existem erross
     if(erros.length > 0) {
-        user.getUserById(req.params.id).then((row) => {
-            user.closeDB();
+        users.getUserById(req.params.id).then((row) => {
+            users.closeDB();
             row.username = req.body.username;
             res.render('home/admin/editarUtilizador', {utilizador: row, erros: erros});
         }).catch((err) => {
             console.log(err);
-            user.closeDB();
+            users.closeDB();
             res.render('home/admin/editarUtilizador', {erros: erros});
         });
     } else {
-        user.updateUser(
+        users.updateUser(
             req.params.id,
             req.body.username,
             req.body.password,
             req.body.status ? 1 : 0
         ).then(() => {
-            user.closeDB();
+            users.closeDB();
             req.flash('success', 'Utilizador actualizado com sucesso');
             res.redirect('/admin/utilizadores');
         }).catch((err)=>{
             console.log(err);
-            user.closeDB();
+            users.closeDB();
             req.flash('error', 'Não foi possível actualizar o utilizador!');
             res.redirect('/admin/utilizadores');
         });
@@ -150,7 +150,7 @@ router.put('/editarUtilizador/:id', (req, res)=>{
 });
 
 router.get('/escaloes', (req, res) => {
-    malha.escalao.getAllEscaloes().then((rows) => {
+    malha.escaloes.getAllEscaloes().then((rows) => {
         res.render('home/admin/escaloes', {escaloes: rows});
     }).catch((err) => {
         console.log(err);
@@ -164,7 +164,7 @@ router.get('/escaloes/:sexo', (req, res) => {
     if(req.params.sexo == 'M' || req.params.sexo == 'F'){
         let sexo = req.params.sexo == 'M' ? 1 : 0;
 
-        malha.escalao.getAllEscaloesBySex(sexo).then((rows) => {
+        malha.escaloes.getAllEscaloesBySex(sexo).then((rows) => {
             res.render('home/admin/escaloes', {escaloes: rows, sexo: sexo});
         }).catch((err) => {
             console.log(err);
@@ -196,7 +196,7 @@ router.post('/adicionarEscalao', (req, res) => {
     if(erros.length > 0){
         res.render('home/admin/adicionarEscalao', {erros: erros});
     } else {
-        malha.escalao.addEscalao(
+        malha.escaloes.addEscalao(
             req.body.designacao,
             req.body.sexo
         ).then(() => {
@@ -212,7 +212,7 @@ router.post('/adicionarEscalao', (req, res) => {
 });
 
 router.get('/editarEscalao/:id', (req, res) => {
-    malha.escalao.getEscalaoById(req.params.id).then((row) => {
+    malha.escaloes.getEscalaoById(req.params.id).then((row) => {
         res.render('home/admin/editarEscalao', {escalao: row});
     }).catch((err) => {
         console.log(err);
@@ -233,14 +233,14 @@ router.put('/editarEscalao/:id', (req, res) => {
     }
 
     if(erros.length > 0){
-        malha.escalao.getEscalaoById(req.params.id).then((row) => {
+        malha.escaloes.getEscalaoById(req.params.id).then((row) => {
             row.designacao = req.body.designacao;
             res.render('home/admin/editarEscalao', {escalao: row, erros: erros});
         }).catch((err) => {
             console.log(err);
         });
     } else {
-        malha.escalao.updateEscalao(
+        malha.escaloes.updateEscalao(
             req.params.id,
             req.body.designacao,
             req.body.sexo
@@ -256,7 +256,7 @@ router.put('/editarEscalao/:id', (req, res) => {
 });
 
 router.delete('/escaloes/:id', (req, res) => {
-    malha.escalao.deleteEscalao(req.params.id).then(()=>{
+    malha.escaloes.deleteEscalao(req.params.id).then(()=>{
         req.flash('success', 'Escalão eliminado com sucesso.');
         res.redirect('/admin/escaloes');
     }).catch((err) => {
@@ -271,7 +271,7 @@ router.delete('/escaloes/:id', (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 router.get('/torneios', (req, res) => {
-    malha.torneio.getAllTorneios().then((rows) => {
+    malha.torneios.getAllTorneios().then((rows) => {
         res.render('home/admin/torneios', {torneios: rows});
     }).catch((err) => {
         console.log(err);
@@ -308,16 +308,16 @@ router.post('/adicionarTorneio', (req, res) => {
         res.render('home/admin/adicionarTorneio', {erros: erros});
     } else {
         //Adiciona o Torneio
-        malha.torneio.addTorneio(
+        malha.torneios.addTorneio(
             req.body.designacao,
             req.body.localidade,
             parseInt(req.body.ano)
         ).then((id) => {
             // Activa o torneio
             if(req.body.adicionar_activar){
-                malha.torneio.setActiveTorneio(id)
+                malha.torneios.setActiveTorneio(id)
                 .then(()=>{
-                    return malha.torneio.getActiveTorneio();
+                    return malha.torneios.getActiveTorneio();
                 }).then((row)=>{
                     req.session.torneio = row;
                     req.flash('success', 'Torneio adicionado e activado com sucesso!')
@@ -327,9 +327,9 @@ router.post('/adicionarTorneio', (req, res) => {
                     res.redirect('/admin/torneios');
                 });
             } else { // Não escolheu activar o torneio
-                malha.torneio.getNumTorneios().then((numTorneios) => {
+                malha.torneios.getNumTorneios().then((numTorneios) => {
                     if(numTorneios == 1) {
-                        malha.torneio.setActiveTorneio(id).then(()=>{
+                        malha.torneios.setActiveTorneio(id).then(()=>{
                             req.flash('success', 'Torneio adicionado com sucesso!')
                             res.redirect('/admin/torneios');
                         }).catch((err) => {
@@ -356,7 +356,7 @@ router.post('/adicionarTorneio', (req, res) => {
 });
 
 router.get('/editarTorneio/:id', (req, res) => {
-    malha.torneio.getTorneioById(req.params.id).then((row) => {
+    malha.torneios.getTorneioById(req.params.id).then((row) => {
         res.render('home/admin/editarTorneio', {torneio: row});
     }).catch((err) => {
         console.log(err);
@@ -385,7 +385,7 @@ router.put('/editarTorneio/:id', (req, res) => {
     }
 
     if(erros.length > 0){
-        malha.torneio.getTorneioById(req.params.id).then((row) => {
+        malha.torneios.getTorneioById(req.params.id).then((row) => {
             row.designacao = req.body.designacao;
             row.localidade = req.body.localidade;
             row.ano = req.body.ano;
@@ -394,7 +394,7 @@ router.put('/editarTorneio/:id', (req, res) => {
             console.log(err);
         });
     } else {
-        malha.torneio.updateTorneio(
+        malha.torneios.updateTorneio(
             req.params.id,
             req.body.designacao,
             req.body.localidade,
@@ -411,7 +411,7 @@ router.put('/editarTorneio/:id', (req, res) => {
 });
 
 router.delete('/torneios/:id', (req, res) => {
-    malha.torneio.deleteTorneio(req.params.id).then(()=>{
+    malha.torneios.deleteTorneio(req.params.id).then(()=>{
         req.flash('success', 'Torneio eliminado com sucesso.');
         res.redirect('/admin/torneios');
     }).catch((err) => {
@@ -422,8 +422,8 @@ router.delete('/torneios/:id', (req, res) => {
 });
 
 router.get('/activaTorneio/:id', (req, res) => {
-    malha.torneio.setActiveTorneio(req.params.id).then(() => {
-        malha.torneio.getActiveTorneio().then((row) => {
+    malha.torneios.setActiveTorneio(req.params.id).then(() => {
+        malha.torneios.getActiveTorneio().then((row) => {
             req.session.torneio = row;
             req.flash('success', 'Torneio activado com sucesso');
             res.redirect('/admin/torneios');

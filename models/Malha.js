@@ -1,7 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
-const EscalaoDB = require('./Escalao');
-const TorneioDB = require('./Torneio');
-const EquipaDB = require('./Equipa');
+const EscaloesDB = require('./Escaloes');
+const TorneiosDB = require('./Torneios');
+const EquipasDB = require('./Equipas');
+const JogosDB = require('./Jogos');
 
 class Malha {
 
@@ -9,23 +10,28 @@ class Malha {
         this.db = new sqlite3.Database('./data/malha.db', (err) => {
             if(err) throw err;
             else {
-                this.initEscalaoTable();
-                this.initTorneioTable();
+                this.initEscaloesTable();
+                this.initTorneiosTable();
                 this.initEquipasTable();
+                this.initJogosTables();
             }
         });
     }
 
-    initEscalaoTable(){
-        this.escalao = new EscalaoDB(this.db);
+    initEscaloesTable(){
+        this.escaloes = new EscaloesDB(this.db);
     }
 
-    initTorneioTable(){
-        this.torneio = new TorneioDB(this.db);
+    initTorneiosTable(){
+        this.torneios = new TorneiosDB(this.db);
     }
 
     initEquipasTable(){
-        this.equipa = new EquipaDB(this.db);
+        this.equipas = new EquipasDB(this.db);
+    }
+
+    initJogosTables(){
+        this.jogos = new JogosDB(this.db);
     }
 }
 

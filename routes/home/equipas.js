@@ -7,8 +7,8 @@ const {userAuthenticated} = require('../../helpers/authentication');
 const textRegExp = new RegExp('^[^0-9]+$');
 
 async function getEscaloesAndLocalidades(torneio_id){
-    const escaloes = await malha.escalao.getAllEscaloes();
-    const localidades = await malha.equipa.getAllLocalidades(torneio_id);
+    const escaloes = await malha.escaloes.getAllEscaloes();
+    const localidades = await malha.equipas.getAllLocalidades(torneio_id);
     return {
         escaloes: escaloes,
         localidades: localidades
@@ -18,7 +18,7 @@ async function getEscaloesAndLocalidades(torneio_id){
 router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
     if(!req.session.torneio){
-        malha.torneio.getActiveTorneio().then((row) => {
+        malha.torneios.getActiveTorneio().then((row) => {
             if(!row) {
                 req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
                 res.redirect('../');
@@ -38,10 +38,10 @@ router.all('/*', userAuthenticated, (req, res, next) => {
 
 router.get('/faker/:num', (req, res) => {
     var escaloes = [];
-    var localidades = ['Arraiolos', 'Mora', 'Évora', 'Montemor-o-novo', 'Lavre', 'Estremoz', 'Borba', 'Viana do Alentejo', 'Redondo'];
+    var localidades = ['Arraiolos', 'Mora', 'Évora', 'Montemor-o-Novo', 'Lavre', 'Estremoz', 'Borba', 'Viana do Alentejo', 'Redondo'];
 
     faker.locale = "pt_BR";
-    malha.escalao.getAllEscaloes()
+    malha.escaloes.getAllEscaloes()
     .then(async (rows) => {
         rows.forEach(element => {
             escaloes.push(element.escalao_id);
@@ -49,7 +49,7 @@ router.get('/faker/:num', (req, res) => {
 
         var i;
         for(i = 0; i < req.params.num; i++){
-            await malha.equipa.addEquipa(
+            await malha.equipas.addEquipa(
                 req.session.torneio.torneio_id,
                 faker.name.firstName() + " " + faker.name.lastName(),
                 faker.name.firstName() + " " + faker.name.lastName(),
@@ -71,7 +71,7 @@ router.get('/', (req, res) => {
         let data = {
             'torneio': req.session.torneio
         };
-        malha.equipa.getAllEquipasByTorneio(req.session.torneio.torneio_id)
+        malha.equipas.getAllEquipasByTorneio(req.session.torneio.torneio_id)
         .then((row) => {
             if(row.length > 0){
                 data.equipas = row;
@@ -96,7 +96,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/adicionarEquipa', (req, res) => {
-    malha.escalao.getAllEscaloes().then((rows) => {
+    malha.escaloes.getAllEscaloes().then((rows) => {
         res.render('home/equipas/adicionarEquipa', {escaloes: rows, torneio: req.session.torneio});
     }).catch((err) => {
         console.log(err);
@@ -132,7 +132,7 @@ router.post('/adicionarEquipa', (req, res) => {
         }
 
         if(erros.length > 0){
-            malha.escalao.getAllEscaloes().then((rows) => {
+            malha.escaloes.getAllEscaloes().then((rows) => {
                 res.render('home/equipas/adicionarEquipa', {erros: erros, escaloes: rows, torneio: req.session.torneio});
             }).catch((err) => {
                 console.log(err);
@@ -140,7 +140,7 @@ router.post('/adicionarEquipa', (req, res) => {
                 res.redirect('/equipas');
             });
         } else {
-            malha.equipa.addEquipa(
+            malha.equipas.addEquipa(
                 req.session.torneio.torneio_id,
                 req.body.primeiro_elemento,
                 req.body.segundo_elemento,
@@ -168,12 +168,12 @@ router.get('/editarEquipa/:id', (req, res) => {
             'torneio': req.session.torneio
         };
 
-        malha.equipa.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
+        malha.equipas.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
         .then((equipa) => {
             if(equipa.length > 0){
                 data.equipa = equipa;
             }
-            return malha.escalao.getAllEscaloes();
+            return malha.escaloes.getAllEscaloes();
         })
         .then((escaloes) => {
             data.escaloes = escaloes;
@@ -223,7 +223,7 @@ router.put('/editarEquipa/:id', (req, res) => {
 
         if(erros.length > 0){
             data.erros = erros;
-            malha.equipa.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
+            malha.equipas.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
             .then((equipa) => {
                 if(equipa.length > 0){
                     data.equipa = equipa;
@@ -231,7 +231,7 @@ router.put('/editarEquipa/:id', (req, res) => {
                     data.equipa[0].segundo_elemento = req.body.segundo_elemento;
                     data.equipa[0].localidade = req.body.localidade;
                 }
-                return malha.escalao.getAllEscaloes();
+                return malha.escaloes.getAllEscaloes();
             })
             .then((escaloes) => {
                 data.escaloes = escaloes;
@@ -242,7 +242,7 @@ router.put('/editarEquipa/:id', (req, res) => {
                 res.redirect('/equipas');
             });
         } else {
-            malha.equipa.updateEquipa(
+            malha.equipas.updateEquipa(
                 req.params.id,
                 req.session.torneio.torneio_id,
                 req.body.primeiro_elemento,
@@ -269,7 +269,7 @@ router.put('/editarEquipa/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
     if(req.session.torneio != null) {
-        malha.equipa.deleteEquipa(req.params.id, req.session.torneio.torneio_id)
+        malha.equipas.deleteEquipa(req.params.id, req.session.torneio.torneio_id)
         .then(() => {
             req.flash('success', 'Equipa eliminada com sucesso');
             res.redirect('/equipas');
@@ -304,7 +304,7 @@ router.post('/pesquisa', (req, res) => {
             teamID = req.body.searchTeamID;
         }
 
-        malha.equipa.getEquipaByID(teamID, req.session.torneio.torneio_id)
+        malha.equipas.getEquipaByID(teamID, req.session.torneio.torneio_id)
         .then((equipa) => {
             if(equipa.length > 0){
                 data.equipas = equipa;
@@ -337,17 +337,17 @@ async function filtraLocalidadeEscalao(torneio, localidade = null, escalao = nul
         // Retorna equipas filtradas por localidade e escalao
         // URL: /equipas/filtro/localidade/:localidade/escalao/:escalao
         //console.log("Localidade: "+localidade+", Escalao: " + escalao);
-        return await malha.equipa.getTeamsByTorneioAndLocalidadeAndEscalao(torneio, localidade, escalao);
+        return await malha.equipas.getTeamsByTorneioAndLocalidadeAndEscalao(torneio, localidade, escalao);
     } else if(localidade != null && escalao == null){
         // Retorna equipas filtradas por localidade
         // URL: /equipas/filtro/localidade/:localidade
         //console.log("Localidade: " + localidade);
-        return await malha.equipa.getTeamsByTorneioAndLocalidade(torneio, localidade);
+        return await malha.equipas.getTeamsByTorneioAndLocalidade(torneio, localidade);
     } else if(localidade == null && escalao != null) {
         // Retorna equipas filtradas por escalao
         // URL: /equipas/filtro/escalao/:escalao
         //console.log("Escalao: " + escalao);
-        return await malha.equipa.getAllEquipasByTorneioAndEscalao(torneio, escalao);
+        return await malha.equipas.getAllEquipasByTorneioAndEscalao(torneio, escalao);
     } else {
         // Retornar erro
         console.log("Erro: Não foi possível fazer filtragem");

@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-class Torneio {
+class Torneios {
 
     constructor(db = null){
         if(db == null) {
@@ -23,11 +23,12 @@ class Torneio {
     createTable(){
         const that = this
         return new Promise(function(resolve, reject){
-            that.db.run(`CREATE TABLE IF NOT EXISTS torneio (
-                torneio_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            that.db.run(`CREATE TABLE IF NOT EXISTS torneios (
+                torneio_id INTEGER NOT NULL PRIMARY KEY,
                 designacao TEXT NOT NULL,
                 localidade TEXT NOT NULL,
                 ano INTEGER NOT NULL,
+                fase INTEGER NOT NULL DEFAULT 1,
                 activo INTEGER NOT NULL DEFAULT 0)`, 
             (err) => {
                 if(err) {
@@ -42,7 +43,7 @@ class Torneio {
     getAllTorneios(){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.all("SELECT * FROM torneio", (err, rows) => {
+            that.db.all("SELECT * FROM torneios", (err, rows) => {
                 if(err) {
                     return reject(err);
                 } else {
@@ -55,7 +56,7 @@ class Torneio {
     getTorneioById(id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT * FROM torneio WHERE torneio_id = ? LIMIT 1",
+            that.db.get("SELECT * FROM torneios WHERE torneio_id = ? LIMIT 1",
             [id],
             (err, row) => {
                 if(err) {
@@ -71,7 +72,7 @@ class Torneio {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(
-                "INSERT INTO torneio (designacao, localidade, ano) VALUES (?,?,?)",
+                "INSERT INTO torneios (designacao, localidade, ano) VALUES (?,?,?)",
                 [designacao, localidade, ano],
                 function(err){
                     if(err)
@@ -87,7 +88,7 @@ class Torneio {
     updateTorneio(id, designacao, localidade, ano) {
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("UPDATE torneio SET designacao = ?, localidade = ?, ano = ? WHERE torneio_id = ?",
+            that.db.run("UPDATE torneios SET designacao = ?, localidade = ?, ano = ? WHERE torneio_id = ?",
                 [designacao, localidade, ano, id],
                 (err) => {
                     if(err){
@@ -103,7 +104,7 @@ class Torneio {
     deleteTorneio(id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("DELETE FROM torneio WHERE torneio_id = ?", [id], (err) => {
+            that.db.run("DELETE FROM torneios WHERE torneio_id = ?", [id], (err) => {
                 if(err){
                     return reject(err);
                 } else {
@@ -116,7 +117,7 @@ class Torneio {
     resetActiveTorneios(){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("UPDATE torneio SET activo = 0", (err) => {
+            that.db.run("UPDATE torneios SET activo = 0", (err) => {
                 if(err) {
                     return reject(err);
                 } else {
@@ -129,7 +130,7 @@ class Torneio {
     getActiveTorneio(){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT * FROM torneio WHERE activo = 1", (err, row) => {
+            that.db.get("SELECT * FROM torneios WHERE activo = 1", (err, row) => {
                 if(err){
                     return reject(err);
                 } else {
@@ -143,7 +144,7 @@ class Torneio {
         const that = this;
         return new Promise(function(resolve, reject){
             that.resetActiveTorneios().then(()=>{
-                that.db.run("UPDATE torneio SET activo = 1 WHERE torneio_id = ?", [id], (err) => {
+                that.db.run("UPDATE torneios SET activo = 1 WHERE torneio_id = ?", [id], (err) => {
                     if(err){
                         return reject(err);
                     } else {
@@ -159,7 +160,7 @@ class Torneio {
     getNumTorneios(){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT COUNT(torneio_id) AS numTorneios FROM torneio", (err, row) => {
+            that.db.get("SELECT COUNT(torneio_id) AS numTorneios FROM torneios", (err, row) => {
                 if(err){
                     return reject(err);
                 } else {
@@ -170,4 +171,4 @@ class Torneio {
     }
 }
 
-module.exports = Torneio;
+module.exports = Torneios;

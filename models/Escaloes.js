@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-class Malha {
+class Escaloes {
 
     constructor(db = null){
         if(db == null) {
@@ -24,8 +24,9 @@ class Malha {
     createTable(){
         const that = this
         return new Promise(function(resolve, reject){
-            that.db.run(`CREATE TABLE IF NOT EXISTS escalao (
-                escalao_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            that.db.run(`
+                CREATE TABLE IF NOT EXISTS escaloes (
+                escalao_id INTEGER NOT NULL PRIMARY KEY,
                 designacao TEXT NOT NULL,
                 sexo INTEGER NOT NULL)`, 
             (err) => {
@@ -41,7 +42,7 @@ class Malha {
     getAllEscaloes(){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.all("SELECT * FROM escalao", (err, rows) => {
+            that.db.all("SELECT * FROM escaloes", (err, rows) => {
                 if(err) {
                     return reject(err);
                 } else {
@@ -54,7 +55,7 @@ class Malha {
     getEscalaoById(id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT * FROM escalao WHERE escalao_id = ? LIMIT 1",
+            that.db.get("SELECT * FROM escaloes WHERE escalao_id = ? LIMIT 1",
             [id],
             (err, row) => {
                 if(err) {
@@ -69,7 +70,7 @@ class Malha {
     getAllEscaloesBySex(sexo){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.all("SELECT * FROM escalao WHERE sexo = ?", [sexo], (err, rows) => {
+            that.db.all("SELECT * FROM escaloes WHERE sexo = ?", [sexo], (err, rows) => {
                 if(err) {
                     return reject(err);
                 } else {
@@ -83,7 +84,7 @@ class Malha {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(
-                "INSERT INTO escalao (designacao, sexo) VALUES (?,?)",
+                "INSERT INTO escaloes (designacao, sexo) VALUES (?,?)",
                 [designacao, sexo],
                 (err) => {
                     if(err)
@@ -98,7 +99,7 @@ class Malha {
     updateEscalao(id, designacao, sexo) {
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("UPDATE escalao SET designacao = ?, sexo = ? WHERE escalao_id = ?",
+            that.db.run("UPDATE escaloes SET designacao = ?, sexo = ? WHERE escalao_id = ?",
                 [designacao, sexo, id],
                 (err) => {
                     if(err){
@@ -114,7 +115,7 @@ class Malha {
     deleteEscalao(id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("DELETE FROM escalao WHERE escalao_id = ?", [id], (err) => {
+            that.db.run("DELETE FROM escaloes WHERE escalao_id = ?", [id], (err) => {
                 if(err){
                     return reject(err);
                 } else {
@@ -125,4 +126,4 @@ class Malha {
     }
 }
 
-module.exports = Malha;
+module.exports = Escaloes;

@@ -3,8 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const UserDB = require('../../models/User');
-const user = new UserDB();
+const UsersDB = require('../../models/Users');
+const users = new UsersDB();
 
 // APP LOGIN
 passport.use(new LocalStrategy({
@@ -13,7 +13,7 @@ passport.use(new LocalStrategy({
     }, 
     (username, password, done) => {
 
-        user.getUser(username).then(user => {
+        users.getUser(username).then(user => {
             if(!user)
                 return done(null, false);
             
@@ -35,7 +35,7 @@ passport.serializeUser(function(user, done){
 })
 
 passport.deserializeUser(function(id, done){
-    user.getUserById(id).then(user => {
+    users.getUserById(id).then(user => {
         done(null, user);
     }).catch(err => {
         console.log(err);
