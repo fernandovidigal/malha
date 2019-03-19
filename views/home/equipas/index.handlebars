@@ -32,6 +32,7 @@
             <thead>
                 <tr>
                     <th></th>
+                    <th></th>
                     <th>Elementos</th>
                     <th>Localidade</th>
                     <th>Escalão</th>
@@ -44,6 +45,7 @@
                 {{#each data.equipas}}
                     <tr>
                         <td class="w5">{{equipa_id}}</td>
+                        <td class="w5"><a href="" class="classificacoes_icon"><i class="fas fa-clipboard-list"></i></a></td>
                         <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
                         <td class="w20 table_cell_center">{{localidade}}</td>
                         <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>

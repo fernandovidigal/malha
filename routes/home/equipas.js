@@ -4,7 +4,7 @@ const faker = require('faker');
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 
-const textRegExp = new RegExp('^[^0-9]+$');
+const textRegExp = new RegExp('^[^0-9]+$'); 
 
 async function getEscaloesAndLocalidades(torneio_id){
     const escaloes = await malha.escaloes.getAllEscaloes();
@@ -18,7 +18,8 @@ async function getEscaloesAndLocalidades(torneio_id){
 router.all('/*', userAuthenticated, (req, res, next) => {
     req.app.locals.layout = 'home';
     if(!req.session.torneio){
-        malha.torneios.getActiveTorneio().then((row) => {
+        malha.torneios.getActiveTorneio()
+        .then((row) => {
             if(!row) {
                 req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
                 res.redirect('../');
@@ -26,7 +27,8 @@ router.all('/*', userAuthenticated, (req, res, next) => {
                 req.session.torneio = row;
                 next();
             }
-        }).catch((err) => {
+        })
+        .catch((err) => {
             console.log(err);
             req.flash('error', 'Ocurreu um erro');
             res.redirect('/equipas');
@@ -38,7 +40,7 @@ router.all('/*', userAuthenticated, (req, res, next) => {
 
 router.get('/faker/:num', (req, res) => {
     var escaloes = [];
-    var localidades = ['Arraiolos', 'Mora', 'Évora', 'Montemor-o-Novo', 'Lavre', 'Estremoz', 'Borba', 'Viana do Alentejo', 'Redondo'];
+    var localidades = ['Arraiolos', 'Mora', 'Évora', 'Montemor-o-Novo', 'Estremoz', 'Borba', 'Viana do Alentejo', 'Vendas Novas', 'Portel', 'Viana', 'Vila Viçosa', 'Redondo'];
 
     faker.locale = "pt_BR";
     malha.escaloes.getAllEscaloes()
@@ -337,17 +339,17 @@ async function filtraLocalidadeEscalao(torneio, localidade = null, escalao = nul
         // Retorna equipas filtradas por localidade e escalao
         // URL: /equipas/filtro/localidade/:localidade/escalao/:escalao
         //console.log("Localidade: "+localidade+", Escalao: " + escalao);
-        return await malha.equipas.getTeamsByTorneioAndLocalidadeAndEscalao(torneio, localidade, escalao);
+        return await malha.equipas.getTeamsByLocalidadeAndEscalao(torneio, localidade, escalao);
     } else if(localidade != null && escalao == null){
         // Retorna equipas filtradas por localidade
         // URL: /equipas/filtro/localidade/:localidade
         //console.log("Localidade: " + localidade);
-        return await malha.equipas.getTeamsByTorneioAndLocalidade(torneio, localidade);
+        return await malha.equipas.getTeamsByLocalidade(torneio, localidade);
     } else if(localidade == null && escalao != null) {
         // Retorna equipas filtradas por escalao
         // URL: /equipas/filtro/escalao/:escalao
         //console.log("Escalao: " + escalao);
-        return await malha.equipas.getAllEquipasByTorneioAndEscalao(torneio, escalao);
+        return await malha.equipas.getAllEquipasByEscalao(torneio, escalao);
     } else {
         // Retornar erro
         console.log("Erro: Não foi possível fazer filtragem");

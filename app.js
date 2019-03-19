@@ -65,11 +65,13 @@ const login = require('./routes/home/login');
 const home = require('./routes/home/index');
 const admin = require('./routes/home/admin');
 const equipas = require('./routes/home/equipas');
+const torneio = require('./routes/home/torneio');
 
 app.use('/login', login);
 app.use('/', home);
 app.use('/admin', admin);
 app.use('/equipas', equipas);
+app.use('/torneio', torneio);
 
 // Activar Servidor
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

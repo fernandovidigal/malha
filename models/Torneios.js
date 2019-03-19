@@ -169,6 +169,10 @@ class Torneios {
             });
         });
     }
+
+    close(){
+        this.db.close();
+    }
 }
 
 module.exports = Torneios;

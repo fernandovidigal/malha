@@ -1,0 +1,90 @@
+{{#if data}}
+    {{#if data.torneio}}
+        <div class="title__bar">
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
+            <h3>{{data.torneio.ano}}</h3>
+        </div>
+    {{/if}}
+
+{{> messages}}
+
+<div class="table_sidebar__wrapper">
+    <div class="table__content">
+        <div class="buttons_bar">
+            <div class="search_bar">
+                {{#if data.equipa_id}}
+                    <div class="search_equipaID">
+                        {{data.equipa_id}}
+                        <a href="/equipas"><i class="fas fa-times-circle"></i></a>
+                    </div>
+                {{/if}} 
+                <form action="/equipas/pesquisa" method="post" class="searchBox">
+                    <input type="text" name="searchTeamID" class="searchBox__input" pattern="^[0-9]+$" placeholder="Equipa"/>
+                    <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
+                </form>
+            </div>
+            <div class="action_btns a-right">
+                <button class="btn print_btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</button>
+            </div>
+        </div>
+        <table class="listTable equipasTable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Elementos</th>
+                    <th>Localidade</th>
+                    <th>Escalão</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {{#if data.equipas}}
+                {{#each data.equipas}}
+                    <tr>
+                        <td class="w5">{{equipa_id}}</td>
+                        <td class="w5"><a href="" class="classificacoes_icon"><i class="fas fa-clipboard-list"></i></a></td>
+                        <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
+                        <td class="w20 table_cell_center">{{localidade}}</td>
+                        <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>
+                        <td class="w5"><a href="/equipas/editarEquipa/{{equipa_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                        <td class="w5">
+                            <form action="/equipas/{{equipa_id}}?_method=DELETE" method="POST">
+                                <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {{/each}}
+            {{else}}
+                <tr>
+                    <td colspan="6">Não foram encontradas equipas</td>
+                </tr>
+            {{/if}}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="sidebar__content">
+        <p class="sidebar__title">Campos</p>
+        <div class="campos">
+            <a href="" class="campo">1</a>
+            <a href="" class="campo">2</a>
+            <a href="" class="campo">3</a>
+            <a href="" class="campo">4</a>
+            <a href="" class="campo">5</a>
+            <a href="" class="campo">6</a>
+            <a href="" class="campo">7</a>
+            <a href="" class="campo">8</a>
+            <a href="" class="campo">9</a>
+            <a href="" class="campo">10</a>
+            <a href="" class="campo">11</a>
+            <a href="" class="campo">12</a>
+            <a href="" class="campo">13</a>
+            <a href="" class="campo">14</a>
+            <a href="" class="campo">15</a>
+        </div>
+    </div>
+
+</div>
+{{/if}}

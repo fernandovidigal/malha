@@ -72,10 +72,10 @@ class Equipas {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
-                SELECT equipas.*, escalao.designacao, escalao.sexo 
+                SELECT equipas.*, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
-                INNER JOIN escalao 
-                ON escalao.escalao_id = equipas.escalao_id
+                INNER JOIN escaloes 
+                ON escaloes.escalao_id = equipas.escalao_id
                 WHERE equipas.torneio_id = ? 
                 ORDER BY equipas.equipa_id ASC`,
             [torneio_id],
@@ -89,14 +89,14 @@ class Equipas {
         });
     }
 
-    getAllEquipasByTorneioAndEscalao(torneio_id, escalao_id) {
+    getAllEquipasByEscalao(torneio_id, escalao_id) {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
-                SELECT equipas.*, escalao.designacao, escalao.sexo 
+                SELECT equipas.*, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
-                INNER JOIN escalao 
-                ON escalao.escalao_id = equipas.escalao_id
+                INNER JOIN escaloes 
+                ON escaloes.escalao_id = equipas.escalao_id
                 WHERE equipas.torneio_id = ? AND equipas.escalao_id = ? 
                 ORDER BY equipas.equipa_id ASC`,
             [torneio_id, escalao_id],
@@ -110,7 +110,7 @@ class Equipas {
         });
     }
 
-    getLastTeamIDFromTorneio(torneio_id){
+    /*getLastTeamIDFromTorneio(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get("SELECT MAX(equipa_id) as lastID FROM equipas WHERE torneio_id = ?", [torneio_id], (err,row) => {
@@ -121,16 +121,16 @@ class Equipas {
                 }
             });
         });
-    }
+    }*/
 
     getEquipaByID(id, torneio_id) {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get(`
-                SELECT equipas.*, escalao.designacao, escalao.sexo 
+                SELECT equipas.*, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
-                INNER JOIN escalao 
-                ON escalao.escalao_id = equipas.escalao_id
+                INNER JOIN escaloes 
+                ON escaloes.escalao_id = equipas.escalao_id
                 WHERE equipas.equipa_id = ? AND equipas.torneio_id = ?`,
             [id, torneio_id],
             (err, row) => {
@@ -159,14 +159,14 @@ class Equipas {
         });
     }
 
-    getTeamsByTorneioAndLocalidade(torneio_id, localidade){
+    getTeamsByLocalidade(torneio_id, localidade){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
-                SELECT equipas.*, escalao.designacao, escalao.sexo 
+                SELECT equipas.*, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
-                INNER JOIN escalao 
-                ON escalao.escalao_id = equipas.escalao_id
+                INNER JOIN escaloes 
+                ON escaloes.escalao_id = equipas.escalao_id
                 WHERE equipas.localidade = ? AND equipas.torneio_id = ?
                 ORDER BY equipas.equipa_id ASC`,
             [localidade, torneio_id],
@@ -180,14 +180,14 @@ class Equipas {
         });
     }
 
-    getTeamsByTorneioAndLocalidadeAndEscalao(torneio_id, localidade, escalao_id){
+    getTeamsByLocalidadeAndEscalao(torneio_id, localidade, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
-                SELECT equipas.*, escalao.designacao, escalao.sexo 
+                SELECT equipas.*, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
-                INNER JOIN escalao 
-                ON escalao.escalao_id = equipas.escalao_id
+                INNER JOIN escaloes 
+                ON escaloes.escalao_id = equipas.escalao_id
                 WHERE equipas.localidade = ? AND equipas.torneio_id = ? AND equipas.escalao_id = ?
                 ORDER BY equipas.equipa_id ASC`,
             [localidade, torneio_id, escalao_id],
