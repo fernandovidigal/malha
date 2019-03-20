@@ -1,0 +1,34 @@
+{{> messages}}
+<div class="buttons_bar">
+    <div class="action_btns a-right">
+        <a href="/admin/localidades/adicionarLocalidade" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Localidade</a>
+    </div>
+</div>
+<table  class="listTable">
+    <thead>
+        <tr>
+            <th>Localidades</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {{#if localidades}}
+        {{#each localidades}}
+            <tr>
+                <td>{{localidade}}</td>
+                <td class="w10"><a href="/admin/localidades/editarLocalidade/{{localidade_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                <td class="w10">
+                    <form action="/admin/localidades/{{localidade_id}}?_method=DELETE" method="POST">
+                        <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                    </form>
+                </td>
+            </tr>
+        {{/each}}
+    {{else}}
+        <tr>
+            <td colspan="3">Não existem localidades registadas</td>
+        </tr>
+    {{/if}}
+    </tbody>
+</table>

@@ -1,0 +1,14 @@
+{{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+            <a href="#" class="msg_close">x</a>
+        </div>
+    {{/each}}
+{{/if}}
+<form action="/admin/localidades/adicionarLocalidade" method="post">
+    <label for="localidade">Localidade</label>
+    <input type="text" name="localidade" pattern="^[^0-9]+$" required><br>
+    <input type="submit" name="adicionar" value="Adicionar">
+</form>

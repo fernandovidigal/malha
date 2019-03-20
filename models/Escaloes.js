@@ -124,6 +124,10 @@ class Escaloes {
             })
         });
     }
+
+    close(){
+        this.db.close();
+    }
 }
 
 module.exports = Escaloes;
