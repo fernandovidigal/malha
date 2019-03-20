@@ -7,7 +7,7 @@
         </div>
     {{/each}}
 {{/if}}
-<form action="/admin/editarTorneio/{{torneio.torneio_id}}?_method=PUT" method="post">
+<form action="/admin/torneios/editarTorneio/{{torneio.torneio_id}}?_method=PUT" method="post">
     <label for="designacao">Designação</label>
     <input type="text" name="designacao" value="{{torneio.designacao}}" required><br>
     <label for="localidade">Localidade</label>

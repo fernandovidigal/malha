@@ -64,16 +64,20 @@ app.use(methodOverride('_method'));
 const login = require('./routes/home/login');
 const home = require('./routes/home/index');
 const admin = require('./routes/home/admin');
-const localidades = require('./routes/admin/localidades');
+const adminEscaloes = require('./routes/admin/escaloes');
+const adminTorneios = require('./routes/admin/torneios');
+const adminLocalidades = require('./routes/admin/localidades');
 const equipas = require('./routes/home/equipas');
 const torneio = require('./routes/home/torneio');
 
 app.use('/login', login);
 app.use('/', home);
 app.use('/admin', admin);
-app.use('/admin/localidades', localidades);
+app.use('/admin/escaloes', adminEscaloes);
+app.use('/admin/torneios', adminTorneios);
+app.use('/admin/localidades', adminLocalidades);
 app.use('/equipas', equipas);
 app.use('/torneio', torneio);
 
 // Activar Servidor
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`Malha App listening on port ${port}!`));

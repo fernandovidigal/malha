@@ -7,13 +7,13 @@
         </div>
     {{/each}}
 {{/if}}
-<form action="/admin/adicionarTorneio" method="post">
+<form action="/admin/torneios/adicionarTorneio" method="post">
     <label for="designacao">Designação</label>
-    <input type="text" name="designacao" required><br>
+    <input type="text" name="designacao" required {{#if torneio}}value="{{torneio.designacao}}"{{/if}}><br>
     <label for="localidade">Localidade</label>
-    <input type="text" name="localidade" pattern="^[^0-9]+$" required><br>
+    <input type="text" name="localidade" pattern="^[^0-9]+$" required {{#if torneio}}value="{{torneio.localidade}}"{{/if}}><br>
     <label for="ano">Ano</label>
-    <input type="text" name="ano" pattern="^[0-9]{4}$" required> <small>(AAAA)</small><br>
+    <input type="text" name="ano" pattern="^[0-9]{4}$" required {{#if torneio}}value="{{torneio.ano}}"{{/if}}> <small>(AAAA)</small><br>
     <input type="submit" name="adicionar" value="Adicionar">
     <input type="submit" name="adicionar_activar" value="Adicionar e Activar">
 </form>

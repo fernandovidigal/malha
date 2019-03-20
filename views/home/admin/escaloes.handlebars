@@ -8,7 +8,7 @@
     {{/sexoSelect }}
     </div>
     <div class="action_btns">
-        <a href="/admin/adicionarEscalao" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Escalão</a>
+        <a href="/admin/escaloes/adicionarEscalao" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Escalão</a>
     </div>
 </div>
 <table class="listTable">
@@ -21,17 +21,23 @@
         </tr>
     </thead>
     <tbody>
-    {{#each escaloes}}
+    {{#if escaloes}}
+        {{#each escaloes}}
+            <tr>
+                <td>{{designacao}}</td>
+                <td class="w30 table_cell_center">{{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}}</td>
+                <td class="w10"><a href="/admin/escaloes/editarEscalao/{{escalao_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                <td class="w10">
+                    <form action="/admin/escaloes/{{escalao_id}}?_method=DELETE" method="POST">
+                        <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                    </form>
+                </td>
+            </tr>
+        {{/each}}
+    {{else}}
         <tr>
-            <td>{{designacao}}</td>
-            <td class="w30 table_cell_center">{{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}}</td>
-            <td class="w10"><a href="/admin/editarEscalao/{{escalao_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
-            <td class="w10">
-                <form action="/admin/escaloes/{{escalao_id}}?_method=DELETE" method="POST">
-                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
-                </form>
-            </td>
+            <td colspan="4">Não existem escalões registados</td>
         </tr>
-    {{/each}}
+    {{/if}}
     </tbody>
 </table>
