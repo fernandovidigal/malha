@@ -7,10 +7,10 @@
         </div>
     {{/each}}
 {{/if}}
-<form action="/admin/adicionarEscalao" method="post">
+<form action="/admin/escaloes/adicionarEscalao" method="post">
     <label for="designacao">Designação</label>
-    <input type="text" name="designacao" required><br>
-    <input type="radio" name="sexo" id="r1" value="1" required> <label for="r1">Masculino</label><br>
-    <input type="radio" name="sexo" id="r2" value="0"> <label for="r2">Feminino</label><br>
+    <input type="text" name="designacao" required {{#if data.designacao}}value="{{data.designacao}}"{{/if}}><br>
+    <input type="radio" name="sexo" id="r1" value="1" required {{#if data.sexo}}{{#ifCond data.sexo '==' 1}}checked{{/ifCond}}{{/if}}> <label for="r1">Masculino</label><br>
+    <input type="radio" name="sexo" id="r2" value="0" {{#if data.sexo}}{{#ifCond data.sexo '==' 0}}checked{{/ifCond}}{{/if}}> <label for="r2">Feminino</label><br>
     <input type="submit" value="Adicionar">
 </form>

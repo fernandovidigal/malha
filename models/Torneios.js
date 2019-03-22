@@ -28,6 +28,7 @@ class Torneios {
                 designacao TEXT NOT NULL,
                 localidade TEXT NOT NULL,
                 ano INTEGER NOT NULL,
+                campos INTEGER NOT NULL DEFAULT 0,
                 fase INTEGER NOT NULL DEFAULT 1,
                 activo INTEGER NOT NULL DEFAULT 0)`, 
             (err) => {
@@ -68,12 +69,12 @@ class Torneios {
         });
     }
 
-    addTorneio(designacao, localidade, ano) {
+    addTorneio(designacao, localidade, ano, campos = 0) {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(
-                "INSERT INTO torneios (designacao, localidade, ano) VALUES (?,?,?)",
-                [designacao, localidade, ano],
+                "INSERT INTO torneios (designacao, localidade, ano, campos) VALUES (?,?,?,?)",
+                [designacao, localidade, ano, campos],
                 function(err){
                     if(err)
                         return reject(err);
@@ -85,11 +86,11 @@ class Torneios {
         });
     }
 
-    updateTorneio(id, designacao, localidade, ano) {
+    updateTorneio(id, designacao, localidade, ano, campos) {
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.run("UPDATE torneios SET designacao = ?, localidade = ?, ano = ? WHERE torneio_id = ?",
-                [designacao, localidade, ano, id],
+            that.db.run("UPDATE torneios SET designacao = ?, localidade = ?, ano = ?, campos = ? WHERE torneio_id = ?",
+                [designacao, localidade, ano, campos, id],
                 (err) => {
                     if(err){
                         return reject(err);
@@ -166,6 +167,44 @@ class Torneios {
                 } else {
                     return resolve(row.numTorneios);
                 }
+            });
+        });
+    }
+
+    setNumCampos(torneio_id, campos){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.resetActiveTorneios().then(()=>{
+                that.db.run("UPDATE torneios SET campos = ? WHERE torneio_id = ?",
+                [campos, torneio_id],
+                (err) => {
+                    if(err){
+                        return reject(err);
+                    } else {
+                        return resolve();
+                    }
+                });
+            }).catch((err) => {
+                return reject(err);
+            });
+        });
+    }
+
+    getNumCampos(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.resetActiveTorneios().then(()=>{
+                that.db.run("SELECT campos FROM torneios WHERE torneio_id = ?",
+                [torneio_id],
+                (err) => {
+                    if(err){
+                        return reject(err);
+                    } else {
+                        return resolve();
+                    }
+                });
+            }).catch((err) => {
+                return reject(err);
             });
         });
     }

@@ -7,7 +7,7 @@
         </div>
     {{/each}}
 {{/if}}
-<form action="/admin/editarUtilizador/{{utilizador.user_id}}?_method=PUT" method="post">
+<form action="/admin/utilizadores/editarUtilizador/{{utilizador.user_id}}?_method=PUT" method="post">
     <label for="username">Username</label>
     <input type="text" name="username" value="{{utilizador.username}}" required><br>
     <label for="password">Password</label>

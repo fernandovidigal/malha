@@ -27,30 +27,14 @@ router.get('/', (req, res) => {
     });
 });
 
+// ADICIONAR TORNEIO
 router.get('/adicionarTorneio', (req, res) => {
     res.render('home/admin/adicionarTorneio');
 });
 
-router.get('/editarTorneio/:id', (req, res) => {
-    malha.torneios.getTorneioById(req.params.id)
-    .then((torneio) => {
-        if(torneio != undefined){
-            res.render('home/admin/editarTorneio', {torneio: torneio});
-        } else {
-            req.flash('error', 'Torneio não existente');
-            res.redirect('/admin/torneios');
-        } 
-    })
-    .catch((err) => {
-        console.log(err);
-        req.flash('error', 'Não foi possível aceder ao torneio.');
-        res.redirect('/admin/torneios');
-    });
-});
-
-// ADICIONAR TORNEIO
 router.post('/adicionarTorneio', (req, res) => {
     let erros = [];
+    let numCampos = 0;
 
     if(!req.body.designacao){
         erros.push({err_msg: 'Indique a designação do torneio.'});
@@ -68,11 +52,20 @@ router.post('/adicionarTorneio', (req, res) => {
         erros.push({err_msg: 'Ano do torneio inválido'});
     }
 
+    if(req.body.campos){
+        if(numbersRegExp.test(req.body.campos)){
+            numCampos = req.body.campos;
+        } else {
+            erros.push({err_msg: 'Número de campos inválido'});
+        } 
+    }
+
     if(erros.length > 0){
         let data = {
             designacao: req.body.designacao,
             localidade: req.body.localidade,
-            ano: req.body.ano
+            ano: req.body.ano,
+            campos: req.body.campos
         }
         res.render('home/admin/adicionarTorneio', {torneio: data, erros: erros});
     } else {
@@ -80,7 +73,8 @@ router.post('/adicionarTorneio', (req, res) => {
         malha.torneios.addTorneio(
             req.body.designacao,
             req.body.localidade,
-            parseInt(req.body.ano)
+            parseInt(req.body.ano),
+            numCampos
         )
         .then((id) => {
             // Activa o torneio
@@ -135,6 +129,23 @@ router.post('/adicionarTorneio', (req, res) => {
 });
 
 // EDITAR TORNEIO
+router.get('/editarTorneio/:id', (req, res) => {
+    malha.torneios.getTorneioById(req.params.id)
+    .then((torneio) => {
+        if(torneio != undefined){
+            res.render('home/admin/editarTorneio', {torneio: torneio});
+        } else {
+            req.flash('error', 'Torneio não existente');
+            res.redirect('/admin/torneios');
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+        req.flash('error', 'Não foi possível aceder ao torneio.');
+        res.redirect('/admin/torneios');
+    });
+});
+
 router.put('/editarTorneio/:id', (req, res) => {
     let erros = [];
 
@@ -154,12 +165,19 @@ router.put('/editarTorneio/:id', (req, res) => {
         erros.push({err_msg: 'Ano do torneio inválido'});
     }
 
+    if(!req.body.campos) {
+        erros.push({err_msg: 'Indique o número de campos do torneio.'});
+    } else if(!numbersRegExp.test(req.body.campos)){
+        erros.push({err_msg: 'Número de campos inválido'});
+    }
+
     if(erros.length > 0){
         malha.torneios.getTorneioById(req.params.id)
         .then((torneio) => {
             torneio.designacao = req.body.designacao;
             torneio.localidade = req.body.localidade;
             torneio.ano = req.body.ano;
+            torneio.campos = req.body.campos;
             res.render('home/admin/editarTorneio', {torneio: torneio, erros: erros});
         })
         .catch((err) => {
@@ -170,7 +188,8 @@ router.put('/editarTorneio/:id', (req, res) => {
             req.params.id,
             req.body.designacao,
             req.body.localidade,
-            req.body.ano
+            req.body.ano,
+            req.body.campos
         )
         .then(()=>{
             req.flash('success', 'Torneio actualizado com sucesso.');

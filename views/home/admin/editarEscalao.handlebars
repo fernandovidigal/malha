@@ -7,7 +7,7 @@
         </div>
     {{/each}}
 {{/if}}
-<form action="/admin/editarEscalao/{{escalao.escalao_id}}?_method=PUT" method="post">
+<form action="/admin/escaloes/editarEscalao/{{escalao.escalao_id}}?_method=PUT" method="post">
     <label for="designacao">Designação</label>
     <input type="text" name="designacao" value="{{escalao.designacao}}" required><br>
     {{#ifCond escalao.sexo '==' 1}}

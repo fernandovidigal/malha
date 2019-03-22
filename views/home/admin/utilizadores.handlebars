@@ -1,30 +1,36 @@
 {{> messages}}
 <div class="buttons_bar">
     <div class="action_btns a-right">
-        <a href="/admin/adicionarUtilizador" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Utilizador</a>
+        <a href="/admin/utilizadores/adicionarUtilizador" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Utilizador</a>
     </div>
 </div>
 <table  class="listTable">
     <thead>
         <tr>
+            <th></th>
             <th>Username</th>
-            <th>Status</th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-    {{#each utilizadores}}
+    {{#if utilizadores}}
+        {{#each utilizadores}}
+            <tr>
+                <td class="w5 table_cell_center">{{#ifCond status '==' 1}}<img src="/imagens/icons/key.png" alt="Administrador" class="admin_key">{{/ifCond}}</td>
+                <td>{{username}}</td>
+                <td class="w10"><a href="/admin/utilizadores/editarUtilizador/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
+                <td class="w10">
+                    <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">
+                        <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
+                    </form>
+                </td>
+            </tr>
+        {{/each}}
+    {{else}}
         <tr>
-            <td>{{username}}</td>
-            <td class="w30 table_cell_center">{{#ifCond status '==' 1}}<img src="/imagens/icons/key.png" alt="Administrador">{{/ifCond}}</td>
-            <td class="w10"><a href="/admin/editarUtilizador/{{user_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
-            <td class="w10">
-                <form action="/admin/utilizadores/{{user_id}}?_method=DELETE" method="POST">
-                    <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
-                </form>
-            </td>
+            <td colspan="4">Não existem utilizadores registados</td>
         </tr>
-    {{/each}}
+    {{/if}}
     </tbody>
 </table>

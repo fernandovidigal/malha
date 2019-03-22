@@ -8,12 +8,14 @@
     {{/each}}
 {{/if}}
 <form action="/admin/torneios/adicionarTorneio" method="post">
-    <label for="designacao">Designação</label>
+    <label for="designacao">Designação: </label>
     <input type="text" name="designacao" required {{#if torneio}}value="{{torneio.designacao}}"{{/if}}><br>
-    <label for="localidade">Localidade</label>
+    <label for="localidade">Localidade: </label>
     <input type="text" name="localidade" pattern="^[^0-9]+$" required {{#if torneio}}value="{{torneio.localidade}}"{{/if}}><br>
-    <label for="ano">Ano</label>
+    <label for="ano">Ano: </label>
     <input type="text" name="ano" pattern="^[0-9]{4}$" required {{#if torneio}}value="{{torneio.ano}}"{{/if}}> <small>(AAAA)</small><br>
+    <label for="campos">Número de campos: </label>
+    <input type="text" name="campos" pattern="^[0-9]+$" {{#if torneio}}value="{{torneio.campos}}"{{/if}}><br>
     <input type="submit" name="adicionar" value="Adicionar">
     <input type="submit" name="adicionar_activar" value="Adicionar e Activar">
 </form>
