@@ -3,39 +3,23 @@ const router = express.Router();
 const faker = require('faker');
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
+const {checkTorneioActivo} = require('../../helpers/torneioActivo');
 
 const textRegExp = new RegExp('^[^0-9]+$'); 
 
-async function getEscaloesAndLocalidades(torneio_id){
+async function getEscaloesAndLocalidades(){
     const escaloes = await malha.escaloes.getAllEscaloes();
-    const localidades = await malha.equipas.getAllLocalidades(torneio_id);
+    const localidades = await malha.localidades.getAllLocalidades();
+
     return {
         escaloes: escaloes,
         localidades: localidades
     }
 }
 
-router.all('/*', userAuthenticated, (req, res, next) => {
+router.all('/*', [userAuthenticated, checkTorneioActivo], (req, res, next) => {
     req.app.locals.layout = 'home';
-    if(!req.session.torneio){
-        malha.torneios.getActiveTorneio()
-        .then((row) => {
-            if(!row) {
-                req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
-                res.redirect('../');
-            } else {
-                req.session.torneio = row;
-                next();
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            req.flash('error', 'Ocurreu um erro');
-            res.redirect('/equipas');
-        });
-    } else {
-        next();
-    }
+    next();
 });
 
 router.get('/faker/:num', (req, res) => {
@@ -58,7 +42,6 @@ router.get('/faker/:num', (req, res) => {
                 localidades[Math.floor(Math.random() * localidades.length)],
                 escaloes[Math.floor(Math.random() * escaloes.length)]
             );
-            console.log(i+": Equipa Adicionada");
         } 
         return req.params.num;
     })
@@ -73,16 +56,22 @@ router.get('/', (req, res) => {
         let data = {
             'torneio': req.session.torneio
         };
-        malha.equipas.getAllEquipasByTorneio(req.session.torneio.torneio_id)
+        malha.equipas.getAllEquipas(req.session.torneio.torneio_id)
         .then((row) => {
             if(row.length > 0){
                 data.equipas = row;
             }
-            return getEscaloesAndLocalidades(req.session.torneio.torneio_id);
+            return getEscaloesAndLocalidades();
         })
         .then((rows) => {
-            data.escaloes = rows.escaloes;
-            data.localidades = rows.localidades;
+            if(rows.escaloes.length > 0){
+                data.escaloes = rows.escaloes;
+            }
+
+            if(rows.localidades.length > 0){
+                data.localidades = rows.localidades;
+            }
+
             res.render('home/equipas/index', {data: data});
         })
         .catch((err) => {
@@ -92,15 +81,18 @@ router.get('/', (req, res) => {
         });
     } else {
         console.log("Não existe torneio registado ou activo");
-        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+        req.flash('error', 'Não é possível aceder ao menu Equipas. Deve adicionar ou activar um torneio');
         res.redirect('../');
     }
 });
 
+// ADICIONAR EQUIPA
 router.get('/adicionarEquipa', (req, res) => {
-    malha.escaloes.getAllEscaloes().then((rows) => {
-        res.render('home/equipas/adicionarEquipa', {escaloes: rows, torneio: req.session.torneio});
-    }).catch((err) => {
+    getEscaloesAndLocalidades()
+    .then((rows)=>{
+        res.render('home/equipas/adicionarEquipa', {escaloes: rows.escaloes, localidades: rows.localidades, torneio: req.session.torneio});
+    })
+    .catch((err) => {
         console.log(err);
         req.flash('error', 'Não foi possível obter os escalões');
         res.redirect('/equipas');
@@ -124,9 +116,9 @@ router.post('/adicionarEquipa', (req, res) => {
         }
 
         if(!req.body.localidade){
-            erros.push({err_msg: 'Indique a localidade.'});
-        } else if(!textRegExp.test(req.body.localidade)){
-            erros.push({err_msg: 'Nome da localidade inválido.'});
+            erros.push({err_msg: 'Selecione a localidade.'});
+        } else if(req.body.localidade == 0){
+            erros.push({err_msg: 'Deve selecionar a localidade.'});
         }
 
         if(!req.body.escalao){
@@ -134,8 +126,15 @@ router.post('/adicionarEquipa', (req, res) => {
         }
 
         if(erros.length > 0){
-            malha.escaloes.getAllEscaloes().then((rows) => {
-                res.render('home/equipas/adicionarEquipa', {erros: erros, escaloes: rows, torneio: req.session.torneio});
+            getEscaloesAndLocalidades()
+            .then((rows) => {
+                let data = {
+                    primeiro_elemento: req.body.primeiro_elemento,
+                    segundo_elemento: req.body.segundo_elemento,
+                    localidade: req.body.localidade,
+                    escalao: req.body.escalao
+                }
+                res.render('home/equipas/adicionarEquipa', {equipa: data, escaloes: rows.escaloes, localidades: rows.localidades, torneio: req.session.torneio, erros: erros});
             }).catch((err) => {
                 console.log(err);
                 req.flash('error', 'Não foi possível obter os escalões');
@@ -164,6 +163,7 @@ router.post('/adicionarEquipa', (req, res) => {
     }
 });
 
+// EDITAR EQUIPA
 router.get('/editarEquipa/:id', (req, res) => {
     if(req.session.torneio != null) {
         let data = {
@@ -172,13 +172,15 @@ router.get('/editarEquipa/:id', (req, res) => {
 
         malha.equipas.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
         .then((equipa) => {
-            if(equipa.length > 0){
+            if(equipa != undefined){
                 data.equipa = equipa;
             }
-            return malha.escaloes.getAllEscaloes();
+            return getEscaloesAndLocalidades();
         })
-        .then((escaloes) => {
-            data.escaloes = escaloes;
+        .then((rows) => {
+            data.escaloes = rows.escaloes;
+            data.localidades = rows.localidades;
+            console.log(data);
             res.render('home/equipas/editarEquipa', {data: data});
         })
         .catch((err) => {
@@ -214,9 +216,9 @@ router.put('/editarEquipa/:id', (req, res) => {
         }
 
         if(!req.body.localidade){
-            erros.push({err_msg: 'Indique a localidade.'});
-        } else if(!textRegExp.test(req.body.localidade)){
-            erros.push({err_msg: 'Nome da localidade inválido.'});
+            erros.push({err_msg: 'Selecione a localidade.'});
+        } else if(req.body.localidade == 0){
+            erros.push({err_msg: 'Deve selecionar a localidade.'});
         }
 
         if(!req.body.escalao){
@@ -227,16 +229,18 @@ router.put('/editarEquipa/:id', (req, res) => {
             data.erros = erros;
             malha.equipas.getEquipaByID(req.params.id, req.session.torneio.torneio_id)
             .then((equipa) => {
-                if(equipa.length > 0){
+                if(equipa != undefined){
                     data.equipa = equipa;
-                    data.equipa[0].primeiro_elemento = req.body.primeiro_elemento;
-                    data.equipa[0].segundo_elemento = req.body.segundo_elemento;
-                    data.equipa[0].localidade = req.body.localidade;
+                    data.equipa.primeiro_elemento = req.body.primeiro_elemento;
+                    data.equipa.segundo_elemento = req.body.segundo_elemento;
+                    data.equipa.localidade_id = req.body.localidade;
+                    data.equipa.escalao_id = req.body.escalao;
                 }
-                return malha.escaloes.getAllEscaloes();
+                return getEscaloesAndLocalidades();
             })
-            .then((escaloes) => {
-                data.escaloes = escaloes;
+            .then((rows) => {
+                data.escaloes = rows.escaloes;
+                data.localidades = rows.localidades;
                 res.render('home/equipas/editarEquipa', {data: data});
             }).catch((err) => {
                 console.log(err);

@@ -62,8 +62,7 @@ app.use(methodOverride('_method'));
 
 // Carregar Routes
 const login = require('./routes/home/login');
-const home = require('./routes/home/index');
-const admin = require('./routes/home/admin');
+const base = require('./routes/home/index');
 const adminUtilizadores = require('./routes/admin/utilizadores');
 const adminEscaloes = require('./routes/admin/escaloes');
 const adminTorneios = require('./routes/admin/torneios');
@@ -72,8 +71,7 @@ const equipas = require('./routes/home/equipas');
 const torneio = require('./routes/home/torneio');
 
 app.use('/login', login);
-app.use('/', home);
-app.use('/admin', admin);
+app.use('/', base);
 app.use('/admin/utilizadores', adminUtilizadores);
 app.use('/admin/escaloes', adminEscaloes);
 app.use('/admin/torneios', adminTorneios);

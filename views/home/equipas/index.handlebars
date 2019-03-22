@@ -8,6 +8,19 @@
 
 {{> messages}}
 
+{{#unless data.escaloes}}
+    <div class="warning_msg">
+        Não existem escalões registados. Deve adicionar escalões para poder adicionar equipas.<br><a href="/admin/escaloes" class="msg_link">Adicionar escalões</a>
+        <a href="#" class="msg_close">x</a>
+    </div>
+{{/unless}}
+{{#unless data.localidades}}
+    <div class="warning_msg">
+        Não existem localidades registadas. Deve adicionar localidades para poder adicionar equipas.<br><a href="/admin/localidades" class="msg_link">Adicionar localidades</a>
+        <a href="#" class="msg_close">x</a>
+    </div>
+{{/unless}}
+
 <div class="table_sidebar__wrapper">
     <div class="table__content">
         <div class="buttons_bar">
@@ -24,7 +37,9 @@
                 </form>
             </div>
             <div class="action_btns a-right">
-                <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
+                {{#ifCond data.escaloes '&&' data.localidades}}
+                    <a href="/equipas/adicionarEquipa" class="btn primary_btn"><i class="fa fa-plus"></i>Adicionar Equipa</a>
+                {{/ifCond}}
                 <button class="btn print_btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</button>
             </div>
         </div>
@@ -59,7 +74,7 @@
                 {{/each}}
             {{else}}
                 <tr>
-                    <td colspan="6">Não foram encontradas equipas</td>
+                    <td colspan="7">Não foram encontradas equipas</td>
                 </tr>
             {{/if}}
             </tbody>

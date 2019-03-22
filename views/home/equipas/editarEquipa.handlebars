@@ -15,30 +15,35 @@
         {{/each}}
     {{/if}}
     {{#if data.equipa}}
-        <form action="/equipas/editarEquipa/{{data.equipa.0.equipa_id}}?_method=PUT" method="post">
+        <form action="/equipas/editarEquipa/{{data.equipa.equipa_id}}?_method=PUT" method="post">
             <label for="primeiro_elemento">Nome do Primeiro Elemento</label>
-            <input type="text" name="primeiro_elemento" pattern="^[^0-9]+$" value="{{data.equipa.0.primeiro_elemento}}" required><br>
+            <input type="text" name="primeiro_elemento" pattern="^[^0-9]+$" value="{{data.equipa.primeiro_elemento}}" required><br>
             <label for="segundo_elemento">Nome do Segundo Elemento</label>
-            <input type="text" name="segundo_elemento" pattern="^[^0-9]+$" value="{{data.equipa.0.segundo_elemento}}" required><br>
+            <input type="text" name="segundo_elemento" pattern="^[^0-9]+$" value="{{data.equipa.segundo_elemento}}" required><br>
             <label for="Localidade">Localidade</label>
-            <input type="text" name="localidade" pattern="^[^0-9]+$" value="{{data.equipa.0.localidade}}" required><br>
+            <select name="localidade" id="localidade" required>
+                <option value="0"></option>
+                {{#each data.localidades}}
+                    <option value="{{localidade_id}}" {{#ifCond ../data.equipa.localidade_id '==' localidade_id}}selected{{/ifCond}}>{{localidade}}</option>
+                {{/each}}
+            </select>
             <p>Escalões</p>
             <p>Masculino</p>
             {{#each data.escaloes}}
                 {{#ifCond sexo '==' 1}}
-                    <input type="radio" name="escalao" value="{{escalao_id}}" {{#ifCond ../data.equipa.0.escalao_id '==' escalao_id}}checked{{/ifCond}} required>{{designacao}}
+                    <input type="radio" name="escalao" value="{{escalao_id}}" {{#ifCond ../data.equipa.escalao_id '==' escalao_id}}checked{{/ifCond}} required>{{designacao}}
                 {{/ifCond}}
             {{/each}}
             <p>Feminino</p>
             {{#each data.escaloes}}
                 {{#ifCond sexo '==' 0}}
-                    <input type="radio" name="escalao" value="{{escalao_id}}" {{#ifCond ../data.equipa.0.escalao_id '==' escalao_id}}checked{{/ifCond}} required>{{designacao}}
+                    <input type="radio" name="escalao" value="{{escalao_id}}" {{#ifCond ../data.equipa.escalao_id '==' escalao_id}}checked{{/ifCond}} required>{{designacao}}
                 {{/ifCond}}
             {{/each}}
             <br>
             <input type="submit" value="Actualizar">
         </form>
     {{else}}
-        <p>Nã foi possível obter dados da equipa</p>
+        <p>Não foi possível obter dados da equipa</p>
     {{/if}}
 {{/if}}

@@ -15,22 +15,27 @@
 {{/if}}
 <form action="/equipas/adicionarEquipa" method="post">
     <label for="primeiro_elemento">Nome do Primeiro Elemento</label>
-    <input type="text" name="primeiro_elemento" pattern="[^0-9]{2,}" required><br>
+    <input type="text" name="primeiro_elemento" pattern="^[^0-9]{2,}$" required {{#if equipa}}value="{{equipa.primeiro_elemento}}"{{/if}}><br>
     <label for="segundo_elemento">Nome do Segundo Elemento</label>
-    <input type="text" name="segundo_elemento" pattern="[^0-9]{2,}" required><br>
+    <input type="text" name="segundo_elemento" pattern="^[^0-9]{2,}$" required {{#if equipa}}value="{{equipa.segundo_elemento}}"{{/if}}><br>
     <label for="Localidade">Localidade</label>
-    <input type="text" name="localidade" pattern="[^0-9]{2,}" required><br>
+    <select name="localidade" id="localidade" required>
+        <option value="0"></option>
+        {{#each localidades}}
+            <option value="{{localidade_id}}" {{#ifCond ../equipa.localidade '==' localidade_id}}selected{{/ifCond}}>{{localidade}}</option>
+        {{/each}}
+    </select>
     <p>Escalões</p>
     <p>Masculino</p>
     {{#each escaloes}}
         {{#ifCond sexo '==' 1}}
-            <input type="radio" name="escalao" value="{{escalao_id}}" required>{{designacao}}
+            <input type="radio" name="escalao" value="{{escalao_id}}" required {{#ifCond ../equipa.escalao '==' escalao_id}}checked{{/ifCond}}>{{designacao}}
         {{/ifCond}}
     {{/each}}
     <p>Feminino</p>
     {{#each escaloes}}
         {{#ifCond sexo '==' 0}}
-            <input type="radio" name="escalao" value="{{escalao_id}}" required>{{designacao}}
+            <input type="radio" name="escalao" value="{{escalao_id}}" required {{#ifCond ../equipa.escalao '==' escalao_id}}checked{{/ifCond}}>{{designacao}}
         {{/ifCond}}
     {{/each}}
     <br>

@@ -9,7 +9,7 @@ module.exports = {
             .then((row) => {
                 if(!row) {
                     torneios.close();
-                    req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
+                    req.flash('error', 'Não existem torneios registados ou não existem torneios activos.<br><a href="/admin/torneios" class="msg_link">Adicionar ou Activar um torneio</a>');
                     res.redirect('../');
                 } else {
                     torneios.close();

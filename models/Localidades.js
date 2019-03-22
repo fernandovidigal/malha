@@ -56,7 +56,7 @@ class Localidades {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(
-                "SELECT * FROM localidades",
+                "SELECT * FROM localidades ORDER BY localidade ASC",
                 (err, rows) => {
                     if(err)
                         return reject(err);

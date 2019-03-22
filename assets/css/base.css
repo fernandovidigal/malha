@@ -36,6 +36,7 @@ h3 {
     padding: 10px 20px;
     margin-bottom: 20px;
     border-radius: 4px;
+    position: relative;
 }
 
 .success_msg {
@@ -63,14 +64,19 @@ h3 {
 }
 
 .msg_close {
-    float: right;
-    position: relative;
-    top: -2px;
+    position: absolute;
+    top: 50%;
+    right: 16px;
     color: inherit;
     opacity: .2;
     font-weight: bold;
     font-size: 18px;
     line-height: 1.2;
+    transform: translateY(-50%);
+}
+
+.msg_link{
+    color: #455cc7;
 }
 
 .btn {
