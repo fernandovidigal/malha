@@ -48,8 +48,17 @@ app.use(passport.session());
 // Flash Messages
 app.use(flash());
 
+// Check on Admin Menu
+// Serve para manter o menu Adminstrativo aberto enquanto se está a utilizar as
+// ferramentas de administração
+app.use('/admin(/*)?', function(req, res, next){
+    req.adminMenu = true;
+    next();
+});
+
 app.use(function(req, res, next) {
     res.locals.user = req.user || null;
+    res.locals.adminMenu = req.adminMenu || false;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.info = req.flash('info');
@@ -80,4 +89,4 @@ app.use('/equipas', equipas);
 app.use('/torneio', torneio);
 
 // Activar Servidor
-app.listen(port, () => console.log(`Malha App listening on port ${port}!`));
+app.listen(port, () => console.log(`Malha App em localhost:${port} ou <IP da máquina>:${port}`));

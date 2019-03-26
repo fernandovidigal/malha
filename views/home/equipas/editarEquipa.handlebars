@@ -16,11 +16,12 @@
     {{/if}}
     {{#if data.equipa}}
         <form action="/equipas/editarEquipa/{{data.equipa.equipa_id}}?_method=PUT" method="post">
+            <p>Equipa {{data.equipa.equipa_id}}</p>
             <label for="primeiro_elemento">Nome do Primeiro Elemento</label>
             <input type="text" name="primeiro_elemento" pattern="^[^0-9]+$" value="{{data.equipa.primeiro_elemento}}" required><br>
             <label for="segundo_elemento">Nome do Segundo Elemento</label>
             <input type="text" name="segundo_elemento" pattern="^[^0-9]+$" value="{{data.equipa.segundo_elemento}}" required><br>
-            <label for="Localidade">Localidade</label>
+            <label for="localidade">Localidade</label>
             <select name="localidade" id="localidade" required>
                 <option value="0"></option>
                 {{#each data.localidades}}

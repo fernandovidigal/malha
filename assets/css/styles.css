@@ -24,6 +24,8 @@ small {
 }
 
 .navigation__wrapper {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     top: 0;
     left: 0;
@@ -59,12 +61,22 @@ small {
 
 .navigation__wrapper ul li {
     list-style: none;
-    padding: 18px 30px;
 }
 
 .navigation__wrapper ul li a {
     text-decoration: none;
-    color: #aab7f3;
+    color: #ffffff;
+    padding: 18px 26px;
+    display: block;
+}
+
+.navigation__wrapper ul li ul {
+    margin-top: 0;
+    background-color: #8f9de2;
+}
+
+.navigation__wrapper ul li ul li a {
+    padding-left: 60px;
 }
 
 .navigation__wrapper ul li:hover {
@@ -73,6 +85,20 @@ small {
 
 .navigation__wrapper ul li:hover a{
     color: #ffffff;
+}
+
+.navigation {
+    margin-bottom: auto;
+}
+
+.user {
+    padding: 18px 26px;
+    color: #ffffff;
+}
+
+.user_nav ul {
+    margin: 0 0 40px;
+    padding: 0;
 }
 
 .header__wrapper {

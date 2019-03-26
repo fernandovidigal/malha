@@ -7,13 +7,17 @@ router.all('/*', userAuthenticated, (req, res, next) => {
     next();
 });
 
-router.all('/admin/*', [userAuthenticated, checkAdminStatus], (req, res, next) => {
+router.all('/admin(/*)?', checkAdminStatus, (req, res, next) => {
     req.app.locals.layout = 'home';
     next();
 });
 
 router.get('/', (req, res) => {
     res.render('home/index');
+});
+
+router.get('/admin', (req, res) => {
+    res.render('home/admin/index');
 });
 
 router.get('/logout', (req, res) => {

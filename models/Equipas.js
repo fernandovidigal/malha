@@ -75,9 +75,9 @@ class Equipas {
                 SELECT equipas.*, localidades.localidade, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
                 INNER JOIN escaloes 
-                ON equipas.escalao_id = escaloes.escalao_id
+                ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
-                ON equipas.escalao_id = localidades.localidade_id
+                ON localidades.localidade_id = equipas.escalao_id
                 WHERE equipas.torneio_id = ? 
                 ORDER BY equipas.equipa_id ASC`,
             [torneio_id],
