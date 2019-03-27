@@ -1,0 +1,20 @@
+{{#if data}}
+    {{#if data.torneio}}
+        <div class="title__bar">
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
+            <h3>{{data.torneio.ano}}</h3>
+        </div>
+    {{/if}}
+
+{{> messages}}
+
+<div>
+    <p>Definir número de campos!</p>
+    <form action="/torneio" method="post">
+        <label for="numCampos">Número de Campos:</label>
+        <input type="text" name="numCampos" pattern="^[0-9]+$"><br>
+        <input type="submit" value="Definir">
+    </form>
+</div>
+
+{{/if}}

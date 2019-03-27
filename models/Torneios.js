@@ -193,18 +193,14 @@ class Torneios {
     getNumCampos(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.resetActiveTorneios().then(()=>{
-                that.db.run("SELECT campos FROM torneios WHERE torneio_id = ?",
-                [torneio_id],
-                (err) => {
-                    if(err){
-                        return reject(err);
-                    } else {
-                        return resolve();
-                    }
-                });
-            }).catch((err) => {
-                return reject(err);
+            that.db.get("SELECT campos FROM torneios WHERE torneio_id = ?",
+            [torneio_id],
+            (err, row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
             });
         });
     }
