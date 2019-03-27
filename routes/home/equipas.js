@@ -77,6 +77,7 @@ router.get('/', (req, res) => {
         if(rows.localidades.length > 0){
             data.localidades = rows.localidades;
         }
+        console.log(data);
         res.render('home/equipas/index', {data: data});
     })
     .catch((err) => {

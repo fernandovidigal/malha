@@ -77,7 +77,7 @@ class Equipas {
                 INNER JOIN escaloes 
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
-                ON localidades.localidade_id = equipas.escalao_id
+                ON localidades.localidade_id = equipas.localidade_id
                 WHERE equipas.torneio_id = ? 
                 ORDER BY equipas.equipa_id ASC`,
             [torneio_id],
@@ -100,7 +100,7 @@ class Equipas {
                 INNER JOIN escaloes 
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
-                ON equipas.escalao_id = localidades.localidade_id
+                ON localidades.localidade_id = equipas.localidade_id 
                 WHERE equipas.torneio_id = ? AND equipas.escalao_id = ? 
                 ORDER BY equipas.equipa_id ASC`,
             [torneio_id, escalao_id],
@@ -123,7 +123,7 @@ class Equipas {
                 INNER JOIN escaloes 
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
-                ON localidades.localidade_id = equipas.escalao_id
+                ON localidades.localidade_id = equipas.localidade_id
                 WHERE equipas.equipa_id = ? AND equipas.torneio_id = ?`,
             [id, torneio_id],
             (err, row) => {
@@ -146,7 +146,7 @@ class Equipas {
                 INNER JOIN escaloes 
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
-                ON equipas.escalao_id = localidades.localidade_id
+                ON localidades.localidade_id = equipas.localidade_id
                 WHERE equipas.localidade = ? AND equipas.torneio_id = ?
                 ORDER BY equipas.equipa_id ASC`,
             [localidade, torneio_id],
@@ -169,7 +169,7 @@ class Equipas {
                 INNER JOIN escaloes 
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
-                ON equipas.escalao_id = localidades.localidade_id
+                ON localidades.localidade_id = equipas.localidade_id
                 WHERE equipas.localidade = ? AND equipas.torneio_id = ? AND equipas.escalao_id = ?
                 ORDER BY equipas.equipa_id ASC`,
             [localidade, torneio_id, escalao_id],
