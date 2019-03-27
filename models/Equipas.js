@@ -118,7 +118,7 @@ class Equipas {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get(`
-                SELECT equipas.*, localidades.localidade_id, localidades.localidade, escaloes.designacao, escaloes.sexo 
+                SELECT equipas.*, localidades.localidade, escaloes.designacao, escaloes.sexo 
                 FROM equipas 
                 INNER JOIN escaloes 
                 ON escaloes.escalao_id = equipas.escalao_id
@@ -137,7 +137,7 @@ class Equipas {
         });
     }
 
-    getTeamsByLocalidade(torneio_id, localidade){
+    getTeamsByLocalidade(torneio_id, localidade_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
@@ -147,9 +147,9 @@ class Equipas {
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
                 ON localidades.localidade_id = equipas.localidade_id
-                WHERE equipas.localidade = ? AND equipas.torneio_id = ?
+                WHERE equipas.localidade_id = ? AND equipas.torneio_id = ?
                 ORDER BY equipas.equipa_id ASC`,
-            [localidade, torneio_id],
+            [localidade_id, torneio_id],
             (err, rows) => {
                 if(err) {
                     return reject(err);
@@ -160,7 +160,7 @@ class Equipas {
         });
     }
 
-    getTeamsByLocalidadeAndEscalao(torneio_id, localidade, escalao_id){
+    getTeamsByLocalidadeAndEscalao(torneio_id, localidade_id, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
@@ -170,9 +170,9 @@ class Equipas {
                 ON escaloes.escalao_id = equipas.escalao_id
                 INNER JOIN localidades
                 ON localidades.localidade_id = equipas.localidade_id
-                WHERE equipas.localidade = ? AND equipas.torneio_id = ? AND equipas.escalao_id = ?
+                WHERE equipas.localidade_id = ? AND equipas.torneio_id = ? AND equipas.escalao_id = ?
                 ORDER BY equipas.equipa_id ASC`,
-            [localidade, torneio_id, escalao_id],
+            [localidade_id, torneio_id, escalao_id],
             (err, rows) => {
                 if(err) {
                     return reject(err);

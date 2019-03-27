@@ -77,7 +77,6 @@ router.get('/', (req, res) => {
         if(rows.localidades.length > 0){
             data.localidades = rows.localidades;
         }
-        console.log(data);
         res.render('home/equipas/index', {data: data});
     })
     .catch((err) => {
@@ -279,82 +278,82 @@ router.delete('/:id', (req, res) => {
 /////////////////////////////////////////////////////
 
 router.post('/pesquisa', (req, res) => {
-    if(req.session.torneio != null) {
-        let data = {
-            'equipa_id': req.body.searchTeamID,
-            'torneio': req.session.torneio
-        };
 
-        // Verifica se o input é númerico e com pelo menos 1 digito
-        const numbersRegExp = new RegExp('^[0-9]+$');
-        let teamID = -1;
-        if(numbersRegExp.test(req.body.searchTeamID)){
-            teamID = req.body.searchTeamID;
-        }
-
-        malha.equipas.getEquipaByID(teamID, req.session.torneio.torneio_id)
-        .then((equipa) => {
-            if(equipa.length > 0){
-                data.equipas = equipa;
-            }
-            return getEscaloesAndLocalidades(req.session.torneio.torneio_id);
-        })
-        .then((rows) => {
-            data.escaloes = rows.escaloes;
-            data.localidades = rows.localidades;
-            res.render('home/equipas/index', {data: data});
-        })
-        .catch((err) => {
-            console.log(err);
-            req.flash('error', 'Ocurreu um erro');
-            res.redirect('/equipas');
-        });
-    } else {
-        console.log("Não existe torneio registado ou activo");
-        req.flash('error', 'Não é possível aceder ao menu Equipas. É necessário criar ou activar um torneio');
-        res.redirect('../');
+    // Verifica se o input é númerico e com pelo menos 1 digito
+    const numbersRegExp = new RegExp('^[0-9]+$');
+    let teamID = -1;
+    if(numbersRegExp.test(req.body.searchTeamID)){
+        teamID = parseInt(req.body.searchTeamID, 10);
     }
+
+    let data = {
+        'equipa_id': teamID,
+        'torneio': req.session.torneio
+    };
+
+    malha.equipas.getEquipaByID(teamID, req.session.torneio.torneio_id)
+    .then((equipa) => {
+        if(equipa != undefined){
+            let equipaArray = [];
+            equipaArray.push(equipa);
+            data.equipas = equipaArray;
+        }
+        
+        return getEscaloesAndLocalidades(req.session.torneio.torneio_id);
+    })
+    .then((rows) => {
+        data.escaloes = rows.escaloes;
+        data.localidades = rows.localidades;
+        res.render('home/equipas/index', {data: data});
+    })
+    .catch((err) => {
+        console.log(err);
+        req.flash('error', 'Ocurreu um erro');
+        res.redirect('/equipas');
+    });
 });
 
 /////////////////////////////////////////////////////
 //      FILTROS
 /////////////////////////////////////////////////////
 
-async function filtraLocalidadeEscalao(torneio, localidade = null, escalao = null){
-    if(localidade != null && escalao != null){
+async function filtraLocalidadeEscalao(torneio_id, localidade_id = null, escalao_id = null){
+    if(localidade_id != null && escalao_id != null){
         // Retorna equipas filtradas por localidade e escalao
         // URL: /equipas/filtro/localidade/:localidade/escalao/:escalao
         //console.log("Localidade: "+localidade+", Escalao: " + escalao);
-        return await malha.equipas.getTeamsByLocalidadeAndEscalao(torneio, localidade, escalao);
-    } else if(localidade != null && escalao == null){
+        return await malha.equipas.getTeamsByLocalidadeAndEscalao(torneio_id, localidade_id, escalao_id);
+    } else if(localidade_id != null && escalao_id == null){
         // Retorna equipas filtradas por localidade
         // URL: /equipas/filtro/localidade/:localidade
         //console.log("Localidade: " + localidade);
-        return await malha.equipas.getTeamsByLocalidade(torneio, localidade);
-    } else if(localidade == null && escalao != null) {
+        return await malha.equipas.getTeamsByLocalidade(torneio_id, localidade_id);
+    } else if(localidade_id == null && escalao_id != null) {
         // Retorna equipas filtradas por escalao
         // URL: /equipas/filtro/escalao/:escalao
         //console.log("Escalao: " + escalao);
-        return await malha.equipas.getAllEquipasByEscalao(torneio, escalao);
+        return await malha.equipas.getAllEquipasByEscalao(torneio_id, escalao_id);
     } else {
         // Retornar erro
+        // TODO: Melhor a apresencação do erro. Como a função é async retorna uma Promise
+        // logo retornar algum para ser apanhado no catch
         console.log("Erro: Não foi possível fazer filtragem");
     }
 }
 
-function filtraLocalidade(torneio, localidade){
-    return filtraLocalidadeEscalao(torneio, localidade, null);
+function filtraLocalidade(torneio_id, localidade_id){
+    return filtraLocalidadeEscalao(torneio_id, localidade_id, null);
 }
 
-function filtraEscalao(torneio, escalao){
-    return filtraLocalidadeEscalao(torneio, null, escalao);
+function filtraEscalao(torneio_id, escalao_id){
+    return filtraLocalidadeEscalao(torneio_id, null, escalao_id);
 }
 
 // FILTRO POR ESCALÃO
 router.get('/filtro/escalao/:escalao', (req, res) => {
     if(req.session.torneio != null) {
         let data = {
-            'filtros': { escalao: req.params.escalao},
+            'filtros': { escalao_id: req.params.escalao},
             'torneio': req.session.torneio
         };
 
@@ -384,7 +383,7 @@ router.get('/filtro/escalao/:escalao', (req, res) => {
 router.get('/filtro/localidade/:localidade', (req, res) => {
     if(req.session.torneio != null) {
         let data = {
-            'filtros': { localidade: req.params.localidade},
+            'filtros': { localidade_id: req.params.localidade},
             'torneio': req.session.torneio
         };
 
@@ -415,8 +414,8 @@ router.get('/filtro/localidade/:localidade/escalao/:escalao', (req, res) => {
     if(req.session.torneio != null) {
         let data = {
             'filtros': {
-                localidade: req.params.localidade,
-                escalao: req.params.escalao
+                localidade_id: req.params.localidade,
+                escalao_id: req.params.escalao
             },
             'torneio': req.session.torneio
         };

@@ -90,11 +90,11 @@
                     {{#each data.escaloes}}
                         <div class="filtro-box">
                             {{#ifCond sexo '==' 1}}
-                                {{#ifCond ../data.filtros.escalao '==' escalao_id}}
-                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn filtro_btn__selected">{{designacao}}</a>
-                                    <a href="/equipas{{#if ../data.filtros.localidade}}/filtro/localidade/{{../data.filtros.localidade}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
+                                {{#ifCond ../data.filtros.escalao_id '==' escalao_id}}
+                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade_id}}localidade/{{../data.filtros.localidade_id}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn filtro_btn__selected">{{designacao}}</a>
+                                    <a href="/equipas{{#if ../data.filtros.localidade_id}}/filtro/localidade/{{../data.filtros.localidade_id}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
                                 {{else}}
-                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn">{{designacao}}</a>
+                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade_id}}localidade/{{../data.filtros.localidade_id}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn">{{designacao}}</a>
                                 {{/ifCond}}
                             {{/ifCond}}
                         </div>
@@ -103,11 +103,11 @@
                     {{#each data.escaloes}}
                         <div class="filtro-box">
                             {{#ifCond sexo '==' 0}}
-                                {{#ifCond ../data.filtros.escalao '==' escalao_id}}
-                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn filtro_btn__selected">{{designacao}}</a>
-                                    <a href="/equipas{{#if ../data.filtros.localidade}}/filtro/localidade/{{../data.filtros.localidade}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
+                                {{#ifCond ../data.filtros.escalao_id '==' escalao_id}}
+                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade_id}}localidade/{{../data.filtros.localidade_id}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn filtro_btn__selected">{{designacao}}</a>
+                                    <a href="/equipas{{#if ../data.filtros.localidade_id}}/filtro/localidade/{{../data.filtros.localidade_id}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
                                 {{else}}
-                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade}}localidade/{{../data.filtros.localidade}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn">{{designacao}}</a>
+                                    <a href="/equipas/filtro/{{#if ../data.filtros.localidade_id}}localidade/{{../data.filtros.localidade_id}}/{{/if}}escalao/{{escalao_id}}" class="filtro_btn">{{designacao}}</a>
                                 {{/ifCond}}
                             {{/ifCond}}
                         </div>
@@ -117,11 +117,11 @@
                 <p class="sidebar__title">Localidades</p>
                     {{#each data.localidades}}
                         <div class="filtro-box">
-                            {{#ifCond ../data.filtros.localidade '==' localidade}}
-                                <a href="/equipas/filtro/localidade/{{localidade}}{{#if ../data.filtros.escalao}}/escalao/{{../data.filtros.escalao}}{{/if}}" class="filtro_btn filtro_btn__selected">{{localidade}}</a>
-                                <a href="/equipas{{#if ../data.filtros.escalao}}/filtro/escalao/{{../data.filtros.escalao}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
+                            {{#ifCond ../data.filtros.localidade_id '==' localidade_id}}
+                                <a href="/equipas/filtro/localidade/{{localidade_id}}{{#if ../data.filtros.escalao_id}}/escalao/{{../data.filtros.escalao_id}}{{/if}}" class="filtro_btn filtro_btn__selected">{{localidade}}</a>
+                                <a href="/equipas{{#if ../data.filtros.escalao_id}}/filtro/escalao/{{../data.filtros.escalao_id}}{{/if}}" class="filtro__close"><i class="fas fa-times-circle"></i></a>
                             {{else}}
-                                <a href="/equipas/filtro/localidade/{{localidade}}{{#if ../data.filtros.escalao}}/escalao/{{../data.filtros.escalao}}{{/if}}" class="filtro_btn">{{localidade}}</a>
+                                <a href="/equipas/filtro/localidade/{{localidade_id}}{{#if ../data.filtros.escalao_id}}/escalao/{{../data.filtros.escalao_id}}{{/if}}" class="filtro_btn">{{localidade}}</a>
                             {{/ifCond}}
                         </div>
                     {{/each}}
