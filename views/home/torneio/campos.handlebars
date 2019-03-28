@@ -1,0 +1,24 @@
+{{#if data}}
+    {{#if data.torneio}}
+        <div class="title__bar">
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
+            <h3>{{data.torneio.ano}}</h3>
+        </div>
+    {{/if}}
+
+{{> messages}}
+
+{{#unless data.campos}}
+<a href="/torneio/distribuirEquipas" class="distributeTeams_btn btn primary_btn">Distribuir Equipas</a>
+{{else}}
+<div class="campos_wrapper">
+    <h2>Campos</h2>
+    <div class="lista_campos">
+        {{#each data.campos}}
+            <a href="" class="campo campo-xl">{{this}}</a>
+        {{/each}}
+    </div>
+</div>
+{{/unless}}
+
+{{/if}}

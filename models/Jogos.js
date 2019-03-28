@@ -75,19 +75,40 @@ class Jogos {
         });
     }
 
-    addJogo(torneio_id, escalao_id, fase, campo, equipa1, equipa2){
+    addJogo(torneio_id, escalao_id, fase, campo, equipa1_id, equipa2_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run(`
                 INSERT INTO jogos (torneio_id, escalao_id, fase, campo, equipa1_id, equipa2_id)
                 VALUES (?,?,?,?,?,?)
             `,
-            [torneio_id, escalao_id, fase, campo, equipa1, equipa2],
+            [torneio_id, escalao_id, fase, campo, equipa1_id, equipa2_id],
             (err) => {
                 if(err) {
                     return reject(err);
                 } else {
                     return resolve();
+                }
+            });
+        });
+    }
+
+    getCampos(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`
+                SELECT campo 
+                FROM jogos 
+                WHERE torneio_id = ?
+                GROUP BY campo
+                ORDER BY campo ASC
+            `,
+            [torneio_id],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
                 }
             });
         });

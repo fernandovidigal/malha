@@ -406,6 +406,13 @@ small {
     align-items: flex-start;
 }
 
+.lista_campos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 .campo {
     color: #858ca8;
     background-color: #f8f9ff;
@@ -420,10 +427,22 @@ small {
     transition: all .25s;
 }
 
-.campo:hover {
+.campo-xl {
+    width: 52px;
+    height: 52px;
+    font-size: 120%;
+    margin: 0 12px 24px 12px;
+}
+
+.campo:hover:not(.filled) {
     color: #2c3641;
     background-color: #ffffff;
     border: solid 1px #dddfe8;
     box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
+}
+
+.filled {
+    background-color: #4adbbd;
+    color: #ffffff;
 }
 

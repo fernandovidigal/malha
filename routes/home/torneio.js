@@ -10,7 +10,7 @@ router.all('/*', [userAuthenticated, checkTorneioActivo], (req, res, next) => {
     next();
 });
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
     let data = {
         'torneio': req.session.torneio
     };
@@ -21,30 +21,22 @@ router.get('/', (req, res, next) => {
     .then((numCampos)=>{
         if(numCampos != undefined) {
             if(numCampos.campos > 0) {
-                next();
+                res.redirect('/torneio/campos');
             } else {
                 res.render('home/torneio/setNumeroCampos', {data: data});
             }
         } else {
+            // TODO: implementar e caso de erro
             // Não conseguiu obter o número de campos
         }
     })
     .catch((err) => {
         console.log(err);
+        // TODO: Handle erro
     });
 });
 
-// Router base quando já existe o número de campos predefinido
-router.get('/', (req, res) => {
-    let data = {
-        'torneio': req.session.torneio
-    };
-    let torneio_id = req.session.torneio.torneio_id;
-
-    helper_functions.distribuiEquipasPorCampos(malha);
-    res.render('home/torneio/index', {data: data});
-});
-
+// ADICIONAR NÚMERO DE CAMPOS
 router.post('/', (req, res) => {
     let data = {
         'torneio': req.session.torneio
@@ -66,7 +58,7 @@ router.post('/', (req, res) => {
         malha.torneios.setNumCampos(torneio_id, parseInt(req.body.numCampos, 10))
         .then(()=>{
             req.flash('success', 'Número de campos definido com sucesso');
-            res.redirect('/torneio');
+            res.redirect('/torneio/campos');
         })
         .catch((err) => {
             console.log(err);
@@ -74,6 +66,21 @@ router.post('/', (req, res) => {
             res.redirect('/torneio/setNumeroCampos');
         });
     }
+});
+
+router.get('/campos', (req, res) => {
+    let data = {
+        'torneio': req.session.torneio
+    };
+    let torneio_id = req.session.torneio.torneio_id;
+    //data.campos = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
+
+    res.render('home/torneio/campos', {data: data});
+});
+
+router.get('/distribuirEquipas', (req, res)=>{
+    req.flash('success', 'Equipas distribuidas com sucesso');
+    res.redirect('/torneio/campos');
 });
 
 module.exports = router;
