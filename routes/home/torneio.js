@@ -10,7 +10,7 @@ router.all('/*', [userAuthenticated, checkTorneioActivo], (req, res, next) => {
     next();
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
     let data = {
         'torneio': req.session.torneio
     };
@@ -21,8 +21,7 @@ router.get('/', (req, res) => {
     .then((numCampos)=>{
         if(numCampos != undefined) {
             if(numCampos.campos > 0) {
-                helper_functions.distribuiEquipasPorCampos(malha);
-                res.render('home/torneio/index', {data: data});
+                next();
             } else {
                 res.render('home/torneio/setNumeroCampos', {data: data});
             }
@@ -35,8 +34,46 @@ router.get('/', (req, res) => {
     });
 });
 
-router.post('/:numCampos', (req, res) => {
-    
+// Router base quando já existe o número de campos predefinido
+router.get('/', (req, res) => {
+    let data = {
+        'torneio': req.session.torneio
+    };
+    let torneio_id = req.session.torneio.torneio_id;
+
+    helper_functions.distribuiEquipasPorCampos(malha);
+    res.render('home/torneio/index', {data: data});
+});
+
+router.post('/', (req, res) => {
+    let data = {
+        'torneio': req.session.torneio
+    };
+    let torneio_id = req.session.torneio.torneio_id;
+    let erros = [];
+    const numbersRegExp = new RegExp('^[0-9]+$');
+
+    if(!req.body.numCampos || req.body.numCampos == '') {
+        erros.push({err_msg: 'Indique o número de campos'});
+    } else if(!numbersRegExp.test(req.body.numCampos)){
+        erros.push({err_msg: 'Número de campos inválido'});
+    }
+
+    if(erros.length > 0) {
+        data.numCampos = req.body.numCampos;
+        res.render('home/torneio/setNumeroCampos', {data: data, erros: erros});
+    } else {
+        malha.torneios.setNumCampos(torneio_id, parseInt(req.body.numCampos, 10))
+        .then(()=>{
+            req.flash('success', 'Número de campos definido com sucesso');
+            res.redirect('/torneio');
+        })
+        .catch((err) => {
+            console.log(err);
+            req.flash('error', 'Não foi possível definir o número de campos');
+            res.redirect('/torneio/setNumeroCampos');
+        });
+    }
 });
 
 module.exports = router;

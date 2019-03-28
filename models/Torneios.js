@@ -54,11 +54,11 @@ class Torneios {
         });
     }
 
-    getTorneioById(id){
+    getTorneioById(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get("SELECT * FROM torneios WHERE torneio_id = ? LIMIT 1",
-            [id],
+            [torneio_id],
             (err, row) => {
                 if(err) {
                     return reject(err);
@@ -86,11 +86,11 @@ class Torneios {
         });
     }
 
-    updateTorneio(id, designacao, localidade, ano, campos) {
+    updateTorneio(torneio_id, designacao, localidade, ano, campos) {
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.run("UPDATE torneios SET designacao = ?, localidade = ?, ano = ?, campos = ? WHERE torneio_id = ?",
-                [designacao, localidade, ano, campos, id],
+                [designacao, localidade, ano, campos, torneio_id],
                 (err) => {
                     if(err){
                         return reject(err);
@@ -141,11 +141,13 @@ class Torneios {
         });
     }
 
-    setActiveTorneio(id){
+    setActiveTorneio(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.resetActiveTorneios().then(()=>{
-                that.db.run("UPDATE torneios SET activo = 1 WHERE torneio_id = ?", [id], (err) => {
+                that.db.run("UPDATE torneios SET activo = 1 WHERE torneio_id = ?",
+                [torneio_id],
+                (err) => {
                     if(err){
                         return reject(err);
                     } else {
@@ -174,18 +176,14 @@ class Torneios {
     setNumCampos(torneio_id, campos){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.resetActiveTorneios().then(()=>{
-                that.db.run("UPDATE torneios SET campos = ? WHERE torneio_id = ?",
-                [campos, torneio_id],
-                (err) => {
-                    if(err){
-                        return reject(err);
-                    } else {
-                        return resolve();
-                    }
-                });
-            }).catch((err) => {
-                return reject(err);
+            that.db.run("UPDATE torneios SET campos = ? WHERE torneio_id = ?",
+            [campos, torneio_id],
+            (err) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve();
+                }
             });
         });
     }

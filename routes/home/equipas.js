@@ -268,6 +268,15 @@ router.delete('/:id', (req, res) => {
 });
 
 /////////////////////////////////////////////////////
+//  MOSTRA PA PROGRESSÃO DA EQUIPA NO TORNEIO
+/////////////////////////////////////////////////////
+router.get('/percurso/:id', (req, res)=>{
+    req.flash('warning', 'Quando implmentado irá mostrar o percurso da equipa no torneio.');
+    res.redirect('/equipas');
+});
+
+
+/////////////////////////////////////////////////////
 //      PESQUISA EQUIPA POR ID
 /////////////////////////////////////////////////////
 
