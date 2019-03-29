@@ -73,12 +73,23 @@ router.get('/campos', (req, res) => {
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
-    //data.campos = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26];
 
     res.render('home/torneio/campos', {data: data});
 });
 
 router.get('/distribuirEquipas', (req, res)=>{
+    let data = {
+        'torneio': req.session.torneio
+    };
+    let torneio_id = req.session.torneio.torneio_id;
+
+    malha.equipas.getAllEscaloesWithEquipa(torneio_id)
+    .then((escaloes)=>{
+        console.log(escaloes);
+    })
+    .catch((err)=>{
+        console.log(err);
+    });
     req.flash('success', 'Equipas distribuidas com sucesso');
     res.redirect('/torneio/campos');
 });
