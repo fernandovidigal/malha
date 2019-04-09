@@ -220,6 +220,25 @@ class Equipas {
         });
     }
 
+    getNumEquipasPorEscalao(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`
+                SELECT escalao_id, COUNT(escalao_id) as numEquipas
+                FROM equipas
+                WHERE torneio_id = ?
+                GROUP BY escalao_id`,
+            [torneio_id],
+            (err,rows) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
+
     deleteEquipa(equipa_id, torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){

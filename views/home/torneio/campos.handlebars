@@ -9,7 +9,14 @@
 {{> messages}}
 
 {{#unless data.campos}}
-<a href="/torneio/distribuirEquipas" class="distributeTeams_btn btn primary_btn">Distribuir Equipas</a>
+<form action="/torneio/distribuirEquipas" method="post">
+    <p>Equipas por campo na 1º Fase</p>
+    <label for="minEquipasCampo">Mínimo:</label>
+    <input type="text" value="4" pattern="^[0-9]+$" name="minEquipasCampo" id="minEquipasCampo" required><br>
+    <label for="maxEquipasCampo">Máximo:</label>
+    <input type="text" value="6" pattern="^[0-9]+$" name="maxEquipasCampo" id="maxEquipasCampo" required><br><br>
+    <input type="submit" name="distribuiEquipasBtn" class="distributeTeams_btn btn primary_btn" value="Distribuir todas as equipas pelos campos">
+</form>
 {{else}}
 <div class="campos_wrapper">
     <h2>Campos</h2>

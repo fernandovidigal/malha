@@ -3,7 +3,7 @@ const router = express.Router();
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 const {checkTorneioActivo} = require('../../helpers/torneioActivo');
-const {helper_functions} = require('../../helpers/helper_functions');
+const {torneio_functions} = require('../../helpers/torneio_functions');
 
 router.all('/*', [userAuthenticated, checkTorneioActivo], (req, res, next) => {
     req.app.locals.layout = 'home';
@@ -77,13 +77,20 @@ router.get('/campos', (req, res) => {
     res.render('home/torneio/campos', {data: data});
 });
 
-router.get('/distribuirEquipas', (req, res)=>{
+router.post('/distribuirEquipas', (req, res)=>{
     let data = {
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
 
-    malha.equipas.getAllEscaloesWithEquipa(torneio_id)
+    torneio_functions.distribuiEquipasPorCampos(torneio_id, malha, 4, 6)
+    .catch((err) => {
+        console.log(err);
+    });
+
+    res.send("Equipas Distribuidas");
+
+    /*malha.equipas.getAllEscaloesWithEquipa(torneio_id)
     .then((escaloes)=>{
         console.log(escaloes);
     })
@@ -91,7 +98,7 @@ router.get('/distribuirEquipas', (req, res)=>{
         console.log(err);
     });
     req.flash('success', 'Equipas distribuidas com sucesso');
-    res.redirect('/torneio/campos');
+    res.redirect('/torneio/campos');*/
 });
 
 module.exports = router;
