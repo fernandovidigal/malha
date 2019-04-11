@@ -14,34 +14,19 @@ function determinaNumeroTotalCampos(numEquipas, numCampos, minCampos, maxCampos)
     }
 }
 
-function verificaLocalidade(campo, localidade){
-    return false;
-}
-
-function verificaCamposDisponiveis(listaCampos, localidade_id, maxEquipasPorCampo, numeroMinimoEquipasCampo = -1){
+function verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo, localidade_id = -1){
     let camposDisponiveis = new Array();
     let contemLocalidade = false;
 
     for(i = 0; i < listaCampos.length; i++){
         contemLocalidade = false;
 
-        if(listaCampos[i].length < maxEquipasPorCampo){
+        // Número de equipas deve ser menor que o máximo de equipas por campo e campos deve ter o número
+        // minimo de equipas
+        if(listaCampos[i].length < maxEquipasPorCampo && listaCampos[i].length == numeroMinimoEquipasCampo){
 
-            // Foi definido um número minimo de equipas por campo
-            if(numeroMinimoEquipasCampo != -1){
-                if(listaCampos[i].length == numeroMinimoEquipasCampo){
-                    for(j = 0; j < listaCampos[i].length; j++){
-                        if(listaCampos[i][j].localidade_id == localidade_id){
-                            contemLocalidade = true;
-                            break;
-                        }
-                    }
-        
-                    if(!contemLocalidade){
-                        camposDisponiveis.push(i);
-                    }
-                }
-            } else { // Não foi definido o número minimo de equipas por campo
+            // Foi definida localidade
+            if(localidade_id != -1){
                 for(j = 0; j < listaCampos[i].length; j++){
                     if(listaCampos[i][j].localidade_id == localidade_id){
                         contemLocalidade = true;
@@ -52,6 +37,9 @@ function verificaCamposDisponiveis(listaCampos, localidade_id, maxEquipasPorCamp
                 if(!contemLocalidade){
                     camposDisponiveis.push(i);
                 }
+            } else {
+                // Não foi definido localidade então adiciona o campo
+                camposDisponiveis.push(i);
             }
         }
     }
@@ -63,7 +51,6 @@ function verificaMinimoEquipasPorCampo(listaCampos, numeroMinimoEquipasCampo){
     for(i = 0; i < listaCampos.length; i++){
         // Existe pelo menos um campo com o mínimo de equipas actual
         if(listaCampos[i].length == numeroMinimoEquipasCampo){
-            console.log("Existe campo com o nínimo de equipas");
             return numeroMinimoEquipasCampo;
         }
     }
@@ -77,7 +64,7 @@ function verificaMinimoEquipasPorCampo(listaCampos, numeroMinimoEquipasCampo){
 // 2. Verificar se o número de campos é suficiente para agrupamentos de 4 equipas (Num Equipas / 4),
 //      ou seja, se o número de campos for menor, significa que não existem campos suficientes para agrupar as equipas
 // 3. Se nenhumas das condições anteriores se verificar então preenche todos os campos definido no número de campos do torneio.
-async function distribuir(malhaDB, equipas, escalao, numCampos, minCampos, maxCampos){
+async function distribuir(equipas, numCampos, minCampos, maxCampos){
     return new Promise(function(resolve, reject){
         
         const numeroEquipas = equipas.length;
@@ -88,8 +75,6 @@ async function distribuir(malhaDB, equipas, escalao, numCampos, minCampos, maxCa
 
         const maxEquipasPorCampo = Math.ceil(numeroEquipas / totalCampos);
 
-        const xpto = verificaLocalidade(1, 2);
-
         // Inicia a Array de campos
         let listaCampos = [];
         for(i = 0; i < totalCampos; i++){
@@ -99,44 +84,148 @@ async function distribuir(malhaDB, equipas, escalao, numCampos, minCampos, maxCa
         let numeroMinimoEquipasCampo = 0;
         
         while(equipas.length > 0){
-            console.log("Número de Equipas: " + equipas.length);
 
             // Obtem uma equipa aleatória
             const equipaRandom = Math.floor(Math.random() * equipas.length);
             let equipa = equipas[equipaRandom];
-            console.log(equipa);
-            console.log(" ");
 
             // Actualiza o número mínimo de equipas que existe em cada campo
             numeroMinimoEquipasCampo = verificaMinimoEquipasPorCampo(listaCampos, numeroMinimoEquipasCampo);
-            console.log("Numero minino de equipas: " + numeroMinimoEquipasCampo);
 
             // Verifica o número de campos disponiveis para alocar a equipa
-            let camposDisponiveis = verificaCamposDisponiveis(listaCampos, equipa.localidade_id, maxEquipasPorCampo, numeroMinimoEquipasCampo);
-            console.log("Localidade: "+equipa.localidade_id);
-            console.log("Campos Disponíveis: "+camposDisponiveis);
+            let camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo, equipa.localidade_id);
 
             if(camposDisponiveis.length != 0){
-                console.log("Aqui");
                 listaCampos[camposDisponiveis[0]].push(equipa);
                 equipas.splice(equipaRandom, 1);
             } else {
-                camposDisponiveis = verificaCamposDisponiveis(listaCampos, equipa.localidade_id, maxEquipasPorCampo);
-                console.log("Campos Disponiveis2: " + camposDisponiveis);
-                listaCampos[camposDisponiveis[0]].push(equipa);
-                equipas.splice(equipaRandom, 1);
-            }
+                let tempNumeroMinimoEquipasCampo = numeroMinimoEquipasCampo;
+                let existemCamposDisponiveis = false;
 
-            console.log(listaCampos);
+                while(camposDisponiveis == 0 && tempNumeroMinimoEquipasCampo < maxEquipasPorCampo){
+                    tempNumeroMinimoEquipasCampo++;
+                    camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, tempNumeroMinimoEquipasCampo, equipa.localidade_id);
+                    if(camposDisponiveis > 0){
+                        existemCamposDisponiveis = true;
+                    }
+                }
+
+                if(existemCamposDisponiveis){
+                    listaCampos[camposDisponiveis[0]].push(equipa);
+                    equipas.splice(equipaRandom, 1);
+                } else {
+                    camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo);
+                    listaCampos[camposDisponiveis[0]].push(equipa);
+                    equipas.splice(equipaRandom, 1);
+                }   
+            }
         }
+
+        return resolve(listaCampos);
     });
 }
 
+function verificaMaiorNumeroEquipasPorCampo(listaCampos){
+    let numEquipas = 0;
+    for(i = 0; i < listaCampos.length; i++){
+        if(listaCampos[i].length > numEquipas){
+            numEquipas = listaCampos[i].length;
+        }
+    }
+    return numEquipas;
+}
 
 
+function ordenaCamposPorNumeroEquipas(listaCampos){
+    let novaListaCampos = Array();
+    let numEquipas = verificaMaiorNumeroEquipasPorCampo(listaCampos);
 
+    while(listaCampos.length > 0){
+        for(i = 0; i < listaCampos.length; i++){
+            if(listaCampos[i].length == numEquipas){
+                novaListaCampos.push(listaCampos[i]);
+                listaCampos.splice(i, 1);
+                i = 0;  
+            }
+        }
+        numEquipas = verificaMaiorNumeroEquipasPorCampo(listaCampos);
+    }
 
+    return novaListaCampos;
+}
 
+function metodoEmparelhamento(equipas){
+    const equipas2 = [
+        [0,1]
+    ];
+    const equipas3 = [
+        [0,1],
+        [0,2],
+        [1,2]
+    ];
+    const equipas4 = [
+        [1,0],
+        [2,3],
+        [0,2],
+        [3,1],
+        [3,0],
+        [2,1]
+    ];
+    const equipas5 = [
+        [1,0],
+        [2,4],
+        [0,2],
+        [4,3],
+        [3,0],
+        [2,1],
+        [0,4],
+        [1,3],
+        [4,1],
+        [3,2]
+    ];
+    const equipas6 = [
+        [1,0],
+        [2,4],
+        [3,5],
+        [0,2],
+        [5,1],
+        [4,3],
+        [3,0],
+        [2,1],
+        [5,4],
+        [0,4],
+        [1,3],
+        [2,5],
+        [5,0],
+        [4,1],
+        [3,2]
+    ];
+
+    let emparelhamentoAUsar = null;
+
+    switch(equipas.length){
+        case 2 :
+            emparelhamentoAUsar = equipas2;
+            break;
+        case 3 :
+            emparelhamentoAUsar = equipas3;
+            break;
+        case 4 :
+            emparelhamentoAUsar = equipas4;
+            break;
+        case 5 :
+            emparelhamentoAUsar = equipas5;
+            break;
+        case 6 :
+            emparelhamentoAUsar = equipas6;
+            break;
+        default:
+            emparelhamentoAUsar = null;
+            break;    
+    }
+
+    return emparelhamentoAUsar;
+}
 
 
 module.exports.torneio_functions = {
@@ -159,14 +248,29 @@ module.exports.torneio_functions = {
         const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidade(torneio_id, 1);
         let equipas = Array.from(listaEquipas, equipa => {
             let data = {
-                "equipa_id":equipa.equipa_id,
-                "localidade_id":equipa.localidade_id
+                "equipa_id": equipa.equipa_id,
+                "localidade_id": equipa.localidade_id
             };
 
             return data;
         });
 
-        await distribuir(malhaDB, equipas, 1, numCampos, minCampos, maxCampos)
+        await distribuir(equipas, numCampos, minCampos, maxCampos)
+            .then((listaCampos)=>{
+                let listaCamposOrdenada = ordenaCamposPorNumeroEquipas(listaCampos);
+                for(i = 0; i < listaCamposOrdenada.length; i++){
+                    console.log("******************************");
+                    let emparelhamento = metodoEmparelhamento(listaCamposOrdenada[i]);
+                    for(j = 0; j < emparelhamento.length; j++){
+                        // TODO: Adicionar à base de dados
+                        console.log("Equipa1: ")
+                        console.log(listaCamposOrdenada[i][emparelhamento[j][0]]);
+                        console.log("Equipa2: ");
+                        console.log(listaCamposOrdenada[i][emparelhamento[j][1]]);
+                        console.log(" ");
+                    }
+                }
+            })
             .catch((err) => {
                 console.log(err);
             });
@@ -192,21 +296,3 @@ module.exports.torneio_functions = {
         });*/
     }
 }
-
-
-
-/*i = 0;
-while(numeroEquipas > 0){
-    if(i >= totalCampos) {
-        i = 0;
-    }
-    const equipaRandom = Math.floor(Math.random() * numeroEquipas);
-    console.log("Localidade: " + equipas[equipaRandom].localidade_id);
-    listaCampos[i].push(equipas[equipaRandom]);
-    equipas.splice(equipaRandom, 1);
-    
-
-    i++;
-}
-
-console.log(listaCampos);*/
