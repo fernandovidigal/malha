@@ -244,49 +244,45 @@ module.exports.torneio_functions = {
         // Número de equipas por escalão
         const numEquipasPorEscalao = await malhaDB.equipas.getNumEquipasPorEscalao(torneio_id);
 
-        // ***********
-        const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidade(torneio_id, 1);
-        let equipas = Array.from(listaEquipas, equipa => {
-            let data = {
-                "equipa_id": equipa.equipa_id,
-                "localidade_id": equipa.localidade_id
-            };
-
-            return data;
-        });
-
-        await distribuir(equipas, numCampos, minCampos, maxCampos)
-            .then((listaCampos)=>{
-                let listaCamposOrdenada = ordenaCamposPorNumeroEquipas(listaCampos);
-                for(i = 0; i < listaCamposOrdenada.length; i++){
-                    console.log("******************************");
-                    let emparelhamento = metodoEmparelhamento(listaCamposOrdenada[i]);
-                    for(j = 0; j < emparelhamento.length; j++){
-                        // TODO: Adicionar à base de dados
-                        console.log("Equipa1: ")
-                        console.log(listaCamposOrdenada[i][emparelhamento[j][0]]);
-                        console.log("Equipa2: ");
-                        console.log(listaCamposOrdenada[i][emparelhamento[j][1]]);
-                        console.log(" ");
-                    }
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        // ***********
-
         // Disbtribui equipas por campos por cada escalão
-        /*escaloes.forEach(async (escalao) => {
+        escaloes.forEach(async (escalao) => {
             // Obtem a lista de equipas de cada escalão
-            const listaEquipas = await malhaDB.equipas.getAllEquipasIDPorEscalao(torneio_id, escalao);
-            let equipas = Array.from(listaEquipas, equipa => equipa.equipa_id);
-            
-            await distribuir(malhaDB, numCampos, equipas, escalao)
-            .catch((err) => {
-                console.log(err);
+            const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidade(torneio_id, 1);
+            let equipas = Array.from(listaEquipas, equipa => {
+                let data = {
+                    "equipa_id": equipa.equipa_id,
+                    "localidade_id": equipa.localidade_id
+                };
+
+                return data;
             });
-        });*/
+
+            await distribuir(equipas, numCampos, minCampos, maxCampos)
+                .then(async (listaCampos)=>{
+                    let listaCamposOrdenada = ordenaCamposPorNumeroEquipas(listaCampos);
+                    console.log(listaCamposOrdenada);
+                    for(i = 0; i < listaCamposOrdenada.length; i++){
+                        let emparelhamento = metodoEmparelhamento(listaCamposOrdenada[i]);
+                        console.log("i: " + i);
+                        for(j = 0; j < emparelhamento.length; j++){
+                            console.log("j: " + j);
+                            // TODO: Adicionar à base de dados
+                            /*console.log("Equipa1: ")
+                            console.log(listaCamposOrdenada[i][emparelhamento[j][0]]);
+                            console.log("Equipa2: ");
+                            console.log(listaCamposOrdenada[i][emparelhamento[j][1]]);
+                            console.log(" ");*/
+                            let equipa1 = listaCamposOrdenada[i][emparelhamento[j][0]];
+                            let equipa2 = listaCamposOrdenada[i][emparelhamento[j][1]];
+
+                            malhaDB.jogos.addJogo(torneio_id, escalao, 1, (i+1), equipa1.equipa_id, equipa2.equipa_id);
+                        }
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        });
 
         /*malha.equipas.getAllEquipas(1)
         .then((listaEquipas)=>{
