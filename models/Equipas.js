@@ -183,7 +183,7 @@ class Equipas {
         });
     }
 
-    getAllEquipaIDAndLocalidade(torneio_id, escalao_id){
+    getAllEquipaIDAndLocalidadeByEscalao(torneio_id, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`

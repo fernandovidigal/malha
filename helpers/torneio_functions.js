@@ -1,20 +1,22 @@
-function determinaNumeroTotalCampos(numEquipas, numCampos, minCampos, maxCampos){
+function determinaNumeroTotalCampos(numEquipas, numCamposTorneio, minEquipas, maxEquipas){
+
     // Minimo de campos necessário para se jogar
-    const minCamposOffset = Math.ceil(numEquipas / maxCampos);
+    const minCampos = Math.ceil(numEquipas / maxEquipas);
 
     // Maximo de campos necessário para se jogar
-    const maxCamposOffset = Math.ceil(numEquipas / minCampos);
+    const maxCampos = Math.ceil(numEquipas / minEquipas);
 
-    if(numCampos > maxCamposOffset){
-        return maxCamposOffset;
-    } else if(numCampos < minCamposOffset){
+    if(numCamposTorneio > maxCampos){
+        return maxCampos;
+    } else if(numCamposTorneio < minCampos){
         return 0;
     } else {
-        return numCampos;
+        return numCamposTorneio;
     }
 }
 
 function verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo, localidade_id = -1){
+
     let camposDisponiveis = new Array();
     let contemLocalidade = false;
 
@@ -43,6 +45,7 @@ function verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimo
             }
         }
     }
+
     return camposDisponiveis;
 }
 
@@ -64,79 +67,80 @@ function verificaMinimoEquipasPorCampo(listaCampos, numeroMinimoEquipasCampo){
 // 2. Verificar se o número de campos é suficiente para agrupamentos de 4 equipas (Num Equipas / 4),
 //      ou seja, se o número de campos for menor, significa que não existem campos suficientes para agrupar as equipas
 // 3. Se nenhumas das condições anteriores se verificar então preenche todos os campos definido no número de campos do torneio.
-async function distribuir(equipas, numCampos, minCampos, maxCampos){
-    return new Promise(function(resolve, reject){
-        
-        const numeroEquipas = equipas.length;
-        const totalCampos = determinaNumeroTotalCampos(equipas.length, numCampos, minCampos, maxCampos);
-        if(totalCampos == 0){
-            return reject("Número de campos insuficiente.");
-        }
+async function distribuir(equipas, numCamposTorneio, minCampos, maxCampos){
+    
+    const numeroEquipas = equipas.length;
+    const totalCampos = determinaNumeroTotalCampos(equipas.length, numCamposTorneio, minCampos, maxCampos);
+    if(totalCampos == 0){
+        throw new Error("Número de campos insuficiente.");
+    }
 
-        const maxEquipasPorCampo = Math.ceil(numeroEquipas / totalCampos);
+    const maxEquipasPorCampo = Math.ceil(numeroEquipas / totalCampos);
 
-        // Inicia a Array de campos
-        let listaCampos = [];
-        for(i = 0; i < totalCampos; i++){
-            listaCampos.push(new Array());
-        }
+    // Inicia a Array de campos
+    let listaCampos = [];
+    for(i = 0; i < totalCampos; i++){
+        listaCampos.push(new Array());
+    }
 
-        let numeroMinimoEquipasCampo = 0;
-        
-        while(equipas.length > 0){
+    let numeroMinimoEquipasCampo = 0;
+    
+    while(equipas.length > 0){
 
-            // Obtem uma equipa aleatória
-            const equipaRandom = Math.floor(Math.random() * equipas.length);
-            let equipa = equipas[equipaRandom];
+        // Obtem uma equipa aleatória
+        const equipaRandom = Math.floor(Math.random() * equipas.length);
+        let equipa = equipas[equipaRandom];
 
-            // Actualiza o número mínimo de equipas que existe em cada campo
-            numeroMinimoEquipasCampo = verificaMinimoEquipasPorCampo(listaCampos, numeroMinimoEquipasCampo);
+        // Actualiza o número mínimo de equipas que existe em cada campo
+        numeroMinimoEquipasCampo = verificaMinimoEquipasPorCampo(listaCampos, numeroMinimoEquipasCampo);
 
-            // Verifica o número de campos disponiveis para alocar a equipa
-            let camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo, equipa.localidade_id);
+        // Verifica o número de campos disponiveis para alocar a equipa
+        let camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo, equipa.localidade_id);
 
-            if(camposDisponiveis.length != 0){
+        if(camposDisponiveis.length != 0){
+            listaCampos[camposDisponiveis[0]].push(equipa);
+            equipas.splice(equipaRandom, 1);
+        } else {
+            let tempNumeroMinimoEquipasCampo = numeroMinimoEquipasCampo;
+            let existemCamposDisponiveis = false;
+
+            while(camposDisponiveis == 0 && tempNumeroMinimoEquipasCampo < maxEquipasPorCampo){
+                tempNumeroMinimoEquipasCampo++;
+                camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, tempNumeroMinimoEquipasCampo, equipa.localidade_id);
+                if(camposDisponiveis > 0){
+                    existemCamposDisponiveis = true;
+                }
+            }
+
+            if(existemCamposDisponiveis){
                 listaCampos[camposDisponiveis[0]].push(equipa);
                 equipas.splice(equipaRandom, 1);
             } else {
-                let tempNumeroMinimoEquipasCampo = numeroMinimoEquipasCampo;
-                let existemCamposDisponiveis = false;
-
-                while(camposDisponiveis == 0 && tempNumeroMinimoEquipasCampo < maxEquipasPorCampo){
-                    tempNumeroMinimoEquipasCampo++;
-                    camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, tempNumeroMinimoEquipasCampo, equipa.localidade_id);
-                    if(camposDisponiveis > 0){
-                        existemCamposDisponiveis = true;
-                    }
-                }
-
-                if(existemCamposDisponiveis){
-                    listaCampos[camposDisponiveis[0]].push(equipa);
-                    equipas.splice(equipaRandom, 1);
-                } else {
-                    camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo);
-                    listaCampos[camposDisponiveis[0]].push(equipa);
-                    equipas.splice(equipaRandom, 1);
-                }   
-            }
+                camposDisponiveis = verificaCamposDisponiveis(listaCampos, maxEquipasPorCampo, numeroMinimoEquipasCampo);
+                listaCampos[camposDisponiveis[0]].push(equipa);
+                equipas.splice(equipaRandom, 1);
+            }   
         }
+    }
 
-        return resolve(listaCampos);
-    });
+    return listaCampos;
 }
 
 function verificaMaiorNumeroEquipasPorCampo(listaCampos){
+
     let numEquipas = 0;
     for(i = 0; i < listaCampos.length; i++){
         if(listaCampos[i].length > numEquipas){
             numEquipas = listaCampos[i].length;
         }
     }
+
     return numEquipas;
 }
 
 
 function ordenaCamposPorNumeroEquipas(listaCampos){
+
     let novaListaCampos = Array();
     let numEquipas = verificaMaiorNumeroEquipasPorCampo(listaCampos);
 
@@ -155,6 +159,7 @@ function ordenaCamposPorNumeroEquipas(listaCampos){
 }
 
 function metodoEmparelhamento(equipas){
+
     const equipas2 = [
         [0,1]
     ];
@@ -231,23 +236,18 @@ function metodoEmparelhamento(equipas){
 module.exports.torneio_functions = {
 
     // Ponderar utilizar promessas para quando terminar o processamento retornar
-    distribuiEquipasPorCampos: async function(torneio_id, malhaDB, minCampos, maxCampos){
+    distribuiEquipasPorCampos: async function(torneio_id, malhaDB, minEquipas, maxEquipas){
 
         // Número de campos
-        let numCampos = await malhaDB.torneios.getNumCampos(torneio_id);
-        numCampos = numCampos.campos;
+        let numCamposTorneio = await malhaDB.torneios.getNumCampos(torneio_id);
+        numCamposTorneio = numCamposTorneio.campos;
 
         // Todos os escalões que têm equipas
         const listaEscaloes = await malhaDB.equipas.getAllEscaloesWithEquipa(torneio_id);
         let escaloes = Array.from(listaEscaloes, escalao => escalao.escalao_id);
 
-        // Número de equipas por escalão
-        const numEquipasPorEscalao = await malhaDB.equipas.getNumEquipasPorEscalao(torneio_id);
-
-        // Disbtribui equipas por campos por cada escalão
-        escaloes.forEach(async (escalao) => {
-            // Obtem a lista de equipas de cada escalão
-            const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidade(torneio_id, 1);
+        for(const escalao of escaloes){
+            const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidadeByEscalao(torneio_id, 1);
             let equipas = Array.from(listaEquipas, equipa => {
                 let data = {
                     "equipa_id": equipa.equipa_id,
@@ -257,38 +257,23 @@ module.exports.torneio_functions = {
                 return data;
             });
 
-            await distribuir(equipas, numCampos, minCampos, maxCampos)
-                .then(async (listaCampos)=>{
-                    let listaCamposOrdenada = ordenaCamposPorNumeroEquipas(listaCampos);
-                    console.log(listaCamposOrdenada);
-                    for(i = 0; i < listaCamposOrdenada.length; i++){
-                        let emparelhamento = metodoEmparelhamento(listaCamposOrdenada[i]);
-                        console.log("i: " + i);
-                        for(j = 0; j < emparelhamento.length; j++){
-                            console.log("j: " + j);
-                            // TODO: Adicionar à base de dados
-                            /*console.log("Equipa1: ")
-                            console.log(listaCamposOrdenada[i][emparelhamento[j][0]]);
-                            console.log("Equipa2: ");
-                            console.log(listaCamposOrdenada[i][emparelhamento[j][1]]);
-                            console.log(" ");*/
-                            let equipa1 = listaCamposOrdenada[i][emparelhamento[j][0]];
-                            let equipa2 = listaCamposOrdenada[i][emparelhamento[j][1]];
+            await distribuir(equipas, numCamposTorneio, minEquipas, maxEquipas)
+            .then(async (listaCampos) => {
+                let listaCamposOrdenada = ordenaCamposPorNumeroEquipas(listaCampos);
 
-                            malhaDB.jogos.addJogo(torneio_id, escalao, 1, (i+1), equipa1.equipa_id, equipa2.equipa_id);
-                        }
+                for(i = 0; i < listaCamposOrdenada.length; i++){
+                    let emparelhamento = metodoEmparelhamento(listaCamposOrdenada[i]);
+                    for(const par of emparelhamento){
+                        let equipa1 = listaCamposOrdenada[i][par[0]];
+                        let equipa2 = listaCamposOrdenada[i][par[1]];
+
+                        await malhaDB.jogos.addJogo(torneio_id, escalao, 1, (i+1), equipa1.equipa_id, equipa2.equipa_id);
                     }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        });
-
-        /*malha.equipas.getAllEquipas(1)
-        .then((listaEquipas)=>{
-            let randomEquipa = Math.floor(Math.random() * listaEquipas.length);
-        }).catch((err) => {
-            console.log(err);
-        });*/
+                }
+            })
+            .catch((err) => {
+                throw new Error("Número de campos insuficientes para o escalao: " + escalao);
+            });
+        }
     }
 }

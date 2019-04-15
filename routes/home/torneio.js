@@ -82,10 +82,11 @@ router.post('/distribuirEquipas', (req, res)=>{
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
-
-    torneio_functions.distribuiEquipasPorCampos(torneio_id, malha, 4, 6)
+    // TODO: Fazer a verificação para não se colocar 0 ou 1 no inputs e o maxCampos deve ser maior que o minCampos
+    // Não se pode realizar o torneio sem pelo menos 2 equipas por campo
+    torneio_functions.distribuiEquipasPorCampos(torneio_id, malha, req.body.minEquipasCampo, req.body.maxEquipasCampo)
     .catch((err) => {
-        console.log(err);
+        console.log("BB " + err);
     });
 
     res.send("Equipas Distribuidas");
