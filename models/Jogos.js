@@ -93,6 +93,46 @@ class Jogos {
         });
     }
 
+    getFaseTorneio(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT fase 
+                FROM jogos 
+                WHERE torneio_id = ?
+                GROUP BY fase
+                ORDER BY fase DESC
+            `,
+            [torneio_id],
+            (err, row) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
+    getNumJogosPorFase(torneio_id, fase){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT COUNT(jogo_id) AS numJogos 
+                FROM jogos 
+                WHERE torneio_id = ? AND fase = ?
+            `,
+            [torneio_id, fase],
+            (err, row) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
     getCampos(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){

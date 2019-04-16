@@ -30,6 +30,7 @@ small {
     top: 0;
     left: 0;
     bottom: 0;
+    z-index: 10;
     width: 250px;
     background-color: #455cc7;
 }
@@ -444,5 +445,47 @@ small {
 .filled {
     background-color: #4adbbd;
     color: #ffffff;
+}
+
+.fase__wrapper {
+    padding-left: 250px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: #ffffff;
+    box-shadow: 0 -2px 36px rgba(69, 92, 199, .15);
+    display: flex;
+    justify-content: flex-start;
+}
+
+.fase__item {
+    display: flex;
+    width: 140px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.fase__item::after{
+    content: "";
+    display: block;
+    width: 42.42px;
+    height: 42.42px;
+    background-color: transparent;
+    transform: rotate(45deg);
+    position: absolute;
+    right: -5px;
+    border-right: solid 3px #eaebf1;
+    border-top: solid 3px #eaebf1;
+}
+
+.fase__item:hover {
+    background-color: red;
+}
+
+.fase__item:hover::after {
+    background-color: red;
 }
 

@@ -17,7 +17,33 @@
                         {{data.equipa_id}}
                         <a href="/equipas"><i class="fas fa-times-circle"></i></a>
                     </div>
-                {{/if}} 
+                {{/if}}
+
+                <select name="escalaoSelect" id="escalaoSelect">
+                    <option value="" disabled selected hidden>Escalão</option>
+                    <option value="0">Todos</option>
+                    <optgroup label="Masculino">
+                        <option value="1">Jovem</option>
+                        <option value="2">Sénior</option>
+                        <option value="3">65+</option>
+                    </optgroup>
+                    <optgroup label="Feminino">
+                        <option value="4">Absolutos</option>
+                        <option value="5">65+</option>
+                    </optgroup>
+                </select>
+
+                <select name="escalaoSelect" id="escalaoSelect">
+                    <option value="" disabled selected hidden>Localidade</option>
+                    <option value="0">Todas</option>
+                    <option value="-1" disabled>-------------</option>
+                    <option value="1">Mora</option>
+                    <option value="2">Évora</option>
+                    <option value="3">Arraiolos</option>
+                    <option value="3">Lavre</option>
+                    <option value="3">Montemor-o-novo</option>
+                </select>
+
                 <form action="/equipas/pesquisa" method="post" class="searchBox">
                     <input type="text" name="searchTeamID" class="searchBox__input" pattern="^[0-9]+$" placeholder="Equipa"/>
                     <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
@@ -86,5 +112,11 @@
         </div>
     </div>
 
+</div>
+
+<div class="fase__wrapper">
+    <div class="fase__item">Fase 1</div>
+    <div class="fase__item">Fase 2</div>
+    <div class="fase__item">Fase 3</div>
 </div>
 {{/if}}

@@ -5,9 +5,40 @@ const {userAuthenticated} = require('../../helpers/authentication');
 const {checkTorneioActivo} = require('../../helpers/torneioActivo');
 const {torneio_functions} = require('../../helpers/torneio_functions');
 
+const numbersRegExp = new RegExp('^[0-9]+$');
+
 router.all('/*', [userAuthenticated, checkTorneioActivo], (req, res, next) => {
     req.app.locals.layout = 'home';
     next();
+});
+
+router.get('/', async (req, res, next) => {
+    let data = {
+        'torneio': req.session.torneio
+    };
+    let torneio_id = req.session.torneio.torneio_id;
+
+    const fase = await malha.jogos.getFaseTorneio(torneio_id);
+
+    const numCamposTorneio = malha.torneios.getNumCampos(torneio_id);
+    const numJogosFase = malha.jogos.getNumJogosPorFase(torneio_id, (!fase ? 0 : fase.fase));
+    
+    await Promise.all([numCamposTorneio, numJogosFase])
+    .then(([camposResult, jogosResult])=>{
+        const numCampos = camposResult.campos;
+        const numJogos = jogosResult.numJogos;
+
+        if(numCampos == 0){
+            res.render('home/torneio/setNumeroCampos', {data: data});
+        } else if(numCampos > 0 && numJogos == 0){
+            res.render('home/torneio/distribuirEquipas', {data: data});
+        } else {
+            next();
+        }
+    }).catch((err) => {
+        console.log(err);
+        // TODO: Handle erro
+    });
 });
 
 router.get('/', (req, res) => {
@@ -15,25 +46,8 @@ router.get('/', (req, res) => {
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
-
-    // Verifica se o torneio tem o número de campos definido
-    malha.torneios.getNumCampos(torneio_id)
-    .then((numCampos)=>{
-        if(numCampos != undefined) {
-            if(numCampos.campos > 0) {
-                res.redirect('/torneio/campos');
-            } else {
-                res.render('home/torneio/setNumeroCampos', {data: data});
-            }
-        } else {
-            // TODO: implementar e caso de erro
-            // Não conseguiu obter o número de campos
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-        // TODO: Handle erro
-    });
+    
+    res.render('home/torneio/index', {data: data});
 });
 
 // ADICIONAR NÚMERO DE CAMPOS
@@ -43,10 +57,9 @@ router.post('/', (req, res) => {
     };
     let torneio_id = req.session.torneio.torneio_id;
     let erros = [];
-    const numbersRegExp = new RegExp('^[0-9]+$');
 
     if(!req.body.numCampos || req.body.numCampos == '') {
-        erros.push({err_msg: 'Indique o número de campos'});
+        erros.push({err_msg: 'Deve indicar o número de campos'});
     } else if(!numbersRegExp.test(req.body.numCampos)){
         erros.push({err_msg: 'Número de campos inválido'});
     }
@@ -58,7 +71,7 @@ router.post('/', (req, res) => {
         malha.torneios.setNumCampos(torneio_id, parseInt(req.body.numCampos, 10))
         .then(()=>{
             req.flash('success', 'Número de campos definido com sucesso');
-            res.redirect('/torneio/campos');
+            res.redirect('/torneio/distribuirEquipas');
         })
         .catch((err) => {
             console.log(err);
@@ -68,13 +81,13 @@ router.post('/', (req, res) => {
     }
 });
 
-router.get('/campos', (req, res) => {
+router.get('/distribuirEquipas', (req, res) => {
     let data = {
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
 
-    res.render('home/torneio/campos', {data: data});
+    res.render('home/torneio/distribuirEquipas', {data: data});
 });
 
 router.post('/distribuirEquipas', (req, res)=>{
@@ -82,24 +95,41 @@ router.post('/distribuirEquipas', (req, res)=>{
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
-    // TODO: Fazer a verificação para não se colocar 0 ou 1 no inputs e o maxCampos deve ser maior que o minCampos
-    // Não se pode realizar o torneio sem pelo menos 2 equipas por campo
-    torneio_functions.distribuiEquipasPorCampos(torneio_id, malha, req.body.minEquipasCampo, req.body.maxEquipasCampo)
-    .catch((err) => {
-        console.log("BB " + err);
-    });
+    const minEquipas = req.body.minEquipasCampo;
+    const maxEquipas = req.body.maxEquipasCampo;
 
-    res.send("Equipas Distribuidas");
+    let erros = new Array();
 
-    /*malha.equipas.getAllEscaloesWithEquipa(torneio_id)
-    .then((escaloes)=>{
-        console.log(escaloes);
-    })
-    .catch((err)=>{
-        console.log(err);
-    });
-    req.flash('success', 'Equipas distribuidas com sucesso');
-    res.redirect('/torneio/campos');*/
+    if(!minEquipas || minEquipas == ''){
+        erros.push({err_msg: "Deve indicar o número mínimo de equipas por campo"});
+    } else if(minEquipas < 2){
+        erros.push({err_msg: "O mínimo de equipas por campo deve ser no mínimo 2"});
+    } else if(!numbersRegExp.test(minEquipas)){
+        erros.push({err_msg: 'Número mínimo de equipas inválido'});
+    }
+
+    if(!maxEquipas || maxEquipas == ''){
+        erros.push({err_msg: "Deve indicar o número máximo de equipas por campo"});
+    } else if(maxEquipas < minEquipas){
+        erros.push({err_msg: "O máximo de equipas por campo deve ser maior ou igual ao número mínimo de equipas"});
+    } else if(!numbersRegExp.test(maxEquipas)){
+        erros.push({err_msg: 'Número máximo de equipas inválido'});
+    }
+
+    if(erros.length > 0){
+        data.minEquipas = minEquipas;
+        data.maxEquipas = maxEquipas;
+        res.render('home/torneio/distribuirEquipas', {data: data, erros: erros});
+    } else {
+        torneio_functions.distribuiEquipasPorCampos(torneio_id, malha, minEquipas, maxEquipas)
+        .catch((err) => {
+            // TODO: Tratar dos Erros
+            console.log("BB " + err);
+        });
+
+        req.flash('success', 'Equipas distribuidas com sucesso');
+        res.redirect('/torneio/index');
+    }
 });
 
 module.exports = router;

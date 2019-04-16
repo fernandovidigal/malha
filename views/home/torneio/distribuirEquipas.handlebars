@@ -7,14 +7,22 @@
     {{/if}}
 
 {{> messages}}
+{{#if erros}}
+    {{#each erros}}
+        <div class="warning_msg">
+            {{err_msg}}
+            <a href="#" class="msg_close">x</a>
+        </div>
+    {{/each}}
+{{/if}}
 
 {{#unless data.campos}}
 <form action="/torneio/distribuirEquipas" method="post">
     <p>Equipas por campo na 1º Fase</p>
     <label for="minEquipasCampo">Mínimo:</label>
-    <input type="text" value="4" pattern="^[0-9]+$" name="minEquipasCampo" id="minEquipasCampo" required><br>
+    <input type="text" value="{{#if data.minEquipas}}{{data.minEquipas}}{{else}}4{{/if}}" pattern="^[0-9]+$" name="minEquipasCampo" id="minEquipasCampo" required><br>
     <label for="maxEquipasCampo">Máximo:</label>
-    <input type="text" value="6" pattern="^[0-9]+$" name="maxEquipasCampo" id="maxEquipasCampo" required><br><br>
+    <input type="text" value="{{#if data.maxEquipas}}{{data.maxEquipas}}{{else}}6{{/if}}" pattern="^[0-9]+$" name="maxEquipasCampo" id="maxEquipasCampo" required><br><br>
     <input type="submit" name="distribuiEquipasBtn" class="distributeTeams_btn btn primary_btn" value="Distribuir todas as equipas pelos campos">
 </form>
 {{else}}
