@@ -3,6 +3,9 @@
         <div class="title__bar">
             <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
             <h3>{{data.torneio.ano}}</h3>
+            {{#if data.escalaoInfo}}
+                <p>{{data.escalaoInfo.designacao}}</p>
+            {{/if}}
         </div>
     {{/if}}
 
@@ -22,26 +25,30 @@
                 <select name="escalaoSelect" id="escalaoSelect">
                     <option value="" disabled selected hidden>Escalão</option>
                     <option value="0">Todos</option>
-                    <optgroup label="Masculino">
-                        <option value="1">Jovem</option>
-                        <option value="2">Sénior</option>
-                        <option value="3">65+</option>
-                    </optgroup>
-                    <optgroup label="Feminino">
-                        <option value="4">Absolutos</option>
-                        <option value="5">65+</option>
-                    </optgroup>
+                    {{#if data.escaloesMasculino}}
+                        <optgroup label="Masculino">
+                            {{#each data.escaloesMasculino}}
+                                <option value="{{escalao_id}}">{{designacao}}</option>
+                            {{/each}}
+                        </optgroup>
+                    {{/if}}
+                    {{#if data.escaloesFeminino}}
+                        <optgroup label="Masculino">
+                            {{#each data.escaloesFeminino}}
+                                <option value="{{escalao_id}}">{{designacao}}</option>
+                            {{/each}}
+                        </optgroup>
+                    {{/if}}
                 </select>
 
                 <select name="escalaoSelect" id="escalaoSelect">
-                    <option value="" disabled selected hidden>Localidade</option>
+                    <option value="" disabled selected hidden>Localidades</option>
                     <option value="0">Todas</option>
-                    <option value="-1" disabled>-------------</option>
-                    <option value="1">Mora</option>
-                    <option value="2">Évora</option>
-                    <option value="3">Arraiolos</option>
-                    <option value="3">Lavre</option>
-                    <option value="3">Montemor-o-novo</option>
+                    <optgroup label="Localidades">
+                        {{#each data.localidades}}
+                            <option value="{{localidade_id}}">{{localidade}}</option>
+                        {{/each}}
+                    </optgroup>
                 </select>
 
                 <form action="/equipas/pesquisa" method="post" class="searchBox">
@@ -66,27 +73,80 @@
                 </tr>
             </thead>
             <tbody>
-            {{#if data.equipas}}
-                {{#each data.equipas}}
-                    <tr>
-                        <td class="w5">{{equipa_id}}</td>
-                        <td class="w5"><a href="" class="classificacoes_icon"><i class="fas fa-clipboard-list"></i></a></td>
-                        <td>{{primeiro_elemento}}<br>{{segundo_elemento}}</td>
-                        <td class="w20 table_cell_center">{{localidade}}</td>
-                        <td class="w20 table_cell_center">{{designacao}}<br>({{#ifCond sexo '==' 1}}Masculino{{else}}Feminino{{/ifCond}})</td>
-                        <td class="w5"><a href="/equipas/editarEquipa/{{equipa_id}}" class="btn edit_btn"><i class="fa fa-edit"></i>Editar</a></td>
-                        <td class="w5">
-                            <form action="/equipas/{{equipa_id}}?_method=DELETE" method="POST">
-                                <button type="submit" class="btn delete_btn"><i class="fa fa-trash"></i>Apagar</button>
-                            </form>
-                        </td>
-                    </tr>
-                {{/each}}
-            {{else}}
                 <tr>
-                    <td colspan="6">Não foram encontradas equipas</td>
+                    <table class="torneio__inner-table">
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>1º jogo</td>
+                            <td>2º Jogo</td>
+                            <td>3º Jogo</td>
+                            <td>Pontuação</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">5</td>
+                            <td>Nome</td>
+                            <td rowspan="2">Arraiolos</td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2">30</td>
+                            <td rowspan="4"><input type="button" value="Guardar"></td>
+                        </tr>
+                        <tr>
+                            <td>Nome</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">6</td>
+                            <td>Nome</td>
+                            <td rowspan="2">Montemor-o-novo</td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2">30</td>
+                        </tr>
+                        <tr>
+                            <td>Nome</td>
+                        </tr>
+                    </table>
                 </tr>
-            {{/if}}
+                <tr>
+                    <table class="torneio__inner-table">
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>1º jogo</td>
+                            <td>2º Jogo</td>
+                            <td>3º Jogo</td>
+                            <td>Pontuação</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">5</td>
+                            <td>Nome</td>
+                            <td rowspan="2">Arraiolos</td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2">30</td>
+                            <td rowspan="4"><input type="button" value="Guardar"></td>
+                        </tr>
+                        <tr>
+                            <td>Nome</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">6</td>
+                            <td>Nome</td>
+                            <td rowspan="2">Montemor-o-novo</td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2">30</td>
+                        </tr>
+                        <tr>
+                            <td>Nome</td>
+                        </tr>
+                    </table>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -115,8 +175,9 @@
 </div>
 
 <div class="fase__wrapper">
-    <div class="fase__item">Fase 1</div>
-    <div class="fase__item">Fase 2</div>
-    <div class="fase__item">Fase 3</div>
+    <a href="#" class="fase__item fase__item-active">Fase 1</a>
+    <a href="#" class="fase__item">Fase 2</a>
+    <a href="#" class="fase__item">Fase 3</a>
+    <a href="#" class="fase__item">Fase 4</a>
 </div>
 {{/if}}

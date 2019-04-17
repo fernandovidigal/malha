@@ -203,6 +203,21 @@ class Torneios {
         });
     }
 
+    getFase(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get("SELECT fase FROM torneios WHERE torneio_id = ?",
+            [torneio_id],
+            (err, row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
     close(){
         this.db.close();
     }

@@ -153,6 +153,48 @@ class Jogos {
             });
         });
     }
+
+    getNumeroCampos(torneio_id, escalao_id, fase){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT MAX(campo) as numCampos 
+                FROM jogos 
+                WHERE torneio_id = ? AND escalao_id = ? AND fase = ?
+                GROUP BY escalao_id
+            `,
+            [torneio_id, escalao_id, fase],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
+
+    getNumeroEquipas(torneio_id, escalao_id, fase){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+            SELECT COUNT(DISTINCT tabela.equipa)
+            FROM (
+                SELECT equipa1_id AS equipa FROM jogos WHERE torneio_id = ? AND escalao_id = ? AND fase = ?
+                UNION ALL
+                SELECT equipa2_id AS equipa FROM jogos WHERE torneio_id = ? AND escalao_id = ? AND fase = ?
+            ) as tabela
+            `,
+            [torneio_id, escalao_id, fase, torneio_id, escalao_id, fase],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
+                }
+            });
+        });
+    }
 }
 
 module.exports = Jogos;

@@ -456,36 +456,106 @@ small {
     height: 60px;
     background-color: #ffffff;
     box-shadow: 0 -2px 36px rgba(69, 92, 199, .15);
-    display: flex;
-    justify-content: flex-start;
 }
 
 .fase__item {
-    display: flex;
-    width: 140px;
-    justify-content: center;
-    align-items: center;
+    display: block;
+    float: left;
+    text-decoration: none;
+    line-height: 60px;
+    background-color: #ffffff;
+    color: #455cc7;
     position: relative;
+    cursor: pointer;
+    padding: 0 20px 0 60px;
 }
 
 .fase__item::after{
     content: "";
-    display: block;
-    width: 42.42px;
-    height: 42.42px;
-    background-color: transparent;
-    transform: rotate(45deg);
+    width: 60px;
+    height: 60px;
+    background-color: #ffffff;
+    transform: scale(0.707) rotate(45deg);
     position: absolute;
-    right: -5px;
-    border-right: solid 3px #eaebf1;
-    border-top: solid 3px #eaebf1;
+    top: 0;
+    z-index: 1;
+    right: -30px;
+    border-radius: 0 0 0 60px;
+    box-shadow: 3px -3px 1px 1px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
 }
 
-.fase__item:hover {
-    background-color: red;
+.fase__item-active,
+.fase__item:hover,
+.fase__item-active::after,
+.fase__item:hover::after{
+    background-color: #f8f9ff;
 }
 
-.fase__item:hover::after {
-    background-color: red;
+.torneio__inner-table {
+    width: 100%;
+    border-bottom: solid 1px #eaebf1;
 }
 
+.escaloesSelect__wrapper {
+    width: 100%;
+}
+
+.escalaoSelect__title {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-size: 200%;
+    font-weight: bold;
+}
+
+.escaloesSelect {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+}
+
+.escalaoSelect__item {
+    background-color: #ffffff;
+    border: solid 1px #eaebf1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.escalaoSelect__item-title {
+    width: 260px;
+    height: 80px;
+    color: #ffffff;
+    background-color: #455cc7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 130%;
+}
+
+.escalaoSelect_item-content {
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 150%;
+    line-height: .9;
+}
+
+.escalaoSelect_item-content--sub {
+    color: #a7acc0;
+    font-size: 70%;
+}
+
+.escalaoSelect__item-btn {
+    width: 100%;
+    display: block;
+    color: #ffffff;
+    background-color: #8f9de2;
+    text-align: center;
+    line-height: 40px;
+    transition: all .2s;
+}
+
+.escalaoSelect__item-btn:hover {
+    background-color: #455cc7;
+}

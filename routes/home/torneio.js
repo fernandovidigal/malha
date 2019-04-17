@@ -33,7 +33,8 @@ router.get('/', async (req, res, next) => {
         } else if(numCampos > 0 && numJogos == 0){
             res.render('home/torneio/distribuirEquipas', {data: data});
         } else {
-            next();
+            res.redirect('/torneio/selecionaEscalao');
+            //next();
         }
     }).catch((err) => {
         console.log(err);
@@ -41,13 +42,29 @@ router.get('/', async (req, res, next) => {
     });
 });
 
-router.get('/', (req, res) => {
+router.get('/escalao/:escalaoID', async (req, res) => {
     let data = {
         'torneio': req.session.torneio
     };
     let torneio_id = req.session.torneio.torneio_id;
-    
-    res.render('home/torneio/index', {data: data});
+
+    const escalaoInfo = malha.escaloes.getEscalaoById(req.params.escalaoID);
+    const escaloesMasculino = malha.escaloes.getAllEscaloesBySex(1);
+    const escaloesFeminino = malha.escaloes.getAllEscaloesBySex(0);
+    const localidades = malha.localidades.getAllLocalidades();
+
+    await Promise.all([escalaoInfo, escaloesMasculino, escaloesFeminino, localidades])
+    .then(([_escalaoInfo, _escaloesMasculino, _escaloesFeminino, _localidades])=> {
+        data.escalaoInfo = _escalaoInfo;
+        data.escaloesMasculino = _escaloesMasculino;
+        data.escaloesFeminino = _escaloesFeminino;
+        data.localidades = _localidades;
+
+        res.render('home/torneio/index', {data: data});
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 });
 
 // ADICIONAR NÚMERO DE CAMPOS
@@ -128,8 +145,39 @@ router.post('/distribuirEquipas', (req, res)=>{
         });
 
         req.flash('success', 'Equipas distribuidas com sucesso');
-        res.redirect('/torneio/index');
+        res.redirect('/torneio/selecionaEscalao');
     }
+});
+
+router.get('/selecionaEscalao', async (req, res) => {
+    let data = {
+        'torneio': req.session.torneio
+    };
+    let torneio_id = req.session.torneio.torneio_id;
+
+    const fase = await malha.jogos.getFaseTorneio(torneio_id);
+
+    const escaloesMasculino = malha.escaloes.getAllEscaloesBySex(1);
+    const escaloesFeminino = malha.escaloes.getAllEscaloesBySex(0);
+
+    await Promise.all([escaloesMasculino, escaloesFeminino])
+    .then(async ([_escaloesMasculino, _escaloesFeminino])=> {
+        data.escaloesMasculino = _escaloesMasculino;
+        data.escaloesFeminino = _escaloesFeminino;
+
+
+        for(const escalao of _escaloesMasculino){
+            const numCampos = await malha.jogos.getNumeroCampos(torneio_id, escalao.escalao_id, fase.fase);
+            //const numEquipas = await malha.jogos.
+        }
+
+        console.log(data.escaloesMasculino);
+
+        res.render('home/torneio/selecionaEscalao', {data: data});
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 });
 
 module.exports = router;

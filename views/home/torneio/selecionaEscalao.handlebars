@@ -1,0 +1,56 @@
+{{#if data}}
+    {{#if data.torneio}}
+        <div class="title__bar">
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
+            <h3>{{data.torneio.ano}}</h3>
+        </div>
+    {{/if}}
+
+{{> messages}}
+
+{{#if data.escaloesMasculino}}
+<div class="escaloesSelect__wrapper">
+    <div class="escalaoSelect__title">
+        Masculino
+    </div>
+    <div class="escaloesSelect">
+        {{#each data.escaloesMasculino}}
+        <div class="escalaoSelect__item">
+            <div class="escalaoSelect__item-title">{{designacao}}</div>
+            <div class="escalaoSelect_item-content">
+                <p>8<br><span class="escalaoSelect_item-content--sub">campos</span></p>
+                <p>52<br><span class="escalaoSelect_item-content--sub">equipas</span></p>
+                <p>220<br><span class="escalaoSelect_item-content--sub">jogos</span></p>
+                <p>1º Fase<br><span class="escalaoSelect_item-content--sub">fase actual</span></p>
+            </div>
+            <a href="/torneio/escalao/1" class="escalaoSelect__item-btn">Selecionar</a>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{/if}}
+
+{{#if data.escaloesFeminino}}
+<div class="escaloesSelect__wrapper">
+    <div class="escalaoSelect__title">
+        Feminino
+    </div>
+    <div class="escaloesSelect">
+        {{#each data.escaloesFeminino}}
+        <div class="escalaoSelect__item">
+            <div class="escalaoSelect__item-title">{{designacao}}</div>
+            <div class="escalaoSelect_item-content">
+                <p>8<br><span class="escalaoSelect_item-content--sub">campos</span></p>
+                <p>52<br><span class="escalaoSelect_item-content--sub">equipas</span></p>
+                <p>220<br><span class="escalaoSelect_item-content--sub">jogos</span></p>
+                <p>1º Fase<br><span class="escalaoSelect_item-content--sub">fase actual</span></p>
+            </div>
+            <a href="/torneio/escalao/1" class="escalaoSelect__item-btn">Selecionar</a>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{/if}}
+
+
+{{/if}}
