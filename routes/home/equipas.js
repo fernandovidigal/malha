@@ -57,6 +57,34 @@ router.get('/faker/:num', (req, res) => {
     });
 });
 
+router.get('/faker/:num/:escalao', (req, res) => {
+    var localidades = [];
+
+    faker.locale = "pt_BR";
+    malha.localidades.getAllLocalidades()
+    .then(async (rows) => {
+        rows.forEach(localidade => {
+            localidades.push(localidade.localidade_id);
+        });
+
+        var i;
+        for(i = 0; i < req.params.num; i++){
+            await malha.equipas.addEquipa(
+                req.session.torneio.torneio_id,
+                faker.name.firstName() + " " + faker.name.lastName(),
+                faker.name.firstName() + " " + faker.name.lastName(),
+                localidades[Math.floor(Math.random() * localidades.length)],
+                req.params.escalao
+            );
+        } 
+        return req.params.num;
+    })
+    .then((num)=> {
+        req.flash("success", `${num} adicionadas com sucesso`);
+        res.redirect('/equipas');
+    });
+});
+
 router.get('/', (req, res) => {
     let data = {
         'torneio': req.session.torneio

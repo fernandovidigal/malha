@@ -67,6 +67,21 @@ class Localidades {
         });
     }
 
+    getAllLocalidadesID(){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(
+                "SELECT localidade_id FROM localidades",
+                (err, rows) => {
+                    if(err)
+                        return reject(err);
+                    else
+                        return resolve(rows);
+                }
+            );
+        });
+    }
+
     getLocalidadeByID(id){
         const that = this;
         return new Promise(function(resolve, reject){

@@ -1,183 +1,65 @@
+
 {{#if data}}
     {{#if data.torneio}}
         <div class="title__bar">
             <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
             <h3>{{data.torneio.ano}}</h3>
-            {{#if data.escalaoInfo}}
-                <p>{{data.escalaoInfo.designacao}}</p>
-            {{/if}}
         </div>
     {{/if}}
 
-{{> messages}}
+    {{#if error}}
+        <div class="error_msg">
+            {{{error.error_msg}}}
+            <a href="/equipas" class="btn primary_btn">Adicionar Equipas</a>
+        </div>
+    {{else}}
 
-<div class="table_sidebar__wrapper">
-    <div class="table__content">
-        <div class="buttons_bar">
-            <div class="search_bar">
-                {{#if data.equipa_id}}
-                    <div class="search_equipaID">
-                        {{data.equipa_id}}
-                        <a href="/equipas"><i class="fas fa-times-circle"></i></a>
+        {{> messages}}
+
+        {{#if data.escaloesMasculino}}
+        <div class="escaloesSelect__wrapper">
+            <div class="escalaoSelect__title">
+                Masculino
+            </div>
+            <div class="escaloesSelect">
+                {{#each data.escaloesMasculino}}
+                <div class="escalaoSelect__item">
+                    <div class="escalaoSelect__item-title">{{designacao}}</div>
+                    <div class="escalaoSelect_item-content">
+                        <p>8<br><span class="escalaoSelect_item-content--sub">campos</span></p>
+                        <p>52<br><span class="escalaoSelect_item-content--sub">equipas</span></p>
+                        <p>220<br><span class="escalaoSelect_item-content--sub">jogos</span></p>
+                        <p>1º Fase<br><span class="escalaoSelect_item-content--sub">fase actual</span></p>
                     </div>
-                {{/if}}
-
-                <select name="escalaoSelect" id="escalaoSelect">
-                    <option value="" disabled selected hidden>Escalão</option>
-                    <option value="0">Todos</option>
-                    {{#if data.escaloesMasculino}}
-                        <optgroup label="Masculino">
-                            {{#each data.escaloesMasculino}}
-                                <option value="{{escalao_id}}">{{designacao}}</option>
-                            {{/each}}
-                        </optgroup>
-                    {{/if}}
-                    {{#if data.escaloesFeminino}}
-                        <optgroup label="Masculino">
-                            {{#each data.escaloesFeminino}}
-                                <option value="{{escalao_id}}">{{designacao}}</option>
-                            {{/each}}
-                        </optgroup>
-                    {{/if}}
-                </select>
-
-                <select name="escalaoSelect" id="escalaoSelect">
-                    <option value="" disabled selected hidden>Localidades</option>
-                    <option value="0">Todas</option>
-                    <optgroup label="Localidades">
-                        {{#each data.localidades}}
-                            <option value="{{localidade_id}}">{{localidade}}</option>
-                        {{/each}}
-                    </optgroup>
-                </select>
-
-                <form action="/equipas/pesquisa" method="post" class="searchBox">
-                    <input type="text" name="searchTeamID" class="searchBox__input" pattern="^[0-9]+$" placeholder="Equipa"/>
-                    <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
-                </form>
-            </div>
-            <div class="action_btns a-right">
-                <button class="btn print_btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</button>
+                    <a href="/torneio/escalao/1" class="escalaoSelect__item-btn">Selecionar</a>
+                </div>
+                {{/each}}
             </div>
         </div>
-        <table class="listTable equipasTable">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th>Elementos</th>
-                    <th>Localidade</th>
-                    <th>Escalão</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <table class="torneio__inner-table">
-                        <tr>
-                            <td colspan="3"></td>
-                            <td>1º jogo</td>
-                            <td>2º Jogo</td>
-                            <td>3º Jogo</td>
-                            <td>Pontuação</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">5</td>
-                            <td>Nome</td>
-                            <td rowspan="2">Arraiolos</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2">30</td>
-                            <td rowspan="4"><input type="button" value="Guardar"></td>
-                        </tr>
-                        <tr>
-                            <td>Nome</td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">6</td>
-                            <td>Nome</td>
-                            <td rowspan="2">Montemor-o-novo</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2">30</td>
-                        </tr>
-                        <tr>
-                            <td>Nome</td>
-                        </tr>
-                    </table>
-                </tr>
-                <tr>
-                    <table class="torneio__inner-table">
-                        <tr>
-                            <td colspan="3"></td>
-                            <td>1º jogo</td>
-                            <td>2º Jogo</td>
-                            <td>3º Jogo</td>
-                            <td>Pontuação</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">5</td>
-                            <td>Nome</td>
-                            <td rowspan="2">Arraiolos</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2">30</td>
-                            <td rowspan="4"><input type="button" value="Guardar"></td>
-                        </tr>
-                        <tr>
-                            <td>Nome</td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">6</td>
-                            <td>Nome</td>
-                            <td rowspan="2">Montemor-o-novo</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2">30</td>
-                        </tr>
-                        <tr>
-                            <td>Nome</td>
-                        </tr>
-                    </table>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="sidebar__content">
-        <p class="sidebar__title">Campos</p>
-        <div class="campos">
-            <a href="" class="campo">1</a>
-            <a href="" class="campo">2</a>
-            <a href="" class="campo">3</a>
-            <a href="" class="campo">4</a>
-            <a href="" class="campo">5</a>
-            <a href="" class="campo">6</a>
-            <a href="" class="campo">7</a>
-            <a href="" class="campo">8</a>
-            <a href="" class="campo">9</a>
-            <a href="" class="campo">10</a>
-            <a href="" class="campo">11</a>
-            <a href="" class="campo">12</a>
-            <a href="" class="campo">13</a>
-            <a href="" class="campo">14</a>
-            <a href="" class="campo">15</a>
+        {{/if}}
+
+        {{#if data.escaloesFeminino}}
+        <div class="escaloesSelect__wrapper">
+            <div class="escalaoSelect__title">
+                Feminino
+            </div>
+            <div class="escaloesSelect">
+                {{#each data.escaloesFeminino}}
+                <div class="escalaoSelect__item">
+                    <div class="escalaoSelect__item-title">{{designacao}}</div>
+                    <div class="escalaoSelect_item-content">
+                        <p>8<br><span class="escalaoSelect_item-content--sub">campos</span></p>
+                        <p>52<br><span class="escalaoSelect_item-content--sub">equipas</span></p>
+                        <p>220<br><span class="escalaoSelect_item-content--sub">jogos</span></p>
+                        <p>1º Fase<br><span class="escalaoSelect_item-content--sub">fase actual</span></p>
+                    </div>
+                    <a href="/torneio/escalao/1" class="escalaoSelect__item-btn">Selecionar</a>
+                </div>
+                {{/each}}
+            </div>
         </div>
-    </div>
+        {{/if}}
+    {{/if}}
 
-</div>
 
-<div class="fase__wrapper">
-    <a href="#" class="fase__item fase__item-active">Fase 1</a>
-    <a href="#" class="fase__item">Fase 2</a>
-    <a href="#" class="fase__item">Fase 3</a>
-    <a href="#" class="fase__item">Fase 4</a>
-</div>
 {{/if}}

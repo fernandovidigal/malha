@@ -93,6 +93,8 @@ class Jogos {
         });
     }
 
+    // TODO: Verificar a necessidade deste método
+    // cada escalão pode ir numa fase diferente
     getFaseTorneio(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
@@ -164,21 +166,40 @@ class Jogos {
                 GROUP BY escalao_id
             `,
             [torneio_id, escalao_id, fase],
-            (err, rows) => {
+            (err, row) => {
                 if(err) {
                     return reject(err);
                 } else {
-                    return resolve(rows);
+                    return resolve(row);
                 }
             });
         });
     }
 
-    getNumeroEquipas(torneio_id, escalao_id, fase){
+    getNumeroJogos(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get(`
-            SELECT COUNT(DISTINCT tabela.equipa)
+                SELECT COUNT(jogo_id) AS count
+                FROM jogos 
+                WHERE torneio_id = ?
+            `,
+            [torneio_id],
+            (err, row) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
+    getNumeroEquipasPorEscalao(torneio_id, escalao_id, fase){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+            SELECT COUNT(DISTINCT tabela.equipa) as numEquipas
             FROM (
                 SELECT equipa1_id AS equipa FROM jogos WHERE torneio_id = ? AND escalao_id = ? AND fase = ?
                 UNION ALL
@@ -186,11 +207,30 @@ class Jogos {
             ) as tabela
             `,
             [torneio_id, escalao_id, fase, torneio_id, escalao_id, fase],
-            (err, rows) => {
+            (err, row) => {
                 if(err) {
                     return reject(err);
                 } else {
-                    return resolve(rows);
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
+    getNumeroJogosPorEscalao(torneio_id, escalao_id, fase){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+            SELECT COUNT(jogo_id) as numJogos
+            FROM jogos
+            WHERE torneio_id = ? AND escalao_id = ? AND fase = ?
+            `,
+            [torneio_id, escalao_id, fase],
+            (err, row) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(row);
                 }
             });
         });

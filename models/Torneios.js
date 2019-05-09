@@ -28,8 +28,7 @@ class Torneios {
                 designacao TEXT NOT NULL,
                 localidade TEXT NOT NULL,
                 ano INTEGER NOT NULL,
-                campos INTEGER NOT NULL DEFAULT 0,
-                fase INTEGER NOT NULL DEFAULT 1,
+                campos INTEGER NOT NULL DEFAULT 0,s
                 activo INTEGER NOT NULL DEFAULT 0)`, 
             (err) => {
                 if(err) {
@@ -191,7 +190,7 @@ class Torneios {
     getNumCampos(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
-            that.db.get("SELECT campos FROM torneios WHERE torneio_id = ?",
+            that.db.get("SELECT campos AS count FROM torneios WHERE torneio_id = ?",
             [torneio_id],
             (err, row) => {
                 if(err){
@@ -203,7 +202,7 @@ class Torneios {
         });
     }
 
-    getFase(torneio_id){
+    /*getFase(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get("SELECT fase FROM torneios WHERE torneio_id = ?",
@@ -216,7 +215,7 @@ class Torneios {
                 }
             });
         });
-    }
+    }*/
 
     close(){
         this.db.close();

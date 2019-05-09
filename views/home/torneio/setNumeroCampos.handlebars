@@ -10,7 +10,7 @@
 
 {{#if erros}}
     {{#each erros}}
-        <div class="warning_msg">
+        <div class="error_msg">
             {{err_msg}}
             <a href="#" class="msg_close">x</a>
         </div>
@@ -19,7 +19,7 @@
 
 <div>
     <p>Definir número de campos!</p>
-    <form action="/torneio" method="post">
+    <form action="/torneio/setNumeroCampos" method="post">
         <label for="numCampos">Número de Campos:</label>
         <input type="text" name="numCampos" pattern="^[0-9]+$" {{#if data.numCampos}}value="{{data.numCampos}}"{{/if}} required><br>
         <input type="submit" value="Definir e avançar">

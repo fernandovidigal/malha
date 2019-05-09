@@ -17,8 +17,7 @@ class Equipas {
             this.createTable().catch((err) => {
                 console.log(err);
             });
-        }
-        
+        }  
     }
 
     createTable(){
@@ -220,7 +219,25 @@ class Equipas {
         });
     }
 
-    getNumEquipasPorEscalao(torneio_id){
+    getNumEquipas(torneio_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT COUNT(equipa_id) as count
+                FROM equipas
+                WHERE torneio_id = ?`,
+            [torneio_id],
+            (err,row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
+    /*getNumEquipasPorEscalao(torneio_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.all(`
@@ -234,6 +251,42 @@ class Equipas {
                     return reject(err);
                 } else {
                     return resolve(rows);
+                }
+            });
+        });
+    }*/
+
+    getNumEquipasPorEscalao(torneio_id, escalao_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT COUNT(escalao_id) AS count
+                FROM equipas
+                WHERE torneio_id = ? AND escalao_id = ?`,
+            [torneio_id, escalao_id],
+            (err,row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row.count);
+                }
+            });
+        });
+    }
+
+    getNumEquipasPorLocalidadeAndEscalao(torneio_id, localidade_id, escalao_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT COUNT(equipa_id) AS count
+                FROM equipas
+                WHERE torneio_id = ? AND localidade_id = ? AND escalao_id = ?`,
+            [torneio_id, localidade_id, escalao_id],
+            (err,row) => {
+                if(err){
+                    return reject(err);
+                } else {
+                    return resolve(row.count);
                 }
             });
         });

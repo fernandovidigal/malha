@@ -1,5 +1,5 @@
 function determinaNumeroTotalCampos(numEquipas, numCamposTorneio, minEquipas, maxEquipas){
-
+    
     // Minimo de campos necessário para se jogar
     const minCampos = Math.ceil(numEquipas / maxEquipas);
 
@@ -240,14 +240,15 @@ module.exports.torneio_functions = {
 
         // Número de campos
         let numCamposTorneio = await malhaDB.torneios.getNumCampos(torneio_id);
-        numCamposTorneio = numCamposTorneio.campos;
+        numCamposTorneio = numCamposTorneio.count;
 
         // Todos os escalões que têm equipas
         const listaEscaloes = await malhaDB.equipas.getAllEscaloesWithEquipa(torneio_id);
+        console.log(listaEscaloes);
         let escaloes = Array.from(listaEscaloes, escalao => escalao.escalao_id);
 
         for(const escalao of escaloes){
-            const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidadeByEscalao(torneio_id, 1);
+            const listaEquipas = await malhaDB.equipas.getAllEquipaIDAndLocalidadeByEscalao(torneio_id, escalao);
             let equipas = Array.from(listaEquipas, equipa => {
                 let data = {
                     "equipa_id": equipa.equipa_id,
