@@ -93,24 +93,44 @@ class Jogos {
         });
     }
 
-    // TODO: Verificar a necessidade deste método
-    // cada escalão pode ir numa fase diferente
-    getFaseTorneio(torneio_id){
+    getFaseTorneioPorEscalao(torneio_id, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){
             that.db.get(`
                 SELECT fase 
                 FROM jogos 
-                WHERE torneio_id = ?
+                WHERE torneio_id = ? AND escalao_id = ?
                 GROUP BY fase
                 ORDER BY fase DESC
             `,
-            [torneio_id],
+            [torneio_id, escalao_id],
             (err, row) => {
                 if(err) {
                     return reject(err);
                 } else {
                     return resolve(row);
+                }
+            });
+        });
+    }
+
+    getEscaloesPorSexo(torneio_id, sexo){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.all(`
+                SELECT jogos.escalao_id, escaloes.designacao 
+                FROM jogos
+                INNER JOIN escaloes
+                ON escaloes.escalao_id = jogos.escalao_id
+                WHERE jogos.torneio_id = ? AND escaloes.sexo = ?
+                GROUP BY jogos.escalao_id
+            `,
+            [torneio_id, sexo],
+            (err, rows) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(rows);
                 }
             });
         });

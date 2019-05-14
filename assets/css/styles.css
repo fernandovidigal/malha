@@ -499,14 +499,22 @@ small {
 
 .escaloesSelect__wrapper {
     width: 100%;
+    display: flex;
 }
 
-.escalaoSelect__title {
-    text-align: center;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    font-size: 200%;
-    font-weight: bold;
+.escalao__wrapper {
+    width: 50%;
+    height: 500px;
+    padding: 20px 40px;
+}
+
+.escalao__wrapper:not(:last-child){
+    border-right: solid 1px #edeef4;
+}
+
+.escalao__title {
+    font-size: 180%;
+    margin-bottom: 20px;
 }
 
 .escaloesSelect {
@@ -517,45 +525,58 @@ small {
 }
 
 .escalaoSelect__item {
-    background-color: #ffffff;
+    background-color: #f4f5f9;
     border: solid 1px #eaebf1;
     border-radius: 8px;
+    display: flex;
     overflow: hidden;
+    width: 80%;
+    min-height: 60px;
+    margin-bottom: 20px;
 }
 
 .escalaoSelect__item-title {
-    width: 260px;
-    height: 80px;
-    color: #ffffff;
-    background-color: #455cc7;
+    margin-right: auto;
+    padding-left: 20px;
+    font-size: 150%;
+    color: #455cc7;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.escalaoSelect__fase {
+    width: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.escalaoSelect__fase-info p {
+    margin: 0;
+    padding: 0;
     font-size: 130%;
-}
-
-.escalaoSelect_item-content {
-    padding: 10px 20px;
     text-align: center;
-    font-size: 150%;
-    line-height: .9;
 }
 
-.escalaoSelect_item-content--sub {
-    color: #a7acc0;
-    font-size: 70%;
+.escalaoSelect__fase-info p:first-child {
+    font-size: 90%;
+    color: #797979;
 }
 
-.escalaoSelect__item-btn {
-    width: 100%;
-    display: block;
-    color: #ffffff;
-    background-color: #8f9de2;
-    text-align: center;
-    line-height: 40px;
-    transition: all .2s;
+.escalaoSelect__btn {
+    width: 15%;
+    background-color: #6174cf;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s;
 }
 
-.escalaoSelect__item-btn:hover {
+.escalaoSelect__btn:hover {
     background-color: #455cc7;
+}
+
+.escalaoSelect__btn:hover img.arrow {
+    transform: scale(1.15);
 }

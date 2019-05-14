@@ -3,8 +3,7 @@ const router = express.Router();
 const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 const {checkTorneioActivo} = require('../../helpers/torneioActivo');
-const {torneio_functions} = require('../../helpers/torneio_functions');
-const {distJogos} = require('../../helpers/distJogos');
+const {torneioHelperFunctions} = require('../../helpers/torneioHelperFunctions');
 
 const numbersRegExp = new RegExp('^[0-9]+$');
 
@@ -13,7 +12,7 @@ router.all('/*', [userAuthenticated, checkTorneioActivo], (req, res, next) => {
     next();
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
     let data = {
         'torneio': req.session.torneio
     };
@@ -42,31 +41,46 @@ router.get('/', async (req, res, next) => {
         res.render('home/torneio/distribuirEquipas', {data: data});
     }
 
-    //res.render('home/torneio/index', {data: data});
+    if(numEquipas.count > 0 && numCampos.count > 0 && numJogos.count > 0){
+        
+        const escaloesMasculino = await malha.jogos.getEscaloesPorSexo(torneio_id, 1);
+        const escaloesFeminino = await malha.jogos.getEscaloesPorSexo(torneio_id, 0);
 
-    /*const fase = await malha.jogos.getFaseTorneio(torneio_id);
+        await Promise.all([escaloesMasculino, escaloesFeminino])
+        .then(async ([_escaloesMasculino, _escaloesFeminino])=> {
+            if(_escaloesMasculino.length > 0){
+                data.escaloesMasculino = [];
 
-    const numCamposTorneio = malha.torneios.getNumCampos(torneio_id);
-    const numJogosFase = malha.jogos.getNumJogosPorFase(torneio_id, (!fase ? 0 : fase.fase));
-    
-    await Promise.all([numCamposTorneio, numJogosFase])
-    .then(([camposResult, jogosResult])=>{
-        const numCampos = camposResult.campos;
-        const numJogos = jogosResult.numJogos;
+                for(const escalao of _escaloesMasculino){
+                    const escalaoFase = await malha.jogos.getFaseTorneioPorEscalao(torneio_id, escalao.escalao_id);
+                    const escalaoInfo = {
+                        escalao_id: escalao.escalao_id,
+                        designacao: escalao.designacao,
+                        fase: escalaoFase.fase
+                    }
 
-        if(numCampos == 0){
-            res.redirect('/torneio/');
-            //res.render('home/torneio/setNumeroCampos', {data: data});
-        } else if(numCampos > 0 && numJogos == 0){
-            res.render('home/torneio/distribuirEquipas', {data: data});
-        } else {
-            res.redirect('/torneio/selecionaEscalao');
-            //next();
-        }
-    }).catch((err) => {
-        console.log(err);
-        // TODO: Handle erro
-    });*/
+                    data.escaloesMasculino.push(escalaoInfo);
+                }
+            }
+
+            if(_escaloesFeminino.length > 0){
+                data.escaloesFeminino = [];
+
+                for(const escalao of _escaloesFeminino){
+                    const escalaoFase = await malha.jogos.getFaseTorneioPorEscalao(torneio_id, escalao.escalao_id);
+                    const escalaoInfo = {
+                        escalao_id: escalao.escalao_id,
+                        designacao: escalao.designacao,
+                        fase: escalaoFase.fase
+                    }
+
+                    data.escaloesFeminino.push(escalaoInfo);
+                }
+            }
+        });
+
+        res.render('home/torneio/index', {data: data});
+    }
 });
 
 
@@ -157,12 +171,7 @@ router.post('/distribuirEquipas', (req, res)=>{
         data.maxEquipas = maxEquipas;
         res.render('home/torneio/distribuirEquipas', {data: data, erros: erros});
     } else {
-        distJogos.distribuiEquipasPorCampos(torneio_id, malha, minEquipas, maxEquipas);
-
-
-
-
-        /*torneio_functions.distribuiEquipasPorCampos(torneio_id, malha, minEquipas, maxEquipas)
+        torneioHelperFunctions.distribuiEquipasPorCampos(torneio_id, malha, minEquipas, maxEquipas)
         .then(()=> {
             req.flash('success', 'Equipas distribuidas com sucesso');
             res.redirect('/torneio');
@@ -170,8 +179,18 @@ router.post('/distribuirEquipas', (req, res)=>{
         .catch((err) => {
             // TODO: Tratar dos Erros
             console.log("BB " + err);
-        });*/
+        });
     }
+});
+
+// **************** RESULTADOS
+router.get('/resultados/:escalao', (req,res)=>{
+    let data = {
+        'torneio': req.session.torneio
+    };
+    const torneio_id = req.session.torneio.torneio_id;
+
+    res.render('home/torneio/resultados', {data: data});
 });
 
 /*router.get('/escalao/:escalaoID', async (req, res) => {

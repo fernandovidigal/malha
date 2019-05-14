@@ -15,50 +15,50 @@
     {{else}}
 
         {{> messages}}
-
-        {{#if data.escaloesMasculino}}
         <div class="escaloesSelect__wrapper">
-            <div class="escalaoSelect__title">
-                Masculino
-            </div>
-            <div class="escaloesSelect">
-                {{#each data.escaloesMasculino}}
-                <div class="escalaoSelect__item">
-                    <div class="escalaoSelect__item-title">{{designacao}}</div>
-                    <div class="escalaoSelect_item-content">
-                        <p>8<br><span class="escalaoSelect_item-content--sub">campos</span></p>
-                        <p>52<br><span class="escalaoSelect_item-content--sub">equipas</span></p>
-                        <p>220<br><span class="escalaoSelect_item-content--sub">jogos</span></p>
-                        <p>1º Fase<br><span class="escalaoSelect_item-content--sub">fase actual</span></p>
-                    </div>
-                    <a href="/torneio/escalao/1" class="escalaoSelect__item-btn">Selecionar</a>
+            {{#if data.escaloesMasculino}}
+            <div class="escalao__wrapper">
+                <div class="escalao__title">
+                    Masculino
                 </div>
-                {{/each}}
-            </div>
-        </div>
-        {{/if}}
-
-        {{#if data.escaloesFeminino}}
-        <div class="escaloesSelect__wrapper">
-            <div class="escalaoSelect__title">
-                Feminino
-            </div>
-            <div class="escaloesSelect">
-                {{#each data.escaloesFeminino}}
-                <div class="escalaoSelect__item">
-                    <div class="escalaoSelect__item-title">{{designacao}}</div>
-                    <div class="escalaoSelect_item-content">
-                        <p>8<br><span class="escalaoSelect_item-content--sub">campos</span></p>
-                        <p>52<br><span class="escalaoSelect_item-content--sub">equipas</span></p>
-                        <p>220<br><span class="escalaoSelect_item-content--sub">jogos</span></p>
-                        <p>1º Fase<br><span class="escalaoSelect_item-content--sub">fase actual</span></p>
+                <div class="escalaoSelect">
+                    {{#each data.escaloesMasculino}}
+                    <div class="escalaoSelect__item">
+                        <div class="escalaoSelect__item-title">{{designacao}}</div>
+                        <div class="escalaoSelect__fase">
+                            <div class="escalaoSelect__fase-info">
+                                <p>Fase</p>
+                                <p>{{fase}}</p>
+                            </div>
+                        </div>
+                        <a href="/torneio/resultados/{{escalao_id}}" class="escalaoSelect__btn"><img src="/imagens/double-arrow.svg" class="arrow"></a>
                     </div>
-                    <a href="/torneio/escalao/1" class="escalaoSelect__item-btn">Selecionar</a>
+                    {{/each}}
                 </div>
-                {{/each}}
             </div>
-        </div>
-        {{/if}}
+            {{/if}}
+            {{#if data.escaloesFeminino}}
+            <div class="escalao__wrapper">
+                <div class="escalao__title">
+                    Feminino
+                </div>
+                <div class="escalaoSelect">
+                    {{#each data.escaloesFeminino}}
+                    <div class="escalaoSelect__item">
+                        <div class="escalaoSelect__item-title">{{designacao}}</div>
+                        <div class="escalaoSelect__fase">
+                            <div class="escalaoSelect__fase-info">
+                                <p>Fase</p>
+                                <p>{{fase}}</p>
+                            </div>
+                        </div>
+                        <a href="/torneio/resultados/{{escalao_id}}" class="escalaoSelect__btn"><img src="/imagens/double-arrow.svg" class="arrow"></a>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+        </div> 
     {{/if}}
 
 

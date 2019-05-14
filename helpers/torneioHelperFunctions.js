@@ -89,7 +89,26 @@ function metodoEmparelhamento(equipas){
     return emparelhamento;
 }
 
-module.exports.distJogos = {
+function shuffleLocalidades(listaLocalidades) {
+
+    const localidades = [];
+
+    while(listaLocalidades.length > 0){
+        let numLocalidades = listaLocalidades.length;
+        const randomLocalidade = Math.floor(Math.random() * numLocalidades);
+
+        console.log(randomLocalidade);
+
+        localidades.push(listaLocalidades[randomLocalidade]);
+        listaLocalidades.splice(randomLocalidade, 1);
+
+    }
+
+    return localidades;
+
+}
+
+module.exports.torneioHelperFunctions = {
 
     // Ponderar utilizar promessas para quando terminar o processamento retornar
     distribuiEquipasPorCampos: async function(torneio_id, malhaDB, minEquipas, maxEquipas, escalao = 0){
@@ -123,8 +142,10 @@ module.exports.distJogos = {
                 }
 
                 // 4. Por cada localidade distribuir as respectivas equipas pelos campos
-                const listaLocalidades = await malhaDB.localidades.getAllLocalidadesID();
-                //console.log(listaLocalidades);
+                let listaLocalidades = await malhaDB.localidades.getAllLocalidadesID();
+
+                // 5. Baralha as localidades
+                listaLocalidades = shuffleLocalidades(listaLocalidades);
 
                 let k = 0;
                 for(const localidade of listaLocalidades){
@@ -132,8 +153,6 @@ module.exports.distJogos = {
 
                     if(numEquipasPorLocalidade > 0){
                         const listaEquipasPorLocalidade = await malhaDB.equipas.getTeamsByLocalidadeAndEscalao(torneio_id, localidade.localidade_id, escalao);
-
-                        // TODO: suffle localidades
 
                         // Adiciona a equipa à lista de campos
                         for(const equipa of listaEquipasPorLocalidade){
@@ -159,6 +178,54 @@ module.exports.distJogos = {
             }
         } else {
             // Distribui equipas só do escalão passado como parametro
+            // 1. Verificar o número total de equipas de cada escalão
+            const numEquipasPorEscalao = await malhaDB.equipas.getNumEquipasPorEscalao(torneio_id, escalao);
+            //console.log("Número de equipas por Escalão: " + numEquipasPorEscalao);
+
+            // 2. Determinar o número máximo de campos necessário para cada escalão
+            const numMaxCampos = determinaNumeroTotalCampos(numEquipasPorEscalao, numCamposTorneio, minEquipas, maxEquipas);
+            //console.log("Número Máximo de campos: " + numMaxCampos);
+            
+            // 3. Inicia a Array de campos
+            let listaCampos = [];
+            for(i = 0; i < numMaxCampos; i++){
+                listaCampos.push(new Array());
+            }
+
+            // 4. Por cada localidade distribuir as respectivas equipas pelos campos
+            let listaLocalidades = await malhaDB.localidades.getAllLocalidadesID();
+
+            // 5. Baralha as localidades
+            listaLocalidades = shuffleLocalidades(listaLocalidades);
+
+            let k = 0;
+            for(const localidade of listaLocalidades){
+                const numEquipasPorLocalidade = await malhaDB.equipas.getNumEquipasPorLocalidadeAndEscalao(torneio_id, localidade.localidade_id, escalao);
+
+                if(numEquipasPorLocalidade > 0){
+                    const listaEquipasPorLocalidade = await malhaDB.equipas.getTeamsByLocalidadeAndEscalao(torneio_id, localidade.localidade_id, escalao);
+
+                    // Adiciona a equipa à lista de campos
+                    for(const equipa of listaEquipasPorLocalidade){
+                        if(k > (numMaxCampos-1)){
+                            k = 0;
+                        }
+
+                        listaCampos[k].push(equipa);
+                        k++;
+                    }
+                }
+            }
+
+            for(i = 0; i < listaCampos.length; i++){
+                let emparelhamento = metodoEmparelhamento(listaCampos[i]);
+                for(const par of emparelhamento){
+                    let equipa1 = listaCampos[i][par[0]];
+                    let equipa2 = listaCampos[i][par[1]];
+
+                    await malhaDB.jogos.addJogo(torneio_id, escalao, 1, (i+1), equipa1.equipa_id, equipa2.equipa_id);
+                }
+            }
         }
     }
 
