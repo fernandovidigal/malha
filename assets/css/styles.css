@@ -580,3 +580,7 @@ small {
 .escalaoSelect__btn:hover img.arrow {
     transform: scale(1.15);
 }
+
+.listTable th.resultados__campo-header {
+    background-color: #8f9de2;
+}

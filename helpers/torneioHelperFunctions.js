@@ -2,9 +2,28 @@ function determinaNumeroTotalCampos(numEquipas, numCamposTorneio, minEquipas, ma
     
     // Minimo de campos necessário para se jogar
     const minCampos = Math.ceil(numEquipas / maxEquipas);
+    console.log("min: " + minCampos);
 
     // Maximo de campos necessário para se jogar
     const maxCampos = Math.ceil(numEquipas / minEquipas);
+    console.log("max: " + maxCampos);
+    console.log(" ");
+
+    if(numCamposTorneio < minCampos){
+        return 0;
+    }
+
+    let found = false;
+    let numCampos = 0;
+    while(!found){
+        numCampos = Math.floor(numEquipas / minEquipas);
+        if((numEquipas - (numCampos * minEquipas) < minEquipas) && minEquipas < maxEquipas){
+            minEquipas++;
+        } else {
+            found = true;
+        }
+    }
+    console.log(numCampos);
 
     if(numCamposTorneio > maxCampos){
         return maxCampos;
@@ -97,8 +116,6 @@ function shuffleLocalidades(listaLocalidades) {
         let numLocalidades = listaLocalidades.length;
         const randomLocalidade = Math.floor(Math.random() * numLocalidades);
 
-        console.log(randomLocalidade);
-
         localidades.push(listaLocalidades[randomLocalidade]);
         listaLocalidades.splice(randomLocalidade, 1);
 
@@ -156,7 +173,7 @@ module.exports.torneioHelperFunctions = {
 
                         // Adiciona a equipa à lista de campos
                         for(const equipa of listaEquipasPorLocalidade){
-                            if(k > (numMaxCampos-1)){
+                            if(k >= numMaxCampos){
                                 k = 0;
                             }
 
@@ -172,7 +189,7 @@ module.exports.torneioHelperFunctions = {
                         let equipa1 = listaCampos[i][par[0]];
                         let equipa2 = listaCampos[i][par[1]];
 
-                        await malhaDB.jogos.addJogo(torneio_id, escalao, 1, (i+1), equipa1.equipa_id, equipa2.equipa_id);
+                        //await malhaDB.jogos.addJogo(torneio_id, escalao, 1, (i+1), equipa1.equipa_id, equipa2.equipa_id);
                     }
                 }
             }

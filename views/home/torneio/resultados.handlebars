@@ -1,11 +1,8 @@
 {{#if data}}
     {{#if data.torneio}}
         <div class="title__bar">
-            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}}</h1>
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}} - {{data.escalaoInfo.designacao}}</h1>
             <h3>{{data.torneio.ano}}</h3>
-            {{#if data.escalaoInfo}}
-                <p>{{data.escalaoInfo.designacao}}</p>
-            {{/if}}
         </div>
     {{/if}}
 
@@ -22,7 +19,7 @@
                     </div>
                 {{/if}}
 
-                <select name="escalaoSelect" id="escalaoSelect">
+                <!--<select name="escalaoSelect" id="escalaoSelect">
                     <option value="" disabled selected hidden>Escalão</option>
                     <option value="0">Todos</option>
                     {{#if data.escaloesMasculino}}
@@ -49,7 +46,7 @@
                             <option value="{{localidade_id}}">{{localidade}}</option>
                         {{/each}}
                     </optgroup>
-                </select>
+                </select>-->
 
                 <form action="/equipas/pesquisa" method="post" class="searchBox">
                     <input type="text" name="searchTeamID" class="searchBox__input" pattern="^[0-9]+$" placeholder="Equipa"/>
@@ -60,26 +57,63 @@
                 <button class="btn print_btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</button>
             </div>
         </div>
+
+    {{#if data.campos}}
+        {{#each data.campos}}
         <table class="listTable equipasTable">
             <thead>
                 <tr>
-                    <th></th>
-                    <th></th>
-                    <th>Elementos</th>
-                    <th>Localidade</th>
-                    <th>Escalão</th>
-                    <th></th>
-                    <th></th>
+                    <th colspan="7">Campo {{campo}}</th>
                 </tr>
             </thead>
             <tbody>
+                {{#each equipas}}
                 <tr>
                     <table class="torneio__inner-table">
                         <tr>
                             <td colspan="3"></td>
-                            <td>1º jogo</td>
-                            <td>2º Jogo</td>
-                            <td>3º Jogo</td>
+                            <td>Parcial 1</td>
+                            <td>Parcial 2</td>
+                            <td>Parcial 3</td>
+                            <td>Pontuação</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">{{equipa1_id}}</td>
+                            <td>{{equipa1_primeiro_elemento}}</td>
+                            <td rowspan="2">{{equipa1_localidade}}</td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2">30</td>
+                            <td rowspan="4"><input type="button" value="Guardar"></td>
+                        </tr>
+                        <tr>
+                            <td>{{equipa1_segundo_elemento}}</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2">{{equipa2_id}}</td>
+                            <td>{{equipa2_primeiro_elemento}}</td>
+                            <td rowspan="2">{{equipa2_localidade}}</td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2">30</td>
+                        </tr>
+                        <tr>
+                            <td>{{equipa2_segundo_elemento}}</td>
+                        </tr>
+                    </table>
+                </tr>
+                {{/each}}
+
+                <!--<tr>
+                    <table class="torneio__inner-table">
+                        <tr>
+                            <td colspan="3"></td>
+                            <td>Parcial 1</td>
+                            <td>Parcial 2</td>
+                            <td>Parcial 3</td>
                             <td>Pontuação</td>
                             <td></td>
                         </tr>
@@ -87,9 +121,9 @@
                             <td rowspan="2">5</td>
                             <td>Nome</td>
                             <td rowspan="2">Arraiolos</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
                             <td rowspan="2">30</td>
                             <td rowspan="4"><input type="button" value="Guardar"></td>
                         </tr>
@@ -100,84 +134,40 @@
                             <td rowspan="2">6</td>
                             <td>Nome</td>
                             <td rowspan="2">Montemor-o-novo</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
+                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
                             <td rowspan="2">30</td>
                         </tr>
                         <tr>
                             <td>Nome</td>
                         </tr>
                     </table>
-                </tr>
-                <tr>
-                    <table class="torneio__inner-table">
-                        <tr>
-                            <td colspan="3"></td>
-                            <td>1º jogo</td>
-                            <td>2º Jogo</td>
-                            <td>3º Jogo</td>
-                            <td>Pontuação</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">5</td>
-                            <td>Nome</td>
-                            <td rowspan="2">Arraiolos</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2">30</td>
-                            <td rowspan="4"><input type="button" value="Guardar"></td>
-                        </tr>
-                        <tr>
-                            <td>Nome</td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">6</td>
-                            <td>Nome</td>
-                            <td rowspan="2">Montemor-o-novo</td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2"><input type="text" name="" id=""></td>
-                            <td rowspan="2">30</td>
-                        </tr>
-                        <tr>
-                            <td>Nome</td>
-                        </tr>
-                    </table>
-                </tr>
+                </tr>-->
             </tbody>
         </table>
+        {{/each}}
+    {{/if}}
     </div>
     
-    <div class="sidebar__content">
-        <p class="sidebar__title">Campos</p>
-        <div class="campos">
-            <a href="" class="campo">1</a>
-            <a href="" class="campo">2</a>
-            <a href="" class="campo">3</a>
-            <a href="" class="campo">4</a>
-            <a href="" class="campo">5</a>
-            <a href="" class="campo">6</a>
-            <a href="" class="campo">7</a>
-            <a href="" class="campo">8</a>
-            <a href="" class="campo">9</a>
-            <a href="" class="campo">10</a>
-            <a href="" class="campo">11</a>
-            <a href="" class="campo">12</a>
-            <a href="" class="campo">13</a>
-            <a href="" class="campo">14</a>
-            <a href="" class="campo">15</a>
+    {{#if campos}}
+        <div class="sidebar__content">
+            <p class="sidebar__title">Campos</p>
+            <div class="campos">
+                {{#each campos}}
+                <a href="" class="campo">{{this}}</a>
+                {{/each}}
+            </div>
         </div>
-    </div>
+    {{/if}}
 
 </div>
 
-<div class="fase__wrapper">
-    <a href="#" class="fase__item fase__item-active">Fase 1</a>
-    <a href="#" class="fase__item">Fase 2</a>
-    <a href="#" class="fase__item">Fase 3</a>
-    <a href="#" class="fase__item">Fase 4</a>
-</div>
+    {{#if fases}}
+        <div class="fase__wrapper">
+            {{#each fases}}
+                <a href="#" class="fase__item {{#ifCond this '==' ../data.fase}}fase__item-active{{/ifCond}}">Fase {{this}}</a>
+            {{/each}}
+        </div>
+    {{/if}}
 {{/if}}

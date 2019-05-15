@@ -25,7 +25,7 @@ class Localidades {
         return new Promise(function(resolve, reject){
             that.db.run(`CREATE TABLE IF NOT EXISTS localidades (
                 localidade_id INTEGER NOT NULL PRIMARY KEY,
-                localidade INTEGER NOT NULL)`,
+                localidade TEXT NOT NULL)`,
             (err) => {
                 if(err) {
                     return reject(err);
