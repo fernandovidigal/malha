@@ -441,6 +441,12 @@ small {
     border: solid 1px #dddfe8;
     box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
 }
+.campo_selected {
+    color: #2c3641;
+    background-color: #ffffff;
+    border: solid 1px #dddfe8;
+    box-shadow: 0 2px 16px rgba(69, 92, 199, .2);
+}
 
 .filled {
     background-color: #4adbbd;

@@ -69,41 +69,43 @@
             <tbody>
                 {{#each equipas}}
                 <tr>
-                    <table class="torneio__inner-table">
-                        <tr>
-                            <td colspan="3"></td>
-                            <td>Parcial 1</td>
-                            <td>Parcial 2</td>
-                            <td>Parcial 3</td>
-                            <td>Pontuação</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">{{equipa1_id}}</td>
-                            <td>{{equipa1_primeiro_elemento}}</td>
-                            <td rowspan="2">{{equipa1_localidade}}</td>
-                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
-                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
-                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
-                            <td rowspan="2">30</td>
-                            <td rowspan="4"><input type="button" value="Guardar"></td>
-                        </tr>
-                        <tr>
-                            <td>{{equipa1_segundo_elemento}}</td>
-                        </tr>
-                        <tr>
-                            <td rowspan="2">{{equipa2_id}}</td>
-                            <td>{{equipa2_primeiro_elemento}}</td>
-                            <td rowspan="2">{{equipa2_localidade}}</td>
-                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
-                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
-                            <td rowspan="2"><input type="text" name="" id="" size="10"></td>
-                            <td rowspan="2">30</td>
-                        </tr>
-                        <tr>
-                            <td>{{equipa2_segundo_elemento}}</td>
-                        </tr>
-                    </table>
+                    <form action="" method="post">
+                        <table class="torneio__inner-table">
+                            <tr>
+                                <td colspan="3"></td>
+                                <td width="10%" align="center">Parcial 1</td>
+                                <td width="10%" align="center">Parcial 2</td>
+                                <td width="10%" align="center">Parcial 3</td>
+                                <td width="10%" align="center">Pontuação</td>
+                                <td width="7%" align="center"></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" width="4%" align="center">{{equipa1_id}}</td>
+                                <td>{{equipa1_primeiro_elemento}}</td>
+                                <td rowspan="2" width="15%">{{equipa1_localidade}}</td>
+                                <td rowspan="2" align="center"><input type="text" name="" id="" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="" id="" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="" id="" size="10"></td>
+                                <td rowspan="2" align="center">30</td>
+                                <td rowspan="4"><input type="submit" name="guardaResultados" value="Guardar" data-jogoid="{{jogo_id}}"></td>
+                            </tr>
+                            <tr>
+                                <td>{{equipa1_segundo_elemento}}</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" align="center">{{equipa2_id}}</td>
+                                <td>{{equipa2_primeiro_elemento}}</td>
+                                <td rowspan="2">{{equipa2_localidade}}</td>
+                                <td rowspan="2" align="center"><input type="text" name="" id="" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="" id="" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="" id="" size="10"></td>
+                                <td rowspan="2" align="center">30</td>
+                            </tr>
+                            <tr>
+                                <td>{{equipa2_segundo_elemento}}</td>
+                            </tr>
+                        </table>
+                    </form>
                 </tr>
                 {{/each}}
 
@@ -155,7 +157,7 @@
             <p class="sidebar__title">Campos</p>
             <div class="campos">
                 {{#each campos}}
-                <a href="" class="campo">{{this}}</a>
+                <a href="/torneio/resultados/escalao/{{../data.escalao}}/fase/{{../data.fase}}/campo/{{this}}" class="campo {{#ifCond this '==' ../data.campo}}campo_selected{{/ifCond}}">{{this}}</a>
                 {{/each}}
             </div>
         </div>

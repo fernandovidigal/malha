@@ -7,3 +7,16 @@ if(msgCloseBtn){
         msgBlock.remove();
     });
 }
+
+
+// RESULTADOS
+let guardaResultados = document.getElementsByName('guardaResultados');
+console.log(guardaResultados);
+
+guardaResultados.forEach((btn, index) => {
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+        // TODO: Ajax API Call  
+        alert("Olá");
+    });
+});
