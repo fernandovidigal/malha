@@ -231,8 +231,6 @@ router.get('/resultados/escalao/:escalao/fase/:fase/campo/:campo', async (req,re
     const fase = req.params.fase;
     const campo = req.params.campo;
 
-    console.log(req.params.campo);
-
     // 1. Preencher um array com todas as fases até à actual
     const todasFases = [];
     for(let i = 0; i < fase; i++){ todasFases.push(i+1); }
@@ -254,7 +252,7 @@ router.get('/resultados/escalao/:escalao/fase/:fase/campo/:campo', async (req,re
     data.campos.push({campo: campo, equipas: listaEquipas});
 
 
-    console.log(data);
+    //console.log(data);
 
     res.render('home/torneio/resultados', {data: data, campos: todosCampos, fases: todasFases});
 

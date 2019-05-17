@@ -160,6 +160,12 @@ h3 {
     border: solid 1px #eea236;
 }
 
+.classificacao_btn {
+    color: #fff;
+    background-color: #5bc0de;
+    border: solid 1px #46b8da;
+}
+
 .arrow {
     width: 30px;
     height: 30px;

@@ -1,0 +1,137 @@
+{{#if data}}
+    {{#if data.torneio}}
+        <div class="title__bar">
+            <h1>{{data.torneio.designacao}} - {{data.torneio.localidade}} - {{data.escalaoInfo.designacao}}</h1>
+            <h3>{{data.torneio.ano}}</h3>
+        </div>
+    {{/if}}
+
+{{> messages}}
+
+<div class="table_sidebar__wrapper">
+    <div class="table__content">
+        <div class="buttons_bar">
+            <div class="search_bar">
+                {{#if data.equipa_id}}
+                    <div class="search_equipaID">
+                        {{data.equipa_id}}
+                        <a href="/equipas"><i class="fas fa-times-circle"></i></a>
+                    </div>
+                {{/if}}
+
+                <!--<select name="escalaoSelect" id="escalaoSelect">
+                    <option value="" disabled selected hidden>Escalão</option>
+                    <option value="0">Todos</option>
+                    {{#if data.escaloesMasculino}}
+                        <optgroup label="Masculino">
+                            {{#each data.escaloesMasculino}}
+                                <option value="{{escalao_id}}">{{designacao}}</option>
+                            {{/each}}
+                        </optgroup>
+                    {{/if}}
+                    {{#if data.escaloesFeminino}}
+                        <optgroup label="Masculino">
+                            {{#each data.escaloesFeminino}}
+                                <option value="{{escalao_id}}">{{designacao}}</option>
+                            {{/each}}
+                        </optgroup>
+                    {{/if}}
+                </select>
+
+                <select name="escalaoSelect" id="escalaoSelect">
+                    <option value="" disabled selected hidden>Localidades</option>
+                    <option value="0">Todas</option>
+                    <optgroup label="Localidades">
+                        {{#each data.localidades}}
+                            <option value="{{localidade_id}}">{{localidade}}</option>
+                        {{/each}}
+                    </optgroup>
+                </select>-->
+
+                <form action="/equipas/pesquisa" method="post" class="searchBox">
+                    <input type="text" name="searchTeamID" class="searchBox__input" pattern="^[0-9]+$" placeholder="Equipa"/>
+                    <button class="searchBox__btn"><i class="fa fa-search no-margin"></i></button>
+                </form>
+            </div>
+            <div class="action_btns a-right">
+                <button class="btn print_btn" onclick="window.print()"><i class="fas fa-print"></i>Imprimir</button>
+            </div>
+        </div>
+
+    {{#if data.campos}}
+        {{#each data.campos}}
+        <table class="listTable equipasTable" id="resultadosTable">
+            <thead>
+                <tr>
+                    <th colspan="7">Campo {{campo}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each equipas}}
+                <tr>
+                    <form action="#" method="post">
+                        <table class="torneio__inner-table">
+                            <tr>
+                                <td colspan="3"></td>
+                                <td width="10%" align="center">Parcial 1</td>
+                                <td width="10%" align="center">Parcial 2</td>
+                                <td width="10%" align="center">Parcial 3</td>
+                                <td width="10%" align="center">Vencedor</td>
+                                <td width="7%" align="center"></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" width="4%" align="center">{{equipa1_id}}</td>
+                                <td>{{equipa1_primeiro_elemento}}</td>
+                                <td rowspan="2" width="15%">{{equipa1_localidade}}</td>
+                                <td rowspan="2" align="center"><input type="text" name="equipa1_parciais[]" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="equipa1_parciais[]" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="equipa1_parciais[]" size="10"></td>
+                                <td align="center">3</td>
+                                <td rowspan="4"><input type="submit" name="guardaResultados" value="Guardar" data-jogoid="{{jogo_id}}"></td>
+                            </tr>
+                            <tr>
+                                <td>{{equipa1_segundo_elemento}}</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" align="center">{{equipa2_id}}</td>
+                                <td>{{equipa2_primeiro_elemento}}</td>
+                                <td rowspan="2">{{equipa2_localidade}}</td>
+                                <td rowspan="2" align="center"><input type="text" name="equipa2_parciais[]" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="equipa2_parciais[]" size="10"></td>
+                                <td rowspan="2" align="center"><input type="text" name="equipa2_parciais[]" size="10"></td>
+                                <td align="center">0</td>
+                            </tr>
+                            <tr>
+                                <td>{{equipa2_segundo_elemento}}</td>
+                            </tr>
+                        </table>
+                    </form>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{/each}}
+    {{/if}}
+    </div>
+    
+    {{#if campos}}
+        <div class="sidebar__content">
+            <p class="sidebar__title">Campos</p>
+            <div class="campos">
+                {{#each campos}}
+                <a href="/torneio/resultados/escalao/{{../data.escalao}}/fase/{{../data.fase}}/campo/{{this}}" class="campo {{#ifCond this '==' ../data.campo}}campo_selected{{/ifCond}}">{{this}}</a>
+                {{/each}}
+            </div>
+        </div>
+    {{/if}}
+
+</div>
+
+    {{#if fases}}
+        <div class="fase__wrapper">
+            {{#each fases}}
+                <a href="#" class="fase__item {{#ifCond this '==' ../data.fase}}fase__item-active{{/ifCond}}">Fase {{this}}</a>
+            {{/each}}
+        </div>
+    {{/if}}
+{{/if}}

@@ -590,3 +590,95 @@ small {
 .listTable th.resultados__campo-header {
     background-color: #8f9de2;
 }
+
+/********* CAMPOS **********/
+.campo__wrapper{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.campo__title {
+    width: 100%;
+    background-color: #455cc7;
+    color: #ffffff;
+    text-align: center;
+    line-height: 3;
+}
+
+.campo__labels {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 8%;
+    background-color: #f8f9ff;
+    border-bottom: solid 1px #dddfe8;
+    line-height: 2.5;
+}
+
+.vencedor_label,
+.parcial_label {
+    width: 9%;
+    text-align: center;
+}
+
+.equipasInfo__wrapper {
+    width: 100%;
+    display: flex;
+    padding: 10px 0;
+    border-bottom: solid 1px #dddfe8;
+}
+
+.equipas__wrapper {
+    flex: 1;
+    width: 100%;
+}
+
+.equipa {
+    display: flex;
+    line-height: 2;
+}
+
+.equipa_id {
+    width: 4%;
+    text-align: center;
+    padding-right: 3%;
+}
+
+.equipa_nome {
+    flex: 1;
+}
+
+.equipa_localidade {
+    width: 15%;
+}
+
+.equipa_parcial{
+    width: 9%;
+    text-align: center;
+}
+
+.equipa_vencedor {
+    width: 9%;
+    text-align: center;
+}
+
+.btn_wrapper {
+    width: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.btn__guardar-resultados{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #dff0d8;
+    color: #333333;
+    border-radius: 8px;
+}
+
+.btn__guardar-resultados:hover {
+    background-color: #3c763d;
+    color: #ffffff;
+}
