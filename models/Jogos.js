@@ -93,6 +93,29 @@ class Jogos {
         });
     }
 
+    addParciais(jogo_id, data){
+        console.log(data);
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.run('BEGIN TRANSACTION');
+            that.db.run(`INSERT INTO parciais (jogo_id, equipa_id, parcial1, parcial2, parcial3) VALUES (?,?,?,?,?)`, [jogo_id, data.equipa1.equipa_id, data.equipa1.parcial1, data.equipa1.parcial2, data.equipa1.parcial3], (err) => {
+                if(err) {
+                    that.db.run('ROLLBACK');
+                    return reject(err);
+                }
+            });
+            that.db.run(`INSERT INTO parciais (jogo_id, equipa_id, parcial1, parcial2, parcial3) VALUES (?,?,?,?,?)`, [jogo_id, data.equipa2.equipa_id, data.equipa2.parcial1, data.equipa2.parcial2, data.equipa2.parcial3], (err) => {
+                if(err) {
+                    that.db.run('ROLLBACK');
+                    return reject(err);
+                } else {
+                    that.db.run('COMMIT');
+                    return resolve();
+                }
+            }); 
+        });
+    }
+
     getFaseTorneioPorEscalao(torneio_id, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){
@@ -205,6 +228,25 @@ class Jogos {
                 WHERE torneio_id = ?
             `,
             [torneio_id],
+            (err, row) => {
+                if(err) {
+                    return reject(err);
+                } else {
+                    return resolve(row);
+                }
+            });
+        });
+    }
+
+    getEquipasPorJogo(jogo_id){
+        const that = this;
+        return new Promise(function(resolve, reject){
+            that.db.get(`
+                SELECT equipa1_id, equipa2_id
+                FROM jogos 
+                WHERE jogo_id = ?
+            `,
+            [jogo_id],
             (err, row) => {
                 if(err) {
                     return reject(err);

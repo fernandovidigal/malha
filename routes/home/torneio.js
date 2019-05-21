@@ -4,6 +4,7 @@ const {malha} = require('../../helpers/connect');
 const {userAuthenticated} = require('../../helpers/authentication');
 const {checkTorneioActivo} = require('../../helpers/torneioActivo');
 const {torneioHelperFunctions} = require('../../helpers/torneioHelperFunctions');
+//const torneioController = require('../../controllers/torneioController');
 
 const numbersRegExp = new RegExp('^[0-9]+$');
 
@@ -256,6 +257,35 @@ router.get('/resultados/escalao/:escalao/fase/:fase/campo/:campo', async (req,re
 
     res.render('home/torneio/resultados', {data: data, campos: todosCampos, fases: todasFases});
 
+});
+
+// API - POST
+router.post('/resultados/registaParciais', (req, res)=>{
+    res.status(200).send();
+    /*const jogo_id = req.params.jogoid;
+    const equipas = await malha.jogos.getEquipasPorJogo(jogo_id);
+
+    const parciaisData = {
+        equipa1: {
+            equipa_id: equipas.equipa1_id,
+            parcial1: req.body.equipa1_parcial1,
+            parcial2: req.body.equipa1_parcial2,
+            parcial3: req.body.equipa1_parcial3
+        },
+        equipa2: {
+            equipa_id: equipas.equipa2_id,
+            parcial1: req.body.equipa2_parcial1,
+            parcial2: req.body.equipa2_parcial2,
+            parcial3: req.body.equipa2_parcial3
+        }
+    }
+
+    malha.jogos.addParciais(jogo_id, parciaisData)
+    .then(()=>{
+        console.log('sucesso');
+    }).catch((err)=>{
+        console.log(err);
+    });*/
 });
 
 
