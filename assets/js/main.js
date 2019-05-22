@@ -19,6 +19,7 @@ guardaResultados.forEach((btn, index) => {
 
         const campoWrapper = document.querySelector('.campo__wrapper');
         const currentForm = btn.closest('.resultados__form');
+        const currentEquipasInfowrapper = currentForm.querySelector(".equipasInfo__wrapper");
 
         const jogoID = btn.dataset.jogoid;
 
@@ -30,35 +31,18 @@ guardaResultados.forEach((btn, index) => {
         const equipa2_parcial2 = currentForm.elements['equipa2_parcial2'].value;
         const equipa2_parcial3 = currentForm.elements['equipa2_parcial3'].value;
 
-        let equipa1_pontos = 0;
-        let equipa2_pontos = 0;
-
-        if(equipa1_parcial1 == 30 && equipa2_parcial1 < 30){
-            equipa1_pontos++;
-        } else if(equipa1_parcial1 < 30 && equipa2_parcial1 == 30){
-            equipa2_pontos++;
-        }
-
-        if(equipa1_parcial2 == 30 && equipa2_parcial2 < 30){
-            equipa1_pontos++;
-        } else if(equipa1_parcial2 < 30 && equipa2_parcial2 == 30){
-            equipa2_pontos++;
-        }
-
-        if(equipa1_parcial3 == 30 && equipa2_parcial3 < 30){
-            equipa1_pontos++;
-        } else if(equipa1_parcial3 < 30 && equipa2_parcial3 == 30){
-            equipa2_pontos++;
-        }
 
         let equipa1_pontos_text = currentForm.querySelector('.equipa1_pontos');
-        equipa1_pontos_text.innerHTML = equipa1_pontos;
+        //equipa1_pontos_text.innerHTML = equipa1_pontos;
 
         let equipa2_pontos_text = currentForm.querySelector('.equipa2_pontos');
-        equipa2_pontos_text.innerHTML = equipa2_pontos;
+        //equipa2_pontos_text.innerHTML = equipa2_pontos;
 
-        //campoWrapper.removeChild(currentForm);
-        //campoWrapper.appendChild(currentForm);
+        // Cria o componente de carregamento loading
+        const loadingDiv = createLoading();
+        const currentBtnWrapper = btn.closest('.btn_wrapper');
+        // Substitui o botão pelo componente de carregamento
+        currentBtnWrapper.replaceChild(loadingDiv, btn);
 
         fetch('/torneio/resultados/registaParciais', {
             headers: { "Content-Type": "application/json; charset=utf-8" },
@@ -80,7 +64,74 @@ guardaResultados.forEach((btn, index) => {
             })
         })
         .then(function(response){
-            console.log(response);
+            if(response.status != 200){
+                throw new Error("Não foi possível adicionar os parciais");
+            }
+            
+            return response.json();
+        }).then(data => {
+            if(!data.success){
+                throw new Error("Não foi possível adicionar os parciais");
+            }
+
+            alert("Adicionar com sucesso");
+            campoWrapper.removeChild(currentForm);
+            equipa1_pontos_text.innerHTML = data.equipa1_pontos;
+            equipa2_pontos_text.innerHTML = data.equipa2_pontos;
+            campoWrapper.appendChild(currentForm);
+
+            // TODO: adicionar botões Edit e Remove
+            const editBtn = createEditButton(jogoID);
+            const deleteBtn = createDeleteButton(jogoID);
+
+            currentBtnWrapper.innerHTML = "";
+            currentBtnWrapper.appendChild(editBtn);
+            currentBtnWrapper.appendChild(deleteBtn);
+
+            currentEquipasInfowrapper.classList.add('resultados_finalizados');
+        })
+        .catch(function(err){
+            alert(err);
         });
     });
 });
+
+function createLoading(){
+    const loadingDiv = document.createElement("DIV");
+    loadingDiv.classList.add("loading");
+
+    const bounce1Div = document.createElement("DIV");
+    bounce1Div.classList.add("bounce1");
+    const bounce2Div = document.createElement("DIV");
+    bounce2Div.classList.add("bounce2");
+    const bounce3Div = document.createElement("DIV");
+    bounce3Div.classList.add("bounce3");
+
+    loadingDiv.appendChild(bounce1Div);
+    loadingDiv.appendChild(bounce2Div);
+    loadingDiv.appendChild(bounce3Div);
+
+    return loadingDiv;
+}
+
+function createEditButton(jogo_id){
+    const editButton = document.createElement("A");
+    editButton.setAttribute("href", "");
+    editButton.classList.add("btn__edit-resultados");
+    editButton.setAttribute("name", "editarResultados");
+    editButton.setAttribute("data-jogoid", jogo_id);
+    editButton.innerHTML = "Editar";
+
+    return editButton;
+}
+
+function createDeleteButton(jogo_id){
+    const deleteButton = document.createElement("A");
+    deleteButton.setAttribute("href", "");
+    deleteButton.classList.add("btn__delete-resultados");
+    deleteButton.setAttribute("name", "deleteResultados");
+    deleteButton.setAttribute("data-jogoid", jogo_id);
+    deleteButton.innerHTML = "Eliminar";
+
+    return deleteButton;
+}

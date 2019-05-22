@@ -214,9 +214,10 @@ router.get('/resultados/escalao/:escalao/fase/:fase', async (req,res)=>{
     for(const campo of todosCampos){
         // Adiciona o número do campo e inicializa o array das equipas
         const listaEquipas = await malha.jogos.getTodasEquipasSemParciaisPorCampo(torneio_id, escalao_id, campo);
-        data.campos.push({campo: campo, equipas: listaEquipas});
+        const listaEquipasFinalizadas = await malha.jogos.getTodasEquipasComParciaisPorCampo(torneio_id, escalao_id, campo);
+        data.campos.push({campo: campo, equipas: listaEquipas, equipasFinalizdas: listaEquipasFinalizadas});
     }
-
+    
     res.render('home/torneio/resultados', {data: data, campos: todosCampos, fases: todasFases});
 });
 
@@ -250,42 +251,56 @@ router.get('/resultados/escalao/:escalao/fase/:fase/campo/:campo', async (req,re
     data.campos = []; 
     // Adiciona o número do campo e inicializa o array das equipas
     const listaEquipas = await malha.jogos.getTodasEquipasSemParciaisPorCampo(torneio_id, escalao_id, campo);
-    data.campos.push({campo: campo, equipas: listaEquipas});
-
-
-    //console.log(data);
+    const listaEquipasFinalizadas = await malha.jogos.getTodasEquipasComParciaisPorCampo(torneio_id, escalao_id, campo);
+    data.campos.push({campo: campo, equipas: listaEquipas, equipasFinalizdas: listaEquipasFinalizadas});
 
     res.render('home/torneio/resultados', {data: data, campos: todosCampos, fases: todasFases});
 
 });
 
 // API - POST
-router.post('/resultados/registaParciais', (req, res)=>{
-    res.status(200).send();
-    /*const jogo_id = req.params.jogoid;
+router.post('/resultados/registaParciais', async (req, res)=>{
+    const data = req.body;
+    const jogo_id = data.jogo_id;
     const equipas = await malha.jogos.getEquipasPorJogo(jogo_id);
 
-    const parciaisData = {
-        equipa1: {
-            equipa_id: equipas.equipa1_id,
-            parcial1: req.body.equipa1_parcial1,
-            parcial2: req.body.equipa1_parcial2,
-            parcial3: req.body.equipa1_parcial3
-        },
-        equipa2: {
-            equipa_id: equipas.equipa2_id,
-            parcial1: req.body.equipa2_parcial1,
-            parcial2: req.body.equipa2_parcial2,
-            parcial3: req.body.equipa2_parcial3
-        }
+    data.parciaisData.equipa1.equipa_id = equipas.equipa1_id;
+    data.parciaisData.equipa2.equipa_id = equipas.equipa2_id;
+
+
+    // TODO: Optimizar este código para uma função
+    let equipa1_pontos = 0;
+    let equipa2_pontos = 0;
+
+    if(data.parciaisData.equipa1.parcial1 == 30 && data.parciaisData.equipa2.parcial1 < 30){
+        equipa1_pontos++;
+    } else if(data.parciaisData.equipa1.parcial1 < 30 && data.parciaisData.equipa2.parcial1 == 30){
+        equipa2_pontos++;
     }
 
-    malha.jogos.addParciais(jogo_id, parciaisData)
+    if(data.parciaisData.equipa1.parcial2 == 30 && data.parciaisData.equipa2.parcial2 < 30){
+        equipa1_pontos++;
+    } else if(data.parciaisData.equipa1.parcial2 < 30 && data.parciaisData.equipa2.parcial2 == 30){
+        equipa2_pontos++;
+    }
+
+    if(data.parciaisData.equipa1.parcial3 == 30 && data.parciaisData.equipa2.parcial3 < 30){
+        equipa1_pontos++;
+    } else if(data.parciaisData.equipa1.parcial3 < 30 && data.parciaisData.equipa2.parcial3 == 30){
+        equipa2_pontos++;
+    }
+
+    // #TODO
+
+    data.parciaisData.equipa1.pontos = equipa1_pontos;
+    data.parciaisData.equipa2.pontos = equipa2_pontos;
+
+    malha.jogos.addParciais(jogo_id, data)
     .then(()=>{
-        console.log('sucesso');
+        res.status(200).json({success: true, equipa1_pontos: equipa1_pontos, equipa2_pontos: equipa2_pontos});
     }).catch((err)=>{
-        console.log(err);
-    });*/
+        res.status(200).json({success: false, equipa1_pontos: equipa1_pontos, equipa2_pontos: equipa2_pontos});
+    });
 });
 
 
