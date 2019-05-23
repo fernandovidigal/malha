@@ -124,6 +124,41 @@ class Jogos {
         });
     }
 
+    updateParciais(jogo_id, data){
+        const that = this;
+        const parciaisData = data.parciaisData;
+        
+        return new Promise(function(resolve, reject){
+            that.db.run('BEGIN');
+            that.db.run(`UPDATE parciais SET parcial1 = ?, parcial2 = ?, parcial3 = ? WHERE jogo_id = ? AND equipa1_id = ?`,
+                [parciaisData.equipa1.parcial1, parciaisData.equipa1.parcial2, parciaisData.equipa1.parcial3, jogo_id, parciaisData.equipa1.equipa_id],
+                (err) => {
+                    if(err) {
+                        that.db.run('ROLLBACK');
+                        return reject(err);
+                    }
+                });
+            that.db.run(`UPDATE parciais SET parcial1 = ?, parcial2 = ?, parcial3 = ? WHERE jogo_id = ? AND equipa1_id = ?`,
+                [parciaisData.equipa2.parcial1, parciaisData.equipa2.parcial2, parciaisData.equipa2.parcial3, jogo_id, parciaisData.equipa2.equipa_id],
+                (err) => {
+                    if(err) {
+                        that.db.run('ROLLBACK');
+                        return reject(err);
+                    }
+                });
+            that.db.run('UPDATE jogos SET equipa1_pontos = ?, equipa2_pontos = ? WHERE jogo_id = ? AND equipa1_id = ? AND equipa2_id = ?',
+                        [parciaisData.equipa1.pontos, parciaisData.equipa2.pontos, jogo_id, parciaisData.equipa1.equipa_id, parciaisData.equipa2.equipa_id], (err) => {
+                if(err) {
+                    that.db.run('ROLLBACK');
+                    return reject(err);
+                } else {
+                    that.db.run('COMMIT');
+                    return resolve();
+                }
+            });
+        });
+    }
+
     getFaseTorneioPorEscalao(torneio_id, escalao_id){
         const that = this;
         return new Promise(function(resolve, reject){

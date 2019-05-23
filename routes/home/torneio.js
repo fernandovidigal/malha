@@ -24,31 +24,32 @@ router.get('/', async (req, res) => {
     const numEquipas = await malha.equipas.getNumEquipas(torneio_id);
     if(numEquipas.count == 0){
         const error = { error_msg: "Não existem equipas registadas."};
-        res.render('home/torneio/index', {data: data, error: error});
+        return res.render('home/torneio/index', {data: data, error: error});
     } else if(numEquipas.count < 2){
         const error = { error_msg: "Existem menos de 2 equipas registadas"};
-        res.render('home/torneio/index', {data: data, error: error});
+        return res.render('home/torneio/index', {data: data, error: error});
     }
 
     // 2. Verificar se existem o número de campos definido para o torneio
     const numCampos = await malha.torneios.getNumCampos(torneio_id);
     if(numCampos.count == 0){
-        res.render('home/torneio/setNumeroCampos', {data: data});
+        return res.render('home/torneio/setNumeroCampos', {data: data});
     }
 
     // 3. verificar se já existem jogos distribuidos
     const numJogos = await malha.jogos.getNumeroJogos(torneio_id);
     if(numJogos.count == 0){
-        res.render('home/torneio/distribuirEquipas', {data: data});
+        return res.render('home/torneio/distribuirEquipas', {data: data});
     }
 
     if(numEquipas.count > 0 && numCampos.count > 0 && numJogos.count > 0){
-        
+
         const escaloesMasculino = await malha.jogos.getEscaloesPorSexo(torneio_id, 1);
         const escaloesFeminino = await malha.jogos.getEscaloesPorSexo(torneio_id, 0);
 
         await Promise.all([escaloesMasculino, escaloesFeminino])
         .then(async ([_escaloesMasculino, _escaloesFeminino])=> {
+
             if(_escaloesMasculino.length > 0){
                 data.escaloesMasculino = [];
 
@@ -78,9 +79,9 @@ router.get('/', async (req, res) => {
                     data.escaloesFeminino.push(escalaoInfo);
                 }
             }
-        });
 
-        res.render('home/torneio/index', {data: data});
+            return res.render('home/torneio/index', {data: data});
+        });
     }
 });
 
@@ -303,126 +304,62 @@ router.post('/resultados/registaParciais', async (req, res)=>{
     });
 });
 
+router.post('/resultados/actualizaParciais', async (req, res)=>{
+    const data = req.body;
+    const jogo_id = data.jogo_id;
+    const equipas = await malha.jogos.getEquipasPorJogo(jogo_id);
+
+    data.parciaisData.equipa1.equipa_id = equipas.equipa1_id;
+    data.parciaisData.equipa2.equipa_id = equipas.equipa2_id;
 
 
+    // TODO: Optimizar este código para uma função
+    let equipa1_pontos = 0;
+    let equipa2_pontos = 0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*router.get('/escalao/:escalaoID', async (req, res) => {
-    let data = {
-        'torneio': req.session.torneio
-    };
-    let torneio_id = req.session.torneio.torneio_id;
-
-    const escalaoInfo = malha.escaloes.getEscalaoById(req.params.escalaoID);
-    const escaloesMasculino = malha.escaloes.getAllEscaloesBySex(1);
-    const escaloesFeminino = malha.escaloes.getAllEscaloesBySex(0);
-    const localidades = malha.localidades.getAllLocalidades();
-
-    await Promise.all([escalaoInfo, escaloesMasculino, escaloesFeminino, localidades])
-    .then(([_escalaoInfo, _escaloesMasculino, _escaloesFeminino, _localidades])=> {
-        data.escalaoInfo = _escalaoInfo;
-        data.escaloesMasculino = _escaloesMasculino;
-        data.escaloesFeminino = _escaloesFeminino;
-        data.localidades = _localidades;
-
-        res.render('home/torneio/index', {data: data});
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-});*/
-
-// ADICIONAR NÚMERO DE CAMPOS
-/*router.post('/', (req, res) => {
-    let data = {
-        'torneio': req.session.torneio
-    };
-    let torneio_id = req.session.torneio.torneio_id;
-    let erros = [];
-
-    if(!req.body.numCampos || req.body.numCampos == '') {
-        erros.push({err_msg: 'Deve indicar o número de campos'});
-    } else if(!numbersRegExp.test(req.body.numCampos)){
-        erros.push({err_msg: 'Número de campos inválido'});
+    if(data.parciaisData.equipa1.parcial1 == 30 && data.parciaisData.equipa2.parcial1 < 30){
+        equipa1_pontos++;
+    } else if(data.parciaisData.equipa1.parcial1 < 30 && data.parciaisData.equipa2.parcial1 == 30){
+        equipa2_pontos++;
     }
 
-    if(erros.length > 0) {
-        data.numCampos = req.body.numCampos;
-        res.render('home/torneio/setNumeroCampos', {data: data, erros: erros});
-    } else {
-        malha.torneios.setNumCampos(torneio_id, parseInt(req.body.numCampos, 10))
-        .then(()=>{
-            req.flash('success', 'Número de campos definido com sucesso');
-            res.redirect('/torneio/distribuirEquipas');
-        })
-        .catch((err) => {
-            console.log(err);
-            req.flash('error', 'Não foi possível definir o número de campos');
-            res.redirect('/torneio/setNumeroCampos');
-        });
+    if(data.parciaisData.equipa1.parcial2 == 30 && data.parciaisData.equipa2.parcial2 < 30){
+        equipa1_pontos++;
+    } else if(data.parciaisData.equipa1.parcial2 < 30 && data.parciaisData.equipa2.parcial2 == 30){
+        equipa2_pontos++;
     }
-});*/
 
+    if(data.parciaisData.equipa1.parcial3 == 30 && data.parciaisData.equipa2.parcial3 < 30){
+        equipa1_pontos++;
+    } else if(data.parciaisData.equipa1.parcial3 < 30 && data.parciaisData.equipa2.parcial3 == 30){
+        equipa2_pontos++;
+    }
 
-/*router.get('/selecionaEscalao', async (req, res) => {
-    let data = {
-        'torneio': req.session.torneio
-    };
-    let torneio_id = req.session.torneio.torneio_id;
+    // #TODO
 
-    const fase = await malha.jogos.getFaseTorneio(torneio_id);
+    data.parciaisData.equipa1.pontos = equipa1_pontos;
+    data.parciaisData.equipa2.pontos = equipa2_pontos;
 
-    const escaloesMasculino = malha.escaloes.getAllEscaloesBySex(1);
-    const escaloesFeminino = malha.escaloes.getAllEscaloesBySex(0);
-
-    await Promise.all([escaloesMasculino, escaloesFeminino])
-    .then(async ([_escaloesMasculino, _escaloesFeminino])=> {
-        data.escaloesMasculino = _escaloesMasculino;
-        data.escaloesFeminino = _escaloesFeminino;
-
-
-        for(const escalao of _escaloesMasculino){
-            const numCampos = await malha.jogos.getNumeroCampos(torneio_id, escalao.escalao_id, fase.fase);
-            console.log(numCampos);
-            const numEquipas = await malha.jogos.getNumeroEquipasPorEscalao(torneio_id, escalao.escalao_id, fase.fase);
-            console.log(numEquipas);
-            const numJogos = await malha.jogos.getNumeroJogosPorEscalao(torneio_id, escalao.escalao_id, fase.fase);
-            console.log(numJogos);
-            data.escaloesMasculino.info.numCampos = numCampos;
-            data.escaloesMasculino.info.numEquipas = numEquipas;
-            data.escaloesMasculino.info.numJogos = numJogos;
-        }
-
-        console.log(data);
-
-        console.log(data.escaloesMasculino);
-
-        res.render('home/torneio/selecionaEscalao', {data: data});
-    })
-    .catch((err) => {
-        console.log(err);
+    malha.jogos.updateParciais(jogo_id, data)
+    .then(()=>{
+        res.status(200).json({success: true, equipa1_pontos: equipa1_pontos, equipa2_pontos: equipa2_pontos});
+    }).catch((err)=>{
+        res.status(200).json({success: false, equipa1_pontos: equipa1_pontos, equipa2_pontos: equipa2_pontos});
     });
-});*/
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = router;

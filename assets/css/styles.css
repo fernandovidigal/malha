@@ -676,7 +676,8 @@ small {
 
 .btn__guardar-resultados,
 .btn__edit-resultados,
-.btn__delete-resultados{
+.btn__delete-resultados,
+.btn__update-resultados {
     outline: none;
     border: none;
     text-align: center;

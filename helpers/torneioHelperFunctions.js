@@ -51,6 +51,7 @@ function metodoEmparelhamento(equipas){
     const equipas4 = [[1,0],[2,3],[0,2],[3,1],[3,0],[2,1]];
     const equipas5 = [[1,0],[2,4],[0,2],[4,3],[3,0],[2,1],[0,4],[1,3],[4,1],[3,2]];
     const equipas6 = [[1,0],[2,4],[3,5],[0,2],[5,1],[4,3],[3,0],[2,1],[5,4],[0,4],[1,3],[2,5],[5,0],[4,1],[3,2]];
+    // TODO: emparelhamento até 10 equipas e limitar o número max de equipas ao número de emparelhamentos disponíveis
 
     let emparelhamento = null;
 
