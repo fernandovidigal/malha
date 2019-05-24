@@ -129,30 +129,36 @@ class Jogos {
         const parciaisData = data.parciaisData;
         
         return new Promise(function(resolve, reject){
-            that.db.run('BEGIN');
-            that.db.run(`UPDATE parciais SET parcial1 = ?, parcial2 = ?, parcial3 = ? WHERE jogo_id = ? AND equipa1_id = ?`,
+            //that.db.run('BEGIN');
+            that.db.run(`UPDATE parciais SET parcial1 = ?, parcial2 = ?, parcial3 = ? WHERE jogo_id = ? AND equipa_id = ?`,
                 [parciaisData.equipa1.parcial1, parciaisData.equipa1.parcial2, parciaisData.equipa1.parcial3, jogo_id, parciaisData.equipa1.equipa_id],
                 (err) => {
                     if(err) {
-                        that.db.run('ROLLBACK');
+                        console.log("update1 Err");
+                        //that.db.run('ROLLBACK');
                         return reject(err);
                     }
+                    console.log("update1 succ");
                 });
-            that.db.run(`UPDATE parciais SET parcial1 = ?, parcial2 = ?, parcial3 = ? WHERE jogo_id = ? AND equipa1_id = ?`,
+            that.db.run(`UPDATE parciais SET parcial1 = ?, parcial2 = ?, parcial3 = ? WHERE jogo_id = ? AND equipa_id = ?`,
                 [parciaisData.equipa2.parcial1, parciaisData.equipa2.parcial2, parciaisData.equipa2.parcial3, jogo_id, parciaisData.equipa2.equipa_id],
                 (err) => {
                     if(err) {
-                        that.db.run('ROLLBACK');
+                        console.log("update2 Err");
+                        //that.db.run('ROLLBACK');
                         return reject(err);
                     }
+                    console.log("update2 succ");
                 });
             that.db.run('UPDATE jogos SET equipa1_pontos = ?, equipa2_pontos = ? WHERE jogo_id = ? AND equipa1_id = ? AND equipa2_id = ?',
                         [parciaisData.equipa1.pontos, parciaisData.equipa2.pontos, jogo_id, parciaisData.equipa1.equipa_id, parciaisData.equipa2.equipa_id], (err) => {
                 if(err) {
-                    that.db.run('ROLLBACK');
+                    console.log("update3 Err");
+                    //that.db.run('ROLLBACK');
                     return reject(err);
                 } else {
-                    that.db.run('COMMIT');
+                    console.log("update1 succ");
+                    //that.db.run('COMMIT');
                     return resolve();
                 }
             });
@@ -383,9 +389,9 @@ class Jogos {
         return new Promise(function(resolve, reject){
             that.db.all(`
             SELECT jogos.*, equipa1Info.primeiro_elemento AS equipa1_primeiro_elemento, equipa1Info.segundo_elemento AS equipa1_segundo_elemento, equipa1Info.localidade AS equipa1_localidade, 
-			equipa1Parciais.parcial1 AS equipa1_parcial1, equipa1Parciais.parcial2 AS equipa1_parcial2, equipa1Parciais.parcial3 AS equipa1_parcial3,
+			equipa1Parciais.parcial_id AS equipa1_parcial_id, equipa1Parciais.parcial1 AS equipa1_parcial1, equipa1Parciais.parcial2 AS equipa1_parcial2, equipa1Parciais.parcial3 AS equipa1_parcial3,
             equipa2Info.primeiro_elemento AS equipa2_primeiro_elemento, equipa2Info.segundo_elemento AS equipa2_segundo_elemento, equipa2Info.localidade AS equipa2_localidade,
-			equipa2Parciais.parcial1 AS equipa2_parcial1, equipa2Parciais.parcial2 AS equipa2_parcial2, equipa2Parciais.parcial3 AS equipa2_parcial3
+			equipa2Parciais.parcial_id AS equipa2_parcial_id, equipa2Parciais.parcial1 AS equipa2_parcial1, equipa2Parciais.parcial2 AS equipa2_parcial2, equipa2Parciais.parcial3 AS equipa2_parcial3
             FROM jogos
             INNER JOIN (
                 SELECT equipas.equipa_id, equipas.primeiro_elemento, equipas.segundo_elemento, localidades.localidade

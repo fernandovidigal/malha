@@ -37,11 +37,11 @@ let campoWrapper = document.querySelectorAll('.campo__wrapper');
 guardaResultados.forEach((btn, index) => {
     btn.addEventListener('click', function(e){
         e.preventDefault();
-        handleParciais(btn, "/torneio/resultados/registaParciais");
+        handleParciais(btn, "/torneio/resultados/registaParciais", true);
     });
 });
 
-function handleParciais(btn, url){
+function handleParciais(btn, url, moveToEnd){
     const campoWrapper = btn.closest('.campo__wrapper');
     const currentForm = btn.closest('.resultados__form');
     const currentEquipasInfowrapper = currentForm.querySelector(".equipasInfo__wrapper");
@@ -97,11 +97,14 @@ function handleParciais(btn, url){
         }
 
         alert("Parciais adicionados com sucesso");
-        campoWrapper.removeChild(currentForm);
         equipa1_pontos_text.appendChild(document.createTextNode(data.equipa1_pontos));
         equipa2_pontos_text.appendChild(document.createTextNode(data.equipa2_pontos));
-        campoWrapper.appendChild(currentForm);
 
+        if(moveToEnd){
+            campoWrapper.removeChild(currentForm);
+            campoWrapper.appendChild(currentForm);
+        }
+        
         const parciaisInput = currentForm.querySelectorAll("input[type=text]");
         parciaisInput.forEach(inputsParaTexto);
 
@@ -193,7 +196,7 @@ editResultadosBtns.forEach((item, index)=>{
             removeAllChilds(equipasWrapper.querySelector('.equipa2_pontos'));
             this.appendChild(createUdpateButton(jogoID));
         } else if(btn.tagName == 'A' && btn.getAttribute('name') == "updateResultados"){
-            handleParciais(btn, "/torneio/resultados/actualizaParciais");
+            handleParciais(btn, "/torneio/resultados/actualizaParciais", false);
         }
     });
 });

@@ -340,6 +340,8 @@ router.post('/resultados/actualizaParciais', async (req, res)=>{
     data.parciaisData.equipa1.pontos = equipa1_pontos;
     data.parciaisData.equipa2.pontos = equipa2_pontos;
 
+    console.log(data);
+
     malha.jogos.updateParciais(jogo_id, data)
     .then(()=>{
         res.status(200).json({success: true, equipa1_pontos: equipa1_pontos, equipa2_pontos: equipa2_pontos});
